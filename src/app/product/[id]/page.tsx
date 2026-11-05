@@ -69,11 +69,6 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   // Spec tab switcher
   const [specTab, setSpecTab] = useState<"optics" | "power" | "build">("optics");
 
-  // Interactive Optical Zoom & CCT simulator states
-  const [simBeamAngle, setSimBeamAngle] = useState<number>(30); // 15° to 60°
-  const [simCCT, setSimCCT] = useState<number>(5600); // 2500K to 10000K
-  const [simDimming, setSimDimming] = useState<number>(100); // 0 to 100%
-
   // Toast notification
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
@@ -354,7 +349,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               })}
             </div>
 
-            {/* Secondary Visual Teaser: Dynamic Interactive Optical Simulation */}
+            {/* Secondary Visual Teaser: Dual Aspheric Glass Optics */}
             <div className="p-6 rounded-2xl bg-surface-container-low mt-2 flex flex-col sm:flex-row items-center justify-between gap-6 border border-white/5">
               <div className="flex items-center gap-4">
                 <div className="p-3 rounded-xl bg-surface-container-high text-primary border border-white/5">
@@ -935,113 +930,6 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 </div>
               </div>
             )}
-
-            {/* Interactive Optical Beam & CCT Simulator Controls */}
-            <div className="mt-4 p-5 rounded-xl bg-surface-container-low border border-white/5 flex flex-col gap-5">
-              <div className="flex items-center justify-between">
-                <span className="font-mono text-xs text-primary font-bold uppercase tracking-wider flex items-center gap-2">
-                  <Zap className="w-4 h-4" /> Live Optical Helicoid Simulator
-                </span>
-                <span className="font-mono text-xs text-secondary">Interactive Studio Bench</span>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                {/* Control 1: Beam Angle */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-secondary">Beam Focus Helicoid</span>
-                    <span className="font-mono text-primary font-bold">{simBeamAngle}°</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="15"
-                    max="60"
-                    value={simBeamAngle}
-                    onChange={(e) => setSimBeamAngle(Number(e.target.value))}
-                    className="w-full accent-primary-container h-1.5 bg-surface-container-high rounded-lg cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[10px] font-mono text-secondary/60">
-                    <span>15° Spot</span>
-                    <span>60° Flood</span>
-                  </div>
-                </div>
-
-                {/* Control 2: Color Temperature (CCT) */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-secondary">Color Temperature (CCT)</span>
-                    <span className="font-mono text-white font-bold">{simCCT}K</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="2500"
-                    max="10000"
-                    step="100"
-                    value={simCCT}
-                    onChange={(e) => setSimCCT(Number(e.target.value))}
-                    className="w-full accent-primary-container h-1.5 bg-surface-container-high rounded-lg cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[10px] font-mono text-secondary/60">
-                    <span>2500K Warm Tungsten</span>
-                    <span>10000K Ice Blue</span>
-                  </div>
-                </div>
-
-                {/* Control 3: Dimming */}
-                <div className="flex flex-col gap-2">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-secondary">Dimming Output</span>
-                    <span className="font-mono text-white font-bold">{simDimming}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="1"
-                    max="100"
-                    value={simDimming}
-                    onChange={(e) => setSimDimming(Number(e.target.value))}
-                    className="w-full accent-primary-container h-1.5 bg-surface-container-high rounded-lg cursor-pointer"
-                  />
-                  <div className="flex justify-between text-[10px] font-mono text-secondary/60">
-                    <span>0% (Flicker-Free)</span>
-                    <span>100% Full Blast</span>
-                  </div>
-                </div>
-              </div>
-
-              {/* Dynamic Beam Simulation Preview Canvas */}
-              <div className="relative h-28 rounded-xl bg-black overflow-hidden flex items-center justify-center border border-white/10">
-                <div
-                  className="rounded-full transition-all duration-300 blur-md pointer-events-none"
-                  style={{
-                    width: `${simBeamAngle * 3.5}px`,
-                    height: `${simBeamAngle * 3.5}px`,
-                    backgroundColor:
-                      simCCT < 3200
-                        ? "#ff9e54"
-                        : simCCT < 5000
-                        ? "#ffe7d0"
-                        : simCCT < 6500
-                        ? "#f5f8ff"
-                        : "#99bfff",
-                    opacity: simDimming / 100,
-                    boxShadow: `0 0 50px ${
-                      simCCT < 3200
-                        ? "#ff9e54"
-                        : simCCT < 5000
-                        ? "#ffe7d0"
-                        : "#99bfff"
-                    }`,
-                  }}
-                />
-                <div className="absolute bottom-2 left-3 font-mono text-[10px] text-secondary/70">
-                  BEAM EMITTANCE: {Math.round(((65 - simBeamAngle) / 50) * (model === "10w" ? 3100 : 9450) * (simDimming / 100))} LUX
-                </div>
-                <div className="absolute top-2 right-3 font-mono text-[10px] text-primary">
-                  CCT: {simCCT}K • CRI 98.4
-                </div>
-              </div>
-
-            </div>
 
           </div>
 
