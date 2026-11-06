@@ -30,9 +30,13 @@ export async function GET() {
     return NextResponse.json({ 
       authenticated: true, 
       user: {
+        id: user.id,
         phoneNumber: user.phoneNumber,
-        fullName: user.fullName,
+        fullName: user.fullName || "",
         email: user.email || "",
+        whatsappNumber: user.whatsappNumber || user.phoneNumber,
+        role: user.role || "user",
+        address: user.address || "",
       } 
     });
   } catch (error) {

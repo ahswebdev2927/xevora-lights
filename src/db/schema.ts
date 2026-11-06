@@ -5,6 +5,7 @@ export const users = sqliteTable("users", {
   phoneNumber: text("phone_number").notNull().unique(),
   fullName: text("full_name"),
   email: text("email"),
+  whatsappNumber: text("whatsapp_number"),
   role: text("role").default("user"), // user, admin
   address: text("address"), // Default shipping address
   createdAt: text("created_at").$defaultFn(() => new Date().toISOString()),
