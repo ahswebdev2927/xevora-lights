@@ -27,6 +27,12 @@ export const products = sqliteTable("products", {
   description: text("description"),
   basePrice: real("base_price").notNull(),
   salePrice: real("sale_price"),
+  mrp: real("mrp"),
+  stock: integer("stock").default(0),
+  sku: text("sku"),
+  productType: text("product_type").default("main_product"),
+  homepageSlot: text("homepage_slot"),
+  parentProductId: integer("parent_product_id"),
   avgRating: real("avg_rating").default(4.3),
   numReviews: integer("num_reviews").default(1),
   images: text("images"), // JSON string array of URLs

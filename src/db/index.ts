@@ -26,6 +26,12 @@ if (process.env.NODE_ENV !== "production") {
 // Auto-ensure required tables & columns exist
 client.execute("ALTER TABLE users ADD COLUMN email TEXT;").catch(() => {});
 client.execute("ALTER TABLE products ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1;").catch(() => {});
+client.execute("ALTER TABLE products ADD COLUMN product_type TEXT DEFAULT 'main_product';").catch(() => {});
+client.execute("ALTER TABLE products ADD COLUMN homepage_slot TEXT;").catch(() => {});
+client.execute("ALTER TABLE products ADD COLUMN mrp REAL;").catch(() => {});
+client.execute("ALTER TABLE products ADD COLUMN stock INTEGER DEFAULT 0;").catch(() => {});
+client.execute("ALTER TABLE products ADD COLUMN sku TEXT;").catch(() => {});
+client.execute("ALTER TABLE products ADD COLUMN parent_product_id INTEGER;").catch(() => {});
 client.execute("ALTER TABLE homepage_categories ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1;").catch(() => {});
 client.execute("ALTER TABLE navigation_menu ADD COLUMN is_active INTEGER NOT NULL DEFAULT 1;").catch(() => {});
 client.execute("ALTER TABLE orders ADD COLUMN phonepe_order_id TEXT;").catch(() => {});

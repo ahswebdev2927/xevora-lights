@@ -17,13 +17,13 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get("search") || "";
     const id = searchParams.get("id");
+    const type = searchParams.get("type"); // main_product | spare_part
 
     if (id) {
       const product = await db.select().from(products).where(eq(products.id, parseInt(id))).limit(1);
       if (!product.length) return NextResponse.json({ success: false, error: "Not found" }, { status: 404 });
       
       const variations = await db.select().from(productVariations).where(eq(productVariations.productId, parseInt(id))).orderBy(productVariations.id);
-      // Map mrp to basePrice for the frontend
       const mappedVariations = variations.map(v => ({
         ...v,
         basePrice: v.mrp
@@ -32,9 +32,18 @@ export async function GET(request: Request) {
     }
     
     // Fetch products
-    const allProducts = await db.select().from(products).where(
-      search ? or(like(products.name, `%${search}%`), like(products.category, `%${search}%`)) : undefined
-    ).orderBy(desc(products.id));
+    let query = db.select().from(products);
+    const conditions = [];
+    if (search) {
+      conditions.push(or(like(products.name, `%${search}%`), like(products.category, `%${search}%`)));
+    }
+    if (type) {
+      conditions.push(eq(products.productType, type));
+    }
+
+    const allProducts = await (conditions.length > 0
+      ? db.select().from(products).where(and(...conditions)).orderBy(desc(products.id))
+      : db.select().from(products).orderBy(desc(products.id)));
     
     // Fetch all variations for stock calculation
     const allVariations = await db.select().from(productVariations);
@@ -65,7 +74,8 @@ export async function GET(request: Request) {
         )
         .reduce((sum, item) => sum + (item.quantity || 0), 0);
 
-      const initialStock = productVariationsList?.reduce((sum: number, v: any) => sum + (v.stock || 0), 0) || 0;
+      const varStock = productVariationsList?.reduce((sum: number, v: any) => sum + (v.stock || 0), 0) || 0;
+      const initialStock = varStock > 0 ? varStock : (product.stock || 0);
       const totalStock = Math.max(0, initialStock - sold - toDeliver);
 
       return {
@@ -89,15 +99,15 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { 
-      name, description, salePrice, images, variations,
-      avgRating, numReviews, category, gender, colors, tags, isFeatured, 
-      isCustomizable, enabledMeasurements,
-      style, fabricComposition, weave, neckStyle, keyWords, filterCategory,
+      name, description, mrp, salePrice, stock, sku, images, variations, hasVariations,
+      avgRating, numReviews, category, tags, isFeatured, productType, homepageSlot, parentProductId,
       specifications, isActive
     } = body;
 
     // Validation
-    if (!name) return NextResponse.json({ success: false, error: "Product name is required" }, { status: 400 });
+    if (!name || !name.trim()) {
+      return NextResponse.json({ success: false, error: "Product name is required" }, { status: 400 });
+    }
     
     // Check uniqueness
     const existing = await db
@@ -109,35 +119,39 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, error: "A product with this name already exists" }, { status: 400 });
     }
     
-    // Pricing is now handled per variation. 
-    // We will calculate a "base price" for the main product entry from the minimum variation price.
-    const basePriceValue = variations && variations.length > 0 ? Math.min(...variations.map((v: any) => Number(v.basePrice) || 0)) : 0;
-    const baseSalePrice = variations && variations.length > 0 ? Math.min(...variations.map((v: any) => Number(v.salePrice) || 0)) : 0;
+    // Pricing calculation
+    const isMultiVariant = hasVariations && Array.isArray(variations) && variations.length > 0;
+    const baseSellingPrice = isMultiVariant 
+      ? Math.min(...variations.map((v: any) => Number(v.salePrice) || Number(v.basePrice) || 0)) 
+      : Number(salePrice || mrp || 0);
+    const mrpValue = isMultiVariant 
+      ? Math.max(...variations.map((v: any) => Number(v.basePrice) || Number(v.mrp) || 0)) 
+      : Number(mrp || salePrice || 0);
+    const totalStockValue = isMultiVariant 
+      ? variations.reduce((sum: number, v: any) => sum + (parseInt(v.stock) || 0), 0)
+      : parseInt(stock) || 0;
 
-    // 1 & 2. Insert Product and Variations in a Transaction
+    // Insert Product and Variations in a Transaction
     const newProduct = await db.transaction(async (tx) => {
       const productResult = await tx.insert(products).values({
-        name,
+        name: name.trim(),
         description: description || null,
-        basePrice: basePriceValue,
-        salePrice: baseSalePrice,
+        basePrice: baseSellingPrice,
+        salePrice: baseSellingPrice,
+        mrp: mrpValue,
+        stock: totalStockValue,
+        sku: sku || null,
+        productType: productType || "main_product",
+        homepageSlot: homepageSlot || null,
+        parentProductId: parentProductId ? parseInt(parentProductId) : null,
         images: JSON.stringify(images || []),
-        colors: JSON.stringify(colors || []),
-        avgRating: !isNaN(parseFloat(avgRating)) ? parseFloat(avgRating) : 4.3,
+        colors: JSON.stringify(["Matte Stealth Black"]),
+        avgRating: !isNaN(parseFloat(avgRating)) ? parseFloat(avgRating) : 4.9,
         numReviews: !isNaN(parseInt(numReviews)) ? parseInt(numReviews) : 1,
-        category: category || null,
-        gender: (gender as "men" | "women" | "unisex") || "unisex",
+        category: category || (productType === "spare_part" ? "Spare Parts & Accessories" : "Studio Lights"),
         tags: tags || null,
-        isFeatured: !!isFeatured,
+        isFeatured: homepageSlot ? true : !!isFeatured,
         isActive: isActive !== undefined ? !!isActive : true,
-        isCustomizable: !!isCustomizable,
-        enabledMeasurements: enabledMeasurements || null,
-        style: style || null,
-        fabricComposition: fabricComposition || null,
-        weave: weave || null,
-        neckStyle: neckStyle || null,
-        keyWords: keyWords || null,
-        filterCategory: filterCategory || null,
         specifications: specifications ? JSON.stringify(specifications) : null,
       }).returning();
 
@@ -147,18 +161,30 @@ export async function POST(request: Request) {
 
       const insertedProduct = productResult[0];
 
-      if (variations && variations.length > 0) {
+      if (isMultiVariant) {
         const variationValues = variations.map((v: any) => ({
           productId: insertedProduct.id,
-          size: v.size,
+          size: v.size || "Standard Edition",
           color: v.color || "Default",
           stock: parseInt(v.stock) || 0,
-          mrp: Number(v.basePrice) || 0,
-          salePrice: Number(v.salePrice) || 0,
-          sku: v.sku || `${insertedProduct.id}-${v.size}${v.color && v.color !== "Default" ? `-${v.color}` : ""}`
+          mrp: Number(v.basePrice || v.mrp) || mrpValue,
+          salePrice: Number(v.salePrice) || baseSellingPrice,
+          sku: v.sku || `${insertedProduct.id}-${v.size || 'STD'}`
         }));
         await tx.insert(productVariations).values(variationValues);
+      } else {
+        // Create 1 default variation row for cart/order compatibility
+        await tx.insert(productVariations).values({
+          productId: insertedProduct.id,
+          size: "Standard Edition",
+          color: "Default",
+          stock: totalStockValue,
+          mrp: mrpValue,
+          salePrice: baseSellingPrice,
+          sku: sku || `${insertedProduct.id}-STD`
+        });
       }
+
       return insertedProduct;
     });
 
@@ -182,10 +208,8 @@ export async function PATCH(request: Request) {
   try {
     const body = await request.json();
     const { 
-      id, name, description, salePrice, images, variations,
-      avgRating, numReviews, category, gender, colors, tags, isFeatured, 
-      isCustomizable, enabledMeasurements,
-      style, fabricComposition, weave, neckStyle, keyWords, filterCategory,
+      id, name, description, mrp, salePrice, stock, sku, images, variations, hasVariations,
+      avgRating, numReviews, category, tags, isFeatured, productType, homepageSlot, parentProductId,
       specifications, isActive
     } = body;
 
@@ -208,60 +232,72 @@ export async function PATCH(request: Request) {
       }
     }
 
-    // Pricing from variations
-    let basePriceValue: number | undefined;
-    let baseSalePrice: number | undefined;
-    if (variations) {
-      basePriceValue = variations && variations.length > 0 ? Math.min(...variations.map((v: any) => Number(v.basePrice) || 0)) : 0;
-      baseSalePrice = variations && variations.length > 0 ? Math.min(...variations.map((v: any) => Number(v.salePrice) || 0)) : 0;
-    }
+    const isMultiVariant = hasVariations && Array.isArray(variations) && variations.length > 0;
+    const baseSellingPrice = isMultiVariant 
+      ? Math.min(...variations.map((v: any) => Number(v.salePrice) || Number(v.basePrice) || 0)) 
+      : Number(salePrice || mrp || 0);
+    const mrpValue = isMultiVariant 
+      ? Math.max(...variations.map((v: any) => Number(v.basePrice) || Number(v.mrp) || 0)) 
+      : Number(mrp || salePrice || 0);
+    const totalStockValue = isMultiVariant 
+      ? variations.reduce((sum: number, v: any) => sum + (parseInt(v.stock) || 0), 0)
+      : parseInt(stock) || 0;
 
     const updateData: any = {};
-    if (name !== undefined) updateData.name = name;
+    if (name !== undefined) updateData.name = name.trim();
     if (description !== undefined) updateData.description = description;
-    if (variations) {
-      updateData.basePrice = basePriceValue;
-      updateData.salePrice = baseSalePrice;
+    if (salePrice !== undefined || mrp !== undefined || variations) {
+      updateData.basePrice = baseSellingPrice;
+      updateData.salePrice = baseSellingPrice;
+      updateData.mrp = mrpValue;
     }
+    if (stock !== undefined || variations) updateData.stock = totalStockValue;
+    if (sku !== undefined) updateData.sku = sku;
+    if (productType !== undefined) updateData.productType = productType;
+    if (homepageSlot !== undefined) {
+      updateData.homepageSlot = homepageSlot || null;
+      if (homepageSlot) updateData.isFeatured = true;
+    }
+    if (parentProductId !== undefined) updateData.parentProductId = parentProductId ? parseInt(parentProductId) : null;
     if (images !== undefined) updateData.images = JSON.stringify(images);
-    if (colors !== undefined) updateData.colors = JSON.stringify(colors);
     if (avgRating !== undefined) updateData.avgRating = !isNaN(parseFloat(avgRating)) ? parseFloat(avgRating) : undefined;
     if (numReviews !== undefined) updateData.numReviews = !isNaN(parseInt(numReviews)) ? parseInt(numReviews) : undefined;
     if (category !== undefined) updateData.category = category;
-    if (gender !== undefined) updateData.gender = gender;
     if (tags !== undefined) updateData.tags = tags;
-    if (isFeatured !== undefined) updateData.isFeatured = !!isFeatured;
+    if (isFeatured !== undefined) updateData.isFeatured = homepageSlot ? true : !!isFeatured;
     if (isActive !== undefined) updateData.isActive = !!isActive;
-    if (isCustomizable !== undefined) updateData.isCustomizable = !!isCustomizable;
-    if (enabledMeasurements !== undefined) updateData.enabledMeasurements = enabledMeasurements;
-    if (style !== undefined) updateData.style = style || null;
-    if (fabricComposition !== undefined) updateData.fabricComposition = fabricComposition || null;
-    if (weave !== undefined) updateData.weave = weave || null;
-    if (neckStyle !== undefined) updateData.neckStyle = neckStyle || null;
-    if (keyWords !== undefined) updateData.keyWords = keyWords || null;
-    if (filterCategory !== undefined) updateData.filterCategory = filterCategory || null;
     if (specifications !== undefined) updateData.specifications = specifications ? JSON.stringify(specifications) : null;
 
-    // 1 & 2. Update Product and Variations in a Transaction
+    // Update Product and Variations in a Transaction
     await db.transaction(async (tx) => {
       if (Object.keys(updateData).length > 0) {
         await tx.update(products).set(updateData).where(eq(products.id, id));
       }
 
-      if (variations) {
-        await tx.delete(productVariations).where(eq(productVariations.productId, id));
-        if (variations.length > 0) {
-          const variationValues = variations.map((v: any) => ({
-            productId: id,
-            size: v.size,
-            color: v.color || "Default",
-            stock: parseInt(v.stock) || 0,
-            mrp: Number(v.basePrice) || 0,
-            salePrice: Number(v.salePrice) || 0,
-            sku: v.sku || `${id}-${v.size}${v.color && v.color !== "Default" ? `-${v.color}` : ""}`
-          }));
-          await tx.insert(productVariations).values(variationValues);
-        }
+      await tx.delete(productVariations).where(eq(productVariations.productId, id));
+      
+      if (isMultiVariant) {
+        const variationValues = variations.map((v: any) => ({
+          productId: id,
+          size: v.size || "Standard Edition",
+          color: v.color || "Default",
+          stock: parseInt(v.stock) || 0,
+          mrp: Number(v.basePrice || v.mrp) || mrpValue,
+          salePrice: Number(v.salePrice) || baseSellingPrice,
+          sku: v.sku || `${id}-${v.size || 'STD'}`
+        }));
+        await tx.insert(productVariations).values(variationValues);
+      } else {
+        // Keep 1 default variation row
+        await tx.insert(productVariations).values({
+          productId: id,
+          size: "Standard Edition",
+          color: "Default",
+          stock: totalStockValue,
+          mrp: mrpValue,
+          salePrice: baseSellingPrice,
+          sku: sku || `${id}-STD`
+        });
       }
     });
 
@@ -277,8 +313,6 @@ export async function PATCH(request: Request) {
   }
 }
 
-
-
 export async function DELETE(request: Request) {
   if (!await isAdmin(request)) {
     return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
@@ -290,7 +324,6 @@ export async function DELETE(request: Request) {
 
     if (!id) return NextResponse.json({ success: false, error: "Invalid ID" }, { status: 400 });
 
-    // 1. Fetch all order items for this product along with their order status
     const relatedOrderItems = await db
       .select({ id: orderItems.id, status: orders.status })
       .from(orderItems)
@@ -298,7 +331,6 @@ export async function DELETE(request: Request) {
       .where(eq(orderItems.productId, id))
       .all();
 
-    // 2. Block deletion only if there are ACTIVE (non-completed) orders
     const activeStatuses = ["pending", "confirmed", "processing", "ready to ship", "shipped"];
     const hasActiveOrders = relatedOrderItems.some(
       (item) => item.status && activeStatuses.includes(item.status.toLowerCase())
@@ -311,17 +343,12 @@ export async function DELETE(request: Request) {
       }, { status: 400 });
     }
 
-    // 3. Perform deletion in a transaction
     await db.transaction(async (tx) => {
-      // Nullify productId in completed order items to preserve order history
       if (relatedOrderItems.length > 0) {
         await tx.update(orderItems).set({ productId: null }).where(eq(orderItems.productId, id));
       }
-      // Delete variations
       await tx.delete(productVariations).where(eq(productVariations.productId, id));
-      // Remove from any active carts
       await tx.delete(cartItems).where(eq(cartItems.productId, id));
-      // Finally delete the product itself
       await tx.delete(products).where(eq(products.id, id));
     });
 
@@ -335,4 +362,3 @@ export async function DELETE(request: Request) {
     }, { status: 500 });
   }
 }
-
