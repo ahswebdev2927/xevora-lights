@@ -306,7 +306,7 @@ export default function CategorySettingsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-10 h-10 text-[#C5A059] animate-spin" />
+        <Loader2 className="w-10 h-10 text-[#e51a34] animate-spin" />
       </div>
     );
   }
@@ -314,9 +314,9 @@ export default function CategorySettingsPage() {
   return (
     <div className="p-10">
       <div className="mb-10 text-center flex flex-col items-center">
-        <h1 className="text-4xl font-playfair font-bold text-black">Category Banner Settings</h1>
+        <h1 className="text-4xl font-bold text-slate-900">Category Banner Settings</h1>
         <p className="mt-2 text-black/60 font-medium tracking-tight flex items-center justify-center">
-          <Sparkles size={16} className="text-[#C5A059] mr-2" />
+          <Sparkles size={16} className="text-[#e51a34] mr-2" />
           Add and manage promo category grid blocks positioned on your storefront home page.
         </p>
       </div>
@@ -338,8 +338,8 @@ export default function CategorySettingsPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
         
         {/* Editor Form - 5 Cols */}
-        <div className="lg:col-span-5 bg-white rounded-[2.5rem] p-8 shadow-sm border border-brand/5 h-fit">
-          <h2 className="text-xl font-playfair font-bold text-black mb-6 border-b border-brand/5 pb-4">
+        <div className="lg:col-span-5 bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-200/80 h-fit">
+          <h2 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200/80 pb-4">
             {editingId ? "Edit Category Card" : "Add New Category Card"}
           </h2>
 
@@ -352,8 +352,8 @@ export default function CategorySettingsPage() {
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                placeholder="e.g. Ethnic Wear"
-                className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-3.5 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
+                placeholder="e.g. Studio Spotlights, GOBO Kits"
+                className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-3.5 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
                 required
               />
             </div>
@@ -367,10 +367,10 @@ export default function CategorySettingsPage() {
                 value={imageUrl}
                 onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="Paste direct URL OR upload local image below..."
-                className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-3.5 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
+                className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-3.5 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
                 required
               />
-              <div className="relative border-2 border-dashed border-brand/10 hover:border-[#C5A059]/40 bg-brand-light/50 hover:bg-white rounded-2xl h-20 transition-all flex flex-col items-center justify-center cursor-pointer mt-3">
+              <div className="relative border-2 border-dashed border-slate-200 hover:border-[#e51a34]/40 bg-slate-50 hover:bg-slate-100/80 border-slate-300 hover:border-[#e51a34] rounded-2xl h-20 transition-all flex flex-col items-center justify-center cursor-pointer mt-3">
                 <input
                   type="file"
                   accept="image/*"
@@ -380,13 +380,13 @@ export default function CategorySettingsPage() {
                 />
                 {isUploadingImage ? (
                   <div className="flex flex-col items-center">
-                    <Loader2 className="w-5 h-5 text-[#C5A059] animate-spin mb-1" />
+                    <Loader2 className="w-5 h-5 text-[#e51a34] animate-spin mb-1" />
                     <span className="text-[9px] font-black text-black/40 uppercase tracking-widest">Uploading card image...</span>
                   </div>
                 ) : (
                   <div className="flex flex-col items-center text-center p-2">
-                    <Upload className="w-4 h-4 text-[#C5A059] mb-1" />
-                    <p className="text-xs font-bold text-black/60">Click or Drag Files here</p>
+                    <Upload className="w-4 h-4 text-[#e51a34] mb-1" />
+                    <p className="text-xs font-bold text-slate-700">Click or Drag Files here</p>
                   </div>
                 )}
               </div>
@@ -426,8 +426,8 @@ export default function CategorySettingsPage() {
                     disabled={isSubmitting || !isFormValid}
                     className={`flex-1 flex items-center justify-center space-x-2 py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all ${
                       isFormValid && !isSubmitting
-                        ? "bg-[#8c6239] text-white hover:bg-[#6e4b2a] shadow-xl hover:scale-[1.01] active:scale-[0.98] cursor-pointer ring-2 ring-[#8c6239]/20"
-                        : "bg-[#8c6239]/30 text-white/50 cursor-not-allowed shadow-none"
+                        ? "bg-[#e51a34] text-white hover:bg-[#c9142b] shadow-xl hover:scale-[1.01] active:scale-[0.98] cursor-pointer ring-2 ring-[#e51a34]/20"
+                        : "bg-slate-200 text-slate-400 cursor-not-allowed shadow-none"
                     }`}
                   >
                     {isSubmitting ? (
@@ -442,7 +442,7 @@ export default function CategorySettingsPage() {
                     <button
                       type="button"
                       onClick={resetForm}
-                      className="px-6 py-4 border border-brand/10 text-black/60 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-brand/5 transition-all"
+                      className="px-6 py-4 border border-slate-200 text-black/60 rounded-2xl text-xs font-black uppercase tracking-widest hover:bg-slate-50 transition-all"
                     >
                       Cancel
                     </button>
@@ -455,16 +455,16 @@ export default function CategorySettingsPage() {
 
         {/* Existing Grid List - 7 Cols */}
         <div className="lg:col-span-7 space-y-6">
-          <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-brand/5">
-            <h2 className="text-xl font-playfair font-bold text-black mb-6 border-b border-brand/5 pb-4">
+          <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-200/80">
+            <h2 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200/80 pb-4">
               Category Cards ({categories.length})
             </h2>
 
             {categories.length === 0 ? (
-              <div className="text-center py-16 border border-dashed border-brand/10 rounded-[2rem] bg-brand-light flex flex-col items-center">
+              <div className="text-center py-16 border border-dashed border-slate-200 rounded-[2rem] bg-slate-50 flex flex-col items-center">
                 <ImageIcon className="w-10 h-10 text-black/20 mb-4" />
-                <p className="text-sm font-bold text-black">No Category Cards Added Yet</p>
-                <p className="text-xs text-black/40 mt-1">Fill out the editor form on the left to add your first category banner block.</p>
+                <p className="text-base font-bold text-slate-900">No Category Cards Added Yet</p>
+                <p className="text-xs text-slate-500 mt-1">Fill out the editor form on the left to add your first category banner block.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -475,7 +475,7 @@ export default function CategorySettingsPage() {
                       key={item.id} 
                       className={`relative border rounded-3xl p-5 flex flex-col justify-between group hover:shadow-md transition-all duration-300 ${
                         isCatActive 
-                          ? "border-brand/10 bg-white" 
+                          ? "border-slate-200 bg-white" 
                           : "border-red-100 bg-red-50/20 opacity-75"
                       }`}
                     >
@@ -496,7 +496,7 @@ export default function CategorySettingsPage() {
                         {/* Info & Title */}
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between gap-2">
-                            <h3 className="font-playfair font-bold text-black text-base sm:text-lg truncate leading-tight">{item.name}</h3>
+                            <h3 className="font-bold text-slate-900 text-base sm:text-lg truncate leading-tight">{item.name}</h3>
                             <button
                               onClick={() => handleToggleActive(item)}
                               className={`px-2.5 py-1 rounded-full font-black text-[9px] uppercase tracking-widest transition-all cursor-pointer border flex items-center space-x-1 shrink-0 ${
@@ -517,13 +517,13 @@ export default function CategorySettingsPage() {
                       </div>
 
                       {/* Footer Controls Row */}
-                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-brand/5">
+                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-200/80">
                         {/* Reorder Buttons */}
                         <div className="flex items-center space-x-1.5">
                           <button
                             onClick={() => handleReorder(index, "up")}
                             disabled={index === 0}
-                            className="p-2 bg-brand/5 text-black hover:text-[#C5A059] hover:bg-brand/10 rounded-xl transition-all disabled:opacity-20 flex items-center justify-center w-8 h-8 cursor-pointer"
+                            className="p-2 bg-slate-100 text-slate-600 hover:text-white hover:bg-[#e51a34] rounded-xl transition-all disabled:opacity-30 flex items-center justify-center w-8 h-8 cursor-pointer border border-slate-200/60"
                             title="Move Up"
                           >
                             <ArrowUp size={14} />
@@ -531,7 +531,7 @@ export default function CategorySettingsPage() {
                           <button
                             onClick={() => handleReorder(index, "down")}
                             disabled={index === categories.length - 1}
-                            className="p-2 bg-brand/5 text-black hover:text-[#C5A059] hover:bg-brand/10 rounded-xl transition-all disabled:opacity-20 flex items-center justify-center w-8 h-8 cursor-pointer"
+                            className="p-2 bg-slate-100 text-slate-600 hover:text-white hover:bg-[#e51a34] rounded-xl transition-all disabled:opacity-30 flex items-center justify-center w-8 h-8 cursor-pointer border border-slate-200/60"
                             title="Move Down"
                           >
                             <ArrowDown size={14} />
@@ -542,14 +542,14 @@ export default function CategorySettingsPage() {
                         <div className="flex items-center space-x-1.5">
                           <button
                             onClick={() => handleEditClick(item)}
-                            className="p-2 bg-brand/5 text-black hover:bg-[#8c6239] hover:text-white rounded-xl transition-all flex items-center justify-center w-8 h-8 cursor-pointer"
+                            className="p-2 bg-slate-100 text-slate-600 hover:bg-[#e51a34] hover:text-white rounded-xl transition-all flex items-center justify-center w-8 h-8 cursor-pointer border border-slate-200/60"
                             title="Edit Card"
                           >
                             <Edit3 size={14} />
                           </button>
                           <button
                             onClick={() => handleDelete(item.id)}
-                            className="p-2 bg-red-50 text-red-500 hover:bg-red-500 hover:text-white rounded-xl transition-all flex items-center justify-center w-8 h-8 cursor-pointer"
+                            className="p-2 bg-red-50 text-red-600 hover:bg-red-500 hover:text-white rounded-xl transition-all flex items-center justify-center w-8 h-8 cursor-pointer border border-red-200/60"
                             title="Delete Card"
                           >
                             <Trash2 size={14} />

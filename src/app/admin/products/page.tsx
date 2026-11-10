@@ -472,28 +472,28 @@ export default function ProductManagement() {
   }, [products]);
 
   return (
-    <div className="min-h-screen bg-[#0D0E12] text-white p-4 sm:p-8 space-y-8 font-sans">
+    <div className="p-4 sm:p-8 space-y-8 bg-[#f8fafc] text-slate-900 font-sans min-h-screen">
       {/* Toast Notification */}
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 bg-[#C5A059] text-black font-semibold px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 animate-bounce">
-          <CheckCircle2 className="w-5 h-5 text-black" />
+        <div className="fixed bottom-6 right-6 z-50 bg-[#0f1117] text-white border border-[#1f2432] font-semibold px-5 py-3 rounded-xl shadow-2xl flex items-center gap-2 animate-bounce">
+          <CheckCircle2 className="w-5 h-5 text-emerald-400" />
           <span>{toast}</span>
         </div>
       )}
 
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/10 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/80 pb-6">
         <div>
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-[#C5A059] animate-pulse" />
-            <span className="text-xs uppercase font-mono tracking-widest text-[#C5A059] font-bold">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#e51a34] animate-pulse" />
+            <span className="text-xs uppercase font-mono tracking-widest text-[#e51a34] font-bold">
               Xevora Hardware Catalog
             </span>
           </div>
-          <h1 className="text-3xl font-black tracking-tight text-white mt-1">
+          <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 mt-1">
             Product & Parts Management
           </h1>
-          <p className="text-sm text-white/50 mt-1">
+          <p className="text-sm text-slate-500 mt-1">
             Manage your flagship studio light kits, spare parts, dynamic specifications, and homepage spotlights.
           </p>
         </div>
@@ -509,7 +509,7 @@ export default function ProductManagement() {
                 setIsFormOpen(true);
               }
             }}
-            className="flex items-center gap-2 bg-[#C5A059] hover:bg-[#d8b56f] text-black font-bold px-5 py-3 rounded-xl transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] active:scale-95"
+            className="flex items-center gap-2 bg-[#e51a34] hover:bg-[#c9142b] text-white font-bold px-5 py-3 rounded-xl transition-all shadow-md shadow-[#e51a34]/20 active:scale-95 cursor-pointer"
           >
             {isFormOpen ? <X className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
             <span>{isFormOpen ? "Close Form" : "Add New Product / Part"}</span>
@@ -519,17 +519,17 @@ export default function ProductManagement() {
 
       {/* ── PRODUCT FORM (MODAL OR EXPANDED) ────────────────────────── */}
       {isFormOpen && (
-        <form onSubmit={handleSubmit} className="bg-[#13151B] border border-white/10 rounded-2xl p-6 sm:p-8 space-y-8 shadow-2xl">
-          <div className="flex items-center justify-between border-b border-white/5 pb-4">
+        <form onSubmit={handleSubmit} className="bg-white border border-slate-200/80 rounded-2xl p-6 sm:p-8 space-y-8 shadow-sm">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-[#C5A059]/10 text-[#C5A059] flex items-center justify-center font-bold">
+              <div className="w-10 h-10 rounded-xl bg-[#e51a34]/10 text-[#e51a34] flex items-center justify-center font-bold">
                 {editingId ? <Edit3 className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
               </div>
               <div>
-                <h2 className="text-xl font-bold text-white">
+                <h2 className="text-xl font-bold text-slate-900">
                   {editingId ? "Edit Product / Part" : "Create New Product or Spare Part"}
                 </h2>
-                <p className="text-xs text-white/40">
+                <p className="text-xs text-slate-400">
                   Fill in the details below. Required fields are marked with an asterisk (*).
                 </p>
               </div>
@@ -537,7 +537,7 @@ export default function ProductManagement() {
             <button
               type="button"
               onClick={resetForm}
-              className="text-white/40 hover:text-white p-2 rounded-lg hover:bg-white/5"
+              className="text-slate-400 hover:text-slate-600 p-2 rounded-lg hover:bg-slate-100 transition-colors"
             >
               <X className="w-5 h-5" />
             </button>
@@ -545,15 +545,15 @@ export default function ProductManagement() {
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* ── CARD 1: BASIC INFO & CLASSIFICATION ───────────────────── */}
-            <div className="bg-[#181B22] border border-white/5 rounded-xl p-6 space-y-6">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-[#C5A059] flex items-center gap-2">
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-6 space-y-6">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#e51a34] flex items-center gap-2">
                 <Box className="w-4 h-4" />
                 1. Basic Info & Role
               </h3>
 
               {/* Product Type Toggle */}
               <div>
-                <label className="block text-xs font-semibold text-white/60 mb-2">Product Type *</label>
+                <label className="block text-xs font-bold text-slate-700 mb-2">Product Type *</label>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
@@ -563,8 +563,8 @@ export default function ProductManagement() {
                     }}
                     className={`py-3 px-4 rounded-xl border text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                       productType === "main_product"
-                        ? "bg-[#C5A059] text-black border-[#C5A059]"
-                        : "bg-white/5 text-white/70 border-white/10 hover:border-white/20"
+                        ? "bg-[#e51a34] text-white border-[#e51a34] shadow-sm"
+                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
                     <Flame className="w-4 h-4" />
@@ -580,8 +580,8 @@ export default function ProductManagement() {
                     }}
                     className={`py-3 px-4 rounded-xl border text-sm font-bold flex items-center justify-center gap-2 transition-all ${
                       productType === "spare_part"
-                        ? "bg-[#C5A059] text-black border-[#C5A059]"
-                        : "bg-white/5 text-white/70 border-white/10 hover:border-white/20"
+                        ? "bg-[#e51a34] text-white border-[#e51a34] shadow-sm"
+                        : "bg-white text-slate-700 border-slate-200 hover:bg-slate-100"
                     }`}
                   >
                     <Wrench className="w-4 h-4" />
@@ -592,7 +592,7 @@ export default function ProductManagement() {
 
               {/* Product Name */}
               <div>
-                <label className="block text-xs font-semibold text-white/60 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Product Name *
                 </label>
                 <input
@@ -601,28 +601,28 @@ export default function ProductManagement() {
                   placeholder="e.g. Xevora G-Flash Quad-Emitter 30W or 20-Piece GOBO Plate Set"
                   value={name}
                   onChange={e => setName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none transition-all"
+                  className="w-full bg-white border border-slate-200 focus:border-[#e51a34] focus:ring-1 focus:ring-[#e51a34] rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none transition-all"
                 />
               </div>
 
               {/* Homepage Spotlight (Main Light only) */}
               <div>
                 <div className="flex items-center justify-between mb-1">
-                  <label className="block text-xs font-semibold text-white/60">
+                  <label className="block text-xs font-bold text-slate-700">
                     Homepage Spotlight Slot
                   </label>
-                  <span className="text-[11px] text-[#C5A059]">Max 2 on homepage</span>
+                  <span className="text-[11px] font-bold text-[#f59e0b]">Max 2 on homepage</span>
                 </div>
                 <select
                   value={homepageSlot}
                   onChange={e => setHomepageSlot(e.target.value as any)}
-                  className="w-full bg-[#181B22] border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-3 text-sm text-white outline-none"
+                  className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-3 text-sm text-slate-900 outline-none"
                 >
                   <option value="">Do not feature on homepage (Store catalog only)</option>
                   <option value="slot_1">Hero Slot 1 (Left Spotlight Card)</option>
                   <option value="slot_2">Hero Slot 2 (Right Flagship Featured)</option>
                 </select>
-                <p className="text-[11px] text-white/40 mt-1">
+                <p className="text-[11px] text-slate-500 mt-1">
                   Assigning a slot highlights this product directly in the top comparison cards on the homepage.
                 </p>
               </div>
@@ -630,13 +630,13 @@ export default function ProductManagement() {
               {/* Parent Product Link (for parts) */}
               {productType === "spare_part" && (
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Compatible With / Part of Main Light
                   </label>
                   <select
                     value={parentProductId}
                     onChange={e => setParentProductId(e.target.value)}
-                    className="w-full bg-[#181B22] border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-3 text-sm text-white outline-none"
+                    className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-3 text-sm text-slate-900 outline-none"
                   >
                     <option value="">Universal / Standalone</option>
                     {mainProducts.map(p => (
@@ -651,50 +651,50 @@ export default function ProductManagement() {
               {/* Category & SKU */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Category</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Category</label>
                   <input
                     type="text"
                     value={category}
                     onChange={e => setCategory(e.target.value)}
                     placeholder="e.g. Studio Lights, Batteries"
-                    className="w-full bg-white/5 border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-2.5 text-sm text-slate-900 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">SKU / Model</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">SKU / Model</label>
                   <input
                     type="text"
                     value={sku}
                     onChange={e => setSku(e.target.value)}
                     placeholder="e.g. XEV-GFL-30W"
-                    className="w-full bg-white/5 border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-2.5 text-sm text-slate-900 outline-none"
                   />
                 </div>
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-xs font-semibold text-white/60 mb-1">Description</label>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Description</label>
                 <textarea
                   rows={4}
                   value={description}
                   onChange={e => setDescription(e.target.value)}
                   placeholder="Describe the light, build quality, optical capabilities, runtime, or part details..."
-                  className="w-full bg-white/5 border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 outline-none resize-none"
+                  className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-3 text-sm text-slate-900 placeholder-slate-400 outline-none resize-none"
                 />
               </div>
             </div>
 
             {/* ── CARD 2: PRICING & INVENTORY ─────────────────────────── */}
-            <div className="bg-[#181B22] border border-white/5 rounded-xl p-6 space-y-6">
-              <h3 className="text-sm font-bold uppercase tracking-wider text-[#C5A059] flex items-center gap-2">
+            <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-6 space-y-6">
+              <h3 className="text-sm font-bold uppercase tracking-wider text-[#e51a34] flex items-center gap-2">
                 <DollarSign className="w-4 h-4" />
                 2. Pricing & Stock
               </h3>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 items-end">
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     MRP / List Price (₹) *
                   </label>
                   <input
@@ -703,12 +703,12 @@ export default function ProductManagement() {
                     placeholder="7999"
                     value={mrp}
                     onChange={e => setMrp(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-3 text-sm font-bold text-white outline-none"
+                    className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-3 text-sm font-bold text-slate-900 outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Selling / Offer Price (₹) *
                   </label>
                   <input
@@ -717,12 +717,12 @@ export default function ProductManagement() {
                     placeholder="4999"
                     value={salePrice}
                     onChange={e => setSalePrice(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-3 text-sm font-bold text-[#C5A059] outline-none"
+                    className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-3 text-sm font-bold text-[#e51a34] outline-none"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">
+                  <label className="block text-xs font-bold text-slate-700 mb-1">
                     Stock Available *
                   </label>
                   <input
@@ -731,42 +731,42 @@ export default function ProductManagement() {
                     placeholder="100"
                     value={stock}
                     onChange={e => setStock(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-3 text-sm text-white outline-none"
+                    className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-3 text-sm text-slate-900 outline-none"
                   />
                 </div>
               </div>
 
               {/* Discount Indicator Banner */}
               {discountPercentage > 0 && (
-                <div className="p-3 bg-[#C5A059]/10 border border-[#C5A059]/20 rounded-xl flex items-center justify-between text-xs">
-                  <span className="text-white/80">Calculated Discount:</span>
-                  <span className="px-2.5 py-0.5 rounded-full bg-[#C5A059] text-black font-extrabold font-mono">
+                <div className="p-3 bg-[#f59e0b]/10 border border-[#f59e0b]/30 rounded-xl flex items-center justify-between text-xs">
+                  <span className="text-slate-700 font-medium">Calculated Discount:</span>
+                  <span className="px-2.5 py-0.5 rounded-full bg-[#f59e0b] text-white font-extrabold font-mono">
                     {discountPercentage}% OFF
                   </span>
                 </div>
               )}
 
               {/* Optional Bundles / Editions Toggle */}
-              <div className="pt-4 border-t border-white/5">
+              <div className="pt-4 border-t border-slate-200">
                 <label className="flex items-center gap-3 cursor-pointer select-none">
                   <input
                     type="checkbox"
                     checked={hasVariations}
                     onChange={e => setHasVariations(e.target.checked)}
-                    className="w-4 h-4 rounded accent-[#C5A059]"
+                    className="w-4 h-4 rounded accent-[#e51a34]"
                   />
                   <div>
-                    <div className="text-xs font-bold text-white">Enable Hardware Editions / Bundles</div>
-                    <div className="text-[11px] text-white/40">
+                    <div className="text-xs font-bold text-slate-800">Enable Hardware Editions / Bundles</div>
+                    <div className="text-[11px] text-slate-500">
                       Check this if you want multiple package editions (e.g. Solo Light, Creator Pro Kit with 20 GOBOs).
                     </div>
                   </div>
                 </label>
 
                 {hasVariations && (
-                  <div className="mt-4 space-y-3 bg-black/20 p-4 rounded-xl border border-white/5">
+                  <div className="mt-4 space-y-3 bg-white p-4 rounded-xl border border-slate-200">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-mono uppercase text-[#C5A059] font-bold">Bundled Editions</span>
+                      <span className="text-xs font-mono uppercase text-[#e51a34] font-bold">Bundled Editions</span>
                       <button
                         type="button"
                         onClick={() =>
@@ -775,14 +775,14 @@ export default function ProductManagement() {
                             { size: "New Edition", basePrice: parseFloat(mrp) || 0, salePrice: parseFloat(salePrice) || 0, stock: 50, sku: "" }
                           ])
                         }
-                        className="text-[11px] bg-white/10 hover:bg-white/20 text-white font-semibold px-2.5 py-1 rounded-lg"
+                        className="text-[11px] bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold px-2.5 py-1 rounded-lg transition-colors"
                       >
                         + Add Edition
                       </button>
                     </div>
 
                     {variations.map((v, idx) => (
-                      <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-white/5 p-2.5 rounded-lg text-xs">
+                      <div key={idx} className="grid grid-cols-12 gap-2 items-center bg-slate-50 p-2.5 rounded-lg text-xs border border-slate-200">
                         <input
                           type="text"
                           placeholder="Edition Name (e.g. Creator Kit)"
@@ -791,7 +791,7 @@ export default function ProductManagement() {
                             const val = e.target.value;
                             setVariations(prev => prev.map((item, i) => (i === idx ? { ...item, size: val } : item)));
                           }}
-                          className="col-span-5 bg-transparent border-b border-white/20 focus:border-[#C5A059] px-2 py-1 outline-none text-white font-medium"
+                          className="col-span-5 bg-white border border-slate-200 focus:border-[#e51a34] rounded px-2 py-1 outline-none text-slate-900 font-medium"
                         />
                         <input
                           type="number"
@@ -801,7 +801,7 @@ export default function ProductManagement() {
                             const val = parseFloat(e.target.value) || 0;
                             setVariations(prev => prev.map((item, i) => (i === idx ? { ...item, basePrice: val } : item)));
                           }}
-                          className="col-span-2 bg-transparent border-b border-white/20 focus:border-[#C5A059] px-2 py-1 outline-none text-white"
+                          className="col-span-2 bg-white border border-slate-200 focus:border-[#e51a34] rounded px-2 py-1 outline-none text-slate-900"
                         />
                         <input
                           type="number"
@@ -811,7 +811,7 @@ export default function ProductManagement() {
                             const val = parseFloat(e.target.value) || 0;
                             setVariations(prev => prev.map((item, i) => (i === idx ? { ...item, salePrice: val } : item)));
                           }}
-                          className="col-span-2 bg-transparent border-b border-white/20 focus:border-[#C5A059] px-2 py-1 outline-none text-[#C5A059] font-bold"
+                          className="col-span-2 bg-white border border-slate-200 focus:border-[#e51a34] rounded px-2 py-1 outline-none text-[#e51a34] font-bold"
                         />
                         <input
                           type="number"
@@ -821,13 +821,13 @@ export default function ProductManagement() {
                             const val = parseInt(e.target.value) || 0;
                             setVariations(prev => prev.map((item, i) => (i === idx ? { ...item, stock: val } : item)));
                           }}
-                          className="col-span-2 bg-transparent border-b border-white/20 focus:border-[#C5A059] px-2 py-1 outline-none text-white"
+                          className="col-span-2 bg-white border border-slate-200 focus:border-[#e51a34] rounded px-2 py-1 outline-none text-slate-900"
                         />
                         <button
                           type="button"
                           onClick={() => setVariations(prev => prev.filter((_, i) => i !== idx))}
                           disabled={variations.length === 1}
-                          className="col-span-1 text-white/30 hover:text-red-400 flex justify-center disabled:opacity-20"
+                          className="col-span-1 text-slate-400 hover:text-red-500 flex justify-center disabled:opacity-20"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -838,9 +838,9 @@ export default function ProductManagement() {
               </div>
 
               {/* Status and Rating */}
-              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+              <div className="grid grid-cols-2 gap-4 pt-4 border-t border-slate-200">
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Customer Rating (★)</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Customer Rating (★)</label>
                   <input
                     type="number"
                     step="0.1"
@@ -848,16 +848,16 @@ export default function ProductManagement() {
                     max="5"
                     value={avgRating}
                     onChange={e => setAvgRating(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-2.5 text-sm text-slate-900 outline-none"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-white/60 mb-1">Verified Reviews Count</label>
+                  <label className="block text-xs font-bold text-slate-700 mb-1">Verified Reviews Count</label>
                   <input
                     type="number"
                     value={numReviews}
                     onChange={e => setNumReviews(e.target.value)}
-                    className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white outline-none"
+                    className="w-full bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-2.5 text-sm text-slate-900 outline-none"
                   />
                 </div>
               </div>
@@ -865,14 +865,14 @@ export default function ProductManagement() {
           </div>
 
           {/* ── CARD 3: MEDIA & GALLERY (UNIFIED) ─────────────────────── */}
-          <div className="bg-[#181B22] border border-white/5 rounded-xl p-6 space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/5 pb-4">
+          <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-6 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200/80 pb-4">
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#C5A059] flex items-center gap-2">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#e51a34] flex items-center gap-2">
                   <ImageIcon className="w-4 h-4" />
                   3. Unified Product Gallery
                 </h3>
-                <p className="text-xs text-white/40">
+                <p className="text-xs text-slate-500">
                   First image acts as primary cover. Click &quot;Make Primary&quot; to reorder thumbnail.
                 </p>
               </div>
@@ -890,9 +890,9 @@ export default function ProductManagement() {
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={isUploading}
-                  className="flex items-center gap-1.5 bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all"
+                  className="flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 text-xs font-bold px-4 py-2.5 rounded-xl transition-all shadow-sm"
                 >
-                  {isUploading ? <Loader2 className="w-4 h-4 animate-spin text-[#C5A059]" /> : <Upload className="w-4 h-4" />}
+                  {isUploading ? <Loader2 className="w-4 h-4 animate-spin text-[#e51a34]" /> : <Upload className="w-4 h-4 text-[#e51a34]" />}
                   <span>{isUploading ? "Uploading..." : "Upload from Device"}</span>
                 </button>
               </div>
@@ -911,12 +911,12 @@ export default function ProductManagement() {
                     handleAddImageUrl();
                   }
                 }}
-                className="flex-1 bg-white/5 border border-white/10 focus:border-[#C5A059] rounded-xl px-4 py-2.5 text-xs text-white placeholder-white/20 outline-none"
+                className="flex-1 bg-white border border-slate-200 focus:border-[#e51a34] rounded-xl px-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 outline-none"
               />
               <button
                 type="button"
                 onClick={handleAddImageUrl}
-                className="bg-white/10 hover:bg-white/20 text-white font-bold text-xs px-4 py-2.5 rounded-xl"
+                className="bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition-colors"
               >
                 Add URL
               </button>
@@ -924,8 +924,8 @@ export default function ProductManagement() {
 
             {/* Thumbnail Grid */}
             {images.length === 0 ? (
-              <div className="p-8 border border-dashed border-white/10 rounded-xl text-center text-white/30 text-xs flex flex-col items-center justify-center gap-2">
-                <ImageIcon className="w-8 h-8 text-white/20" />
+              <div className="p-8 border border-dashed border-slate-300 rounded-xl text-center text-slate-400 text-xs flex flex-col items-center justify-center gap-2 bg-white">
+                <ImageIcon className="w-8 h-8 text-slate-300" />
                 <span>No images added yet. Upload files or paste image URLs above.</span>
               </div>
             ) : (
@@ -933,20 +933,20 @@ export default function ProductManagement() {
                 {images.map((img, idx) => (
                   <div
                     key={idx}
-                    className="relative group rounded-xl overflow-hidden bg-black/40 border border-white/10 aspect-square"
+                    className="relative group rounded-xl overflow-hidden bg-white border border-slate-200 aspect-square shadow-sm"
                   >
                     <img src={img} alt={`Product ${idx + 1}`} className="w-full h-full object-cover" />
                     {idx === 0 && (
-                      <span className="absolute top-2 left-2 bg-[#C5A059] text-black text-[10px] font-black px-2 py-0.5 rounded shadow">
+                      <span className="absolute top-2 left-2 bg-[#e51a34] text-white text-[10px] font-black px-2 py-0.5 rounded shadow">
                         PRIMARY
                       </span>
                     )}
-                    <div className="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
+                    <div className="absolute inset-0 bg-slate-900/70 opacity-0 group-hover:opacity-100 transition-opacity flex flex-col items-center justify-center gap-2 p-2">
                       {idx !== 0 && (
                         <button
                           type="button"
                           onClick={() => handleSetPrimaryImage(idx)}
-                          className="text-[10px] bg-white/20 hover:bg-[#C5A059] hover:text-black text-white font-bold px-2 py-1 rounded w-full text-center"
+                          className="text-[10px] bg-white/20 hover:bg-[#e51a34] text-white font-bold px-2 py-1 rounded w-full text-center transition-colors"
                         >
                           Make Primary
                         </button>
@@ -954,7 +954,7 @@ export default function ProductManagement() {
                       <button
                         type="button"
                         onClick={() => handleRemoveImage(idx)}
-                        className="text-[10px] bg-red-500/20 hover:bg-red-500 text-red-200 hover:text-white font-bold px-2 py-1 rounded w-full flex items-center justify-center gap-1"
+                        className="text-[10px] bg-red-500/80 hover:bg-red-500 text-white font-bold px-2 py-1 rounded w-full flex items-center justify-center gap-1 transition-colors"
                       >
                         <Trash2 className="w-3 h-3" />
                         Delete
@@ -967,14 +967,14 @@ export default function ProductManagement() {
           </div>
 
           {/* ── CARD 4: DYNAMIC SPECIFICATIONS ────────────────────────── */}
-          <div className="bg-[#181B22] border border-white/5 rounded-xl p-6 space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-4">
+          <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-6 space-y-6">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200/80 pb-4">
               <div>
-                <h3 className="text-sm font-bold uppercase tracking-wider text-[#C5A059] flex items-center gap-2">
+                <h3 className="text-sm font-bold uppercase tracking-wider text-[#e51a34] flex items-center gap-2">
                   <Sliders className="w-4 h-4" />
                   4. Technical Specifications
                 </h3>
-                <p className="text-xs text-white/40">
+                <p className="text-xs text-slate-500">
                   Dynamic key-value pairs shown on the product page specification sheet.
                 </p>
               </div>
@@ -982,16 +982,16 @@ export default function ProductManagement() {
               <button
                 type="button"
                 onClick={handleAddCustomSpec}
-                className="flex items-center gap-1.5 text-xs bg-white/10 hover:bg-white/20 text-white font-bold px-4 py-2 rounded-xl transition-all w-fit"
+                className="flex items-center gap-1.5 text-xs bg-white border border-slate-200 hover:bg-slate-100 text-slate-800 font-bold px-4 py-2 rounded-xl transition-all shadow-sm w-fit"
               >
-                <Plus className="w-4 h-4 text-[#C5A059]" />
+                <Plus className="w-4 h-4 text-[#e51a34]" />
                 <span>Add Custom Row</span>
               </button>
             </div>
 
             {/* Quick Preset Pills */}
             <div>
-              <span className="text-[11px] font-mono uppercase text-white/40 block mb-2">
+              <span className="text-[11px] font-mono uppercase text-slate-500 block mb-2 font-bold">
                 Quick-Add Preset Fields:
               </span>
               <div className="flex flex-wrap gap-2">
@@ -1000,7 +1000,7 @@ export default function ProductManagement() {
                     key={preset}
                     type="button"
                     onClick={() => handleAddPresetSpec(preset)}
-                    className="text-xs bg-white/5 hover:bg-[#C5A059]/20 hover:text-[#C5A059] text-white/70 border border-white/10 rounded-lg px-3 py-1.5 transition-all"
+                    className="text-xs bg-white hover:bg-[#e51a34]/10 hover:text-[#e51a34] hover:border-[#e51a34]/30 text-slate-700 border border-slate-200 rounded-lg px-3 py-1.5 transition-all shadow-2xs"
                   >
                     + {preset}
                   </button>
@@ -1011,14 +1011,14 @@ export default function ProductManagement() {
             {/* Key-Value Rows */}
             <div className="space-y-3">
               {specRows.map((row) => (
-                <div key={row.id} className="grid grid-cols-12 gap-3 items-center bg-white/5 p-3 rounded-xl border border-white/5">
+                <div key={row.id} className="grid grid-cols-12 gap-3 items-center bg-white p-3 rounded-xl border border-slate-200">
                   <div className="col-span-4">
                     <input
                       type="text"
                       placeholder="Specification Key (e.g. Light Source)"
                       value={row.key}
                       onChange={e => handleUpdateSpecRow(row.id, { key: e.target.value })}
-                      className="w-full bg-black/30 border border-white/10 focus:border-[#C5A059] rounded-lg px-3 py-2 text-xs font-semibold text-white outline-none"
+                      className="w-full bg-slate-50 border border-slate-200 focus:border-[#e51a34] rounded-lg px-3 py-2 text-xs font-semibold text-slate-900 outline-none"
                     />
                   </div>
                   <div className="col-span-7">
@@ -1027,14 +1027,14 @@ export default function ProductManagement() {
                       placeholder="Specification Value (e.g. 3,200 Lumens Quad-Emitter)"
                       value={row.value}
                       onChange={e => handleUpdateSpecRow(row.id, { value: e.target.value })}
-                      className="w-full bg-black/30 border border-white/10 focus:border-[#C5A059] rounded-lg px-3 py-2 text-xs text-white/90 outline-none"
+                      className="w-full bg-slate-50 border border-slate-200 focus:border-[#e51a34] rounded-lg px-3 py-2 text-xs text-slate-800 outline-none"
                     />
                   </div>
                   <div className="col-span-1 flex justify-center">
                     <button
                       type="button"
                       onClick={() => handleRemoveSpecRow(row.id)}
-                      className="text-white/30 hover:text-red-400 p-1.5 rounded-lg hover:bg-white/5 transition-all"
+                      className="text-slate-400 hover:text-red-500 p-1.5 rounded-lg hover:bg-slate-100 transition-all"
                     >
                       <Trash2 className="w-4 h-4" />
                     </button>
@@ -1045,17 +1045,17 @@ export default function ProductManagement() {
           </div>
 
           {/* ── CARD 5: SUBMIT & ACTIVE STATUS ────────────────────────── */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-6 border-t border-slate-200">
             <label className="flex items-center gap-3 cursor-pointer select-none">
               <input
                 type="checkbox"
                 checked={isActive}
                 onChange={e => setIsActive(e.target.checked)}
-                className="w-5 h-5 rounded accent-[#C5A059]"
+                className="w-5 h-5 rounded accent-[#e51a34]"
               />
               <div>
-                <span className="text-sm font-bold text-white block">Published & Active</span>
-                <span className="text-xs text-white/40">Visible to customers in the store and checkout.</span>
+                <span className="text-sm font-bold text-slate-900 block">Published & Active</span>
+                <span className="text-xs text-slate-500">Visible to customers in the store and checkout.</span>
               </div>
             </label>
 
@@ -1063,7 +1063,7 @@ export default function ProductManagement() {
               <button
                 type="button"
                 onClick={resetForm}
-                className="px-6 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-white font-semibold text-sm transition-all"
+                className="px-6 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-sm transition-all"
               >
                 Cancel
               </button>
@@ -1071,9 +1071,9 @@ export default function ProductManagement() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex items-center gap-2 px-8 py-3 rounded-xl bg-[#C5A059] hover:bg-[#d8b56f] text-black font-extrabold text-sm transition-all shadow-[0_0_20px_rgba(197,160,89,0.3)] disabled:opacity-50"
+                className="flex items-center gap-2 px-8 py-3 rounded-xl bg-[#e51a34] hover:bg-[#c9142b] text-white font-extrabold text-sm transition-all shadow-md shadow-[#e51a34]/20 disabled:opacity-50 cursor-pointer"
               >
-                {isSubmitting && <Loader2 className="w-4 h-4 animate-spin text-black" />}
+                {isSubmitting && <Loader2 className="w-4 h-4 animate-spin text-white" />}
                 <span>{editingId ? "Update Product" : "Save & Publish"}</span>
               </button>
             </div>
@@ -1082,27 +1082,27 @@ export default function ProductManagement() {
       )}
 
       {/* ── PRODUCTS TABLE & LISTING ─────────────────────────────────── */}
-      <div className="bg-[#13151B] border border-white/10 rounded-2xl p-6 space-y-6">
+      <div className="bg-white border border-slate-200/80 rounded-2xl p-6 space-y-6 shadow-sm">
         {/* Filters and Search Bar */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="relative flex-1 max-w-md">
-            <Search className="w-4 h-4 text-white/30 absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               placeholder="Search by product name, SKU, or category..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full bg-[#181B22] border border-white/10 focus:border-[#C5A059] rounded-xl pl-11 pr-4 py-2.5 text-xs text-white placeholder-white/30 outline-none"
+              className="w-full bg-slate-50 border border-slate-200 focus:border-[#e51a34] rounded-xl pl-11 pr-4 py-2.5 text-xs text-slate-900 placeholder-slate-400 outline-none transition-colors"
             />
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
-            <div className="bg-[#181B22] p-1 rounded-xl border border-white/5 flex items-center">
+            <div className="bg-slate-100 p-1 rounded-xl border border-slate-200 flex items-center">
               <button
                 type="button"
                 onClick={() => setFilterType("all")}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
-                  filterType === "all" ? "bg-[#C5A059] text-black" : "text-white/60 hover:text-white"
+                className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
+                  filterType === "all" ? "bg-[#e51a34] text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 All ({products.length})
@@ -1110,8 +1110,8 @@ export default function ProductManagement() {
               <button
                 type="button"
                 onClick={() => setFilterType("main_product")}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
-                  filterType === "main_product" ? "bg-[#C5A059] text-black" : "text-white/60 hover:text-white"
+                className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
+                  filterType === "main_product" ? "bg-[#e51a34] text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 Studio Lights
@@ -1119,8 +1119,8 @@ export default function ProductManagement() {
               <button
                 type="button"
                 onClick={() => setFilterType("spare_part")}
-                className={`text-xs font-semibold px-3 py-1.5 rounded-lg transition-all ${
-                  filterType === "spare_part" ? "bg-[#C5A059] text-black" : "text-white/60 hover:text-white"
+                className={`text-xs font-bold px-3 py-1.5 rounded-lg transition-all ${
+                  filterType === "spare_part" ? "bg-[#e51a34] text-white shadow-xs" : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 Spare Parts
@@ -1130,13 +1130,13 @@ export default function ProductManagement() {
             <button
               type="button"
               onClick={() => setFilterHomepage(prev => !prev)}
-              className={`text-xs font-semibold px-3 py-2 rounded-xl border transition-all flex items-center gap-1.5 ${
+              className={`text-xs font-bold px-3 py-2 rounded-xl border transition-all flex items-center gap-1.5 ${
                 filterHomepage
-                  ? "bg-[#C5A059]/20 text-[#C5A059] border-[#C5A059]"
-                  : "bg-[#181B22] text-white/60 border-white/10 hover:border-white/20"
+                  ? "bg-[#f59e0b]/15 text-[#f59e0b] border-[#f59e0b]"
+                  : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
               }`}
             >
-              <Sparkles className="w-3.5 h-3.5" />
+              <Sparkles className="w-3.5 h-3.5 text-[#f59e0b]" />
               <span>Homepage Only</span>
             </button>
           </div>
@@ -1145,18 +1145,18 @@ export default function ProductManagement() {
         {/* Table */}
         <div className="overflow-x-auto">
           {isLoading ? (
-            <div className="py-20 flex flex-col items-center justify-center gap-3 text-white/40">
-              <Loader2 className="w-8 h-8 animate-spin text-[#C5A059]" />
+            <div className="py-20 flex flex-col items-center justify-center gap-3 text-slate-400">
+              <Loader2 className="w-8 h-8 animate-spin text-[#e51a34]" />
               <span className="text-xs">Loading hardware inventory...</span>
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="py-20 text-center text-white/30 text-xs">
+            <div className="py-20 text-center text-slate-400 text-xs">
               No products found matching your filters.
             </div>
           ) : (
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-white/10 text-[11px] font-mono uppercase tracking-wider text-white/40">
+                <tr className="border-b border-slate-200 text-[11px] font-mono uppercase tracking-wider text-slate-400">
                   <th className="py-3 px-4">Product</th>
                   <th className="py-3 px-4">Role / Type</th>
                   <th className="py-3 px-4">Homepage Slot</th>
@@ -1166,27 +1166,27 @@ export default function ProductManagement() {
                   <th className="py-3 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5 text-sm">
+              <tbody className="divide-y divide-slate-100 text-sm">
                 {filteredProducts.map(p => {
                   const productImages = parseImages(p.images);
                   const thumb = productImages[0] || "/images/placeholder.png";
                   const isMain = p.productType === "main_product" || !p.productType;
 
                   return (
-                    <tr key={p.id} className="hover:bg-white/[0.02] transition-colors group">
+                    <tr key={p.id} className="hover:bg-slate-50 transition-colors group">
                       {/* Product Thumbnail & Name */}
                       <td className="py-4 px-4">
                         <div className="flex items-center gap-3">
                           <img
                             src={thumb}
                             alt={p.name}
-                            className="w-12 h-12 rounded-lg object-cover bg-black/40 border border-white/10 shrink-0"
+                            className="w-12 h-12 rounded-lg object-cover bg-slate-100 border border-slate-200 shrink-0"
                           />
                           <div>
-                            <div className="font-bold text-white group-hover:text-[#C5A059] transition-colors">
+                            <div className="font-bold text-slate-900 group-hover:text-[#e51a34] transition-colors">
                               {p.name}
                             </div>
-                            <div className="text-xs text-white/40 font-mono">
+                            <div className="text-xs text-slate-400 font-mono">
                               {p.sku || `ID: #${p.id}`} • {p.category || "General"}
                             </div>
                           </div>
@@ -1196,12 +1196,12 @@ export default function ProductManagement() {
                       {/* Role / Type */}
                       <td className="py-4 px-4">
                         {isMain ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#C5A059]/10 text-[#C5A059] border border-[#C5A059]/30">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-[#e51a34]/10 text-[#e51a34] border border-[#e51a34]/20">
                             <Flame className="w-3 h-3" />
                             Studio Light
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 text-white/80 border border-white/10">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700 border border-slate-200">
                             <Wrench className="w-3 h-3" />
                             Spare Part
                           </span>
@@ -1211,24 +1211,24 @@ export default function ProductManagement() {
                       {/* Homepage Slot */}
                       <td className="py-4 px-4">
                         {p.homepageSlot === "slot_1" ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
                             <Sparkles className="w-3 h-3" /> Hero Slot 1
                           </span>
                         ) : p.homepageSlot === "slot_2" ? (
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
                             <Sparkles className="w-3 h-3" /> Hero Slot 2 (Flagship)
                           </span>
                         ) : (
-                          <span className="text-xs text-white/30 font-mono">—</span>
+                          <span className="text-xs text-slate-400 font-mono">—</span>
                         )}
                       </td>
 
                       {/* Pricing */}
                       <td className="py-4 px-4">
                         <div className="font-mono">
-                          <span className="font-bold text-white text-base">₹{(p.salePrice || p.basePrice || 0).toLocaleString()}</span>
+                          <span className="font-bold text-slate-900 text-base">₹{(p.salePrice || p.basePrice || 0).toLocaleString()}</span>
                           {p.mrp && p.mrp > (p.salePrice || p.basePrice || 0) && (
-                            <span className="text-xs text-white/40 line-through ml-2">₹{p.mrp.toLocaleString()}</span>
+                            <span className="text-xs text-slate-400 line-through ml-2">₹{p.mrp.toLocaleString()}</span>
                           )}
                         </div>
                       </td>
@@ -1238,10 +1238,10 @@ export default function ProductManagement() {
                         <span
                           className={`font-mono font-semibold text-xs px-2.5 py-1 rounded-lg ${
                             (p.totalStock ?? p.stock ?? 0) > 10
-                              ? "bg-green-500/10 text-green-400"
+                              ? "bg-emerald-50 text-emerald-700 border border-emerald-200/60"
                               : (p.totalStock ?? p.stock ?? 0) > 0
-                              ? "bg-amber-500/10 text-amber-400"
-                              : "bg-red-500/10 text-red-400"
+                              ? "bg-amber-50 text-amber-700 border border-amber-200/60"
+                              : "bg-red-50 text-red-700 border border-red-200/60"
                           }`}
                         >
                           {(p.totalStock ?? p.stock ?? 0)} units
@@ -1251,13 +1251,13 @@ export default function ProductManagement() {
                       {/* Status */}
                       <td className="py-4 px-4">
                         {p.isActive !== false ? (
-                          <span className="inline-flex items-center gap-1 text-xs text-green-400 font-semibold">
-                            <span className="w-2 h-2 rounded-full bg-green-400" />
+                          <span className="inline-flex items-center gap-1 text-xs text-emerald-600 font-semibold">
+                            <span className="w-2 h-2 rounded-full bg-emerald-500" />
                             Active
                           </span>
                         ) : (
-                          <span className="inline-flex items-center gap-1 text-xs text-white/40 font-semibold">
-                            <span className="w-2 h-2 rounded-full bg-white/30" />
+                          <span className="inline-flex items-center gap-1 text-xs text-slate-400 font-semibold">
+                            <span className="w-2 h-2 rounded-full bg-slate-400" />
                             Draft
                           </span>
                         )}
@@ -1269,7 +1269,7 @@ export default function ProductManagement() {
                           <button
                             type="button"
                             onClick={() => handleEdit(p)}
-                            className="p-2 rounded-lg bg-white/5 hover:bg-[#C5A059]/20 hover:text-[#C5A059] text-white/70 transition-colors"
+                            className="p-2 rounded-lg hover:bg-[#e51a34]/10 hover:text-[#e51a34] text-slate-400 transition-colors"
                             title="Edit Product"
                           >
                             <Edit3 className="w-4 h-4" />
@@ -1277,7 +1277,7 @@ export default function ProductManagement() {
                           <button
                             type="button"
                             onClick={() => handleDelete(p.id, p.name)}
-                            className="p-2 rounded-lg bg-white/5 hover:bg-red-500/20 hover:text-red-400 text-white/70 transition-colors"
+                            className="p-2 rounded-lg hover:bg-red-50 hover:text-red-600 text-slate-400 transition-colors"
                             title="Delete Product"
                           >
                             <Trash2 className="w-4 h-4" />

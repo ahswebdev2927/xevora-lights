@@ -85,27 +85,6 @@ export const cartItems = sqliteTable("cart_items", {
   price: real("price").notNull(),
 });
 
-
-export const navigationMenu = sqliteTable("navigation_menu", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  label: text("label").notNull(),
-  href: text("href").notNull(),
-  imageUrl: text("image_url"),
-  order: integer("order").notNull().default(0),
-  isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
-  filterTypes: text("filter_types"),
-});
-
-export const pageSections = sqliteTable("page_sections", {
-  id: integer("id").primaryKey({ autoIncrement: true }),
-  menuId: integer("menu_id").notNull().references(() => navigationMenu.id, { onDelete: "cascade" }),
-  title: text("title").notNull(),
-  productIds: text("product_ids").notNull(), // Comma-separated or JSON string of product IDs
-  displayOrder: integer("display_order").notNull().default(0),
-});
-
-
-
 export const orders = sqliteTable("orders", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   userId: integer("user_id").references(() => users.id),

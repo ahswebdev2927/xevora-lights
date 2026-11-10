@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -28,12 +28,92 @@ import {
 } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 
+
+const DEFAULT_SLOT1 = {
+  id: 14,
+  variationId: 1,
+  name: "Xevora G-Flash 10W RGB",
+  price: 4999,
+  mrp: 7999,
+  discount: 38,
+  image: "/images/landing/product-10w-rgb.jpg",
+  stock: 22,
+  rating: 4.9,
+  numReviews: 110,
+  size: "Standard Edition",
+  slotLabel: "CREATOR ESSENTIAL",
+  specBullets: [
+    "7500mAh Lithium Cell — Up to 350 min continuous runtime",
+    "20 GOBO precision projection plates included in box",
+    "4 lighting modes, fully dimmable 1% – 100% dial",
+    "USB-C Fast charging with handheld pocket portability"
+  ]
+};
+
+const DEFAULT_SLOT2 = {
+  id: 15,
+  variationId: 1,
+  name: "Xevora G-Flash PRO 30W",
+  price: 7499,
+  mrp: 10999,
+  discount: 32,
+  image: "/images/landing/product-30w-pro.jpg",
+  stock: 18,
+  rating: 4.9,
+  numReviews: 341,
+  size: "Studio Pro Edition",
+  slotLabel: "MOST POWERFUL FLAGSHIP",
+  specBullets: [
+    "30W Ultra-High Output — 3x brighter than 10W standard",
+    "CRI 98+ True-to-life studio color rendering fidelity",
+    "Silent active internal cooling fan for marathon long shoots",
+    "Push-pull zoom barrel + 4 magnetic diffusion gels included"
+  ]
+};
+
 export default function Home() {
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
 
   // Cart button interaction states
   const [addedItem, setAddedItem] = useState<string | null>(null);
+
+  const [slot1, setSlot1] = useState(DEFAULT_SLOT1);
+  const [slot2, setSlot2] = useState<typeof DEFAULT_SLOT2 | null>(DEFAULT_SLOT2);
+  const [heroStartingPrice, setHeroStartingPrice] = useState(4999);
+  const [heroStartingMrp, setHeroStartingMrp] = useState(7999);
+
+  useEffect(() => {
+    fetch("/api/homepage-products")
+      .then(res => res.json())
+      .then(res => {
+        if (res.success && res.data) {
+          if (res.data.slot1) {
+            setSlot1(prev => ({
+              ...prev,
+              ...res.data.slot1,
+              specBullets: (res.data.slot1.specBullets && res.data.slot1.specBullets.length > 0)
+                ? res.data.slot1.specBullets
+                : prev.specBullets
+            }));
+          }
+          if (res.data.slot2) {
+            setSlot2(prev => ({
+              ...(prev || DEFAULT_SLOT2),
+              ...res.data.slot2,
+              specBullets: (res.data.slot2.specBullets && res.data.slot2.specBullets.length > 0)
+                ? res.data.slot2.specBullets
+                : (prev?.specBullets || DEFAULT_SLOT2.specBullets)
+            }));
+          } else if (!res.data.slot2 && res.data.slot1) {
+            setSlot2(null);
+          }
+          if (res.data.heroStartingPrice) setHeroStartingPrice(res.data.heroStartingPrice);
+          if (res.data.heroStartingMrp) setHeroStartingMrp(res.data.heroStartingMrp);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Interactive FAQ State
   const [openFaq, setOpenFaq] = useState<number | null>(0);
@@ -235,7 +315,7 @@ export default function Home() {
                       Starting From
                     </div>
                     <div className="font-bold text-lg text-white">
-                      ₹4,999 <span className="text-xs text-secondary line-through ml-1">₹7,999</span>
+                      ₹{heroStartingPrice.toLocaleString()} <span className="text-xs text-secondary line-through ml-1">₹{heroStartingMrp.toLocaleString()}</span>
                     </div>
                   </div>
                 </div>
@@ -420,29 +500,31 @@ export default function Home() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          <div className={`grid grid-cols-1 ${slot2 ? "lg:grid-cols-2" : "max-w-xl mx-auto"} gap-8 items-stretch`}>
             
-            {/* Model 1: 10W RGB */}
+            {/* Model 1: Slot 1 (Creator / Essential) */}
             <div className="rounded-3xl bg-surface-container-low p-6 sm:p-8 flex flex-col justify-between gap-8 hover:bg-surface-container transition-all shadow-[0_8px_32px_rgba(0,0,0,0.6)] border border-white/5">
               <div className="flex flex-col gap-6">
                 
                 <div className="h-64 sm:h-72 rounded-2xl bg-surface-container-lowest overflow-hidden relative border border-white/5 group">
                   <img
-                    src="/images/landing/product-10w-rgb.jpg"
-                    alt="Xevora G-Flash 10W RGB spotlight with 20 metallic GOBO discs and silicone diffuser grid"
+                    src={slot1.image}
+                    alt={slot1.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded bg-surface-container-high/90 text-secondary font-mono text-xs border border-white/10">
-                    CREATOR ESSENTIAL
+                  <div className="absolute top-4 left-4 px-3 py-1 rounded bg-surface-container-high/90 text-secondary font-mono text-xs border border-white/10 uppercase font-semibold">
+                    {slot1.slotLabel}
                   </div>
                 </div>
 
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white">G-Flash 10W RGB</h3>
-                    <span className="px-2.5 py-0.5 rounded-full bg-primary-container/20 text-primary-container font-mono text-xs uppercase font-bold border border-primary-container/30">
-                      Save 38%
-                    </span>
+                    <h3 className="text-xl sm:text-2xl font-bold text-white">{slot1.name}</h3>
+                    {slot1.discount > 0 && (
+                      <span className="px-2.5 py-0.5 rounded-full bg-primary-container/20 text-primary-container font-mono text-xs uppercase font-bold border border-primary-container/30">
+                        Save {slot1.discount}%
+                      </span>
+                    )}
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="flex text-primary-container">
@@ -450,36 +532,28 @@ export default function Home() {
                         <Star key={i} className="w-3.5 h-3.5 fill-primary-container text-primary-container" />
                       ))}
                     </div>
-                    <span className="font-mono text-xs text-secondary">4.9 (110 verified reviews)</span>
+                    <span className="font-mono text-xs text-secondary">{slot1.rating} ({slot1.numReviews} verified reviews)</span>
                   </div>
                 </div>
 
                 <div className="flex items-baseline gap-3">
-                  <span className="text-3xl sm:text-4xl font-extrabold text-white">₹4,999</span>
-                  <span className="text-lg text-secondary line-through">₹7,999</span>
+                  <span className="text-3xl sm:text-4xl font-extrabold text-white">₹{slot1.price.toLocaleString()}</span>
+                  {slot1.mrp > slot1.price && (
+                    <span className="text-lg text-secondary line-through">₹{slot1.mrp.toLocaleString()}</span>
+                  )}
                   <span className="font-mono text-xs text-primary-container font-semibold">
-                    Limited Stock (22 Left)
+                    {slot1.stock > 0 ? `Limited Stock (${slot1.stock} Left)` : "In Stock"}
                   </span>
                 </div>
 
                 {/* Spec bullets */}
                 <ul className="flex flex-col gap-3 text-sm text-secondary">
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-                    <span>7500mAh Lithium Cell — Up to 350 min continuous runtime</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-                    <span>20 GOBO precision projection plates included in box</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-                    <span>4 lighting modes, fully dimmable 1% – 100% dial</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-                    <span>USB-C Fast charging with handheld pocket portability</span>
-                  </li>
+                  {slot1.specBullets.map((bullet, idx) => (
+                    <li key={idx} className="flex items-center gap-2.5">
+                      <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
                 </ul>
 
               </div>
@@ -489,21 +563,21 @@ export default function Home() {
                   type="button"
                   onClick={() =>
                     handleAddToCart({
-                      id: 14,
-                      variationId: 1,
-                      name: "Xevora G-Flash 10W RGB",
-                      price: 4999,
-                      image: "/images/landing/product-10w-rgb.jpg",
-                      size: "Standard Edition",
+                      id: slot1.id,
+                      variationId: slot1.variationId,
+                      name: slot1.name,
+                      price: slot1.price,
+                      image: slot1.image,
+                      size: slot1.size,
                     })
                   }
                   className="w-full py-4 rounded-xl bg-surface-container-high hover:bg-surface-bright text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 border border-white/10 active:scale-98 shadow-md"
                 >
                   <ShoppingBag className="w-4 h-4 text-primary" />
                   <span>
-                    {addedItem === "Xevora G-Flash 10W RGB"
+                    {addedItem === slot1.name
                       ? "Added to Cart! ✓"
-                      : "Add G-Flash 10W — ₹4,999"}
+                      : `Add ${slot1.name} — ₹${slot1.price.toLocaleString()}`}
                   </span>
                 </button>
                 <div className="font-mono text-[11px] text-center text-slate-400">
@@ -512,106 +586,106 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Model 2: 30W PRO */}
-            <div className="rounded-3xl bg-surface-container p-6 sm:p-8 flex flex-col justify-between gap-8 relative shadow-[0_16px_48px_rgba(229,26,52,0.18)] border border-primary-container/30">
-              
-              <div className="flex flex-col gap-6">
-                <div className="h-64 sm:h-72 rounded-2xl bg-surface-container-lowest overflow-hidden relative border border-white/10 group">
-                  <img
-                    src="/images/landing/product-30w-pro.jpg"
-                    alt="High-end Xevora G-Flash PRO 30W optical spotlight featuring high-velocity cooling vents and optic lens"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded bg-primary-container text-white font-mono text-xs uppercase font-bold tracking-wider shadow-[0_0_12px_rgba(229,26,52,0.6)]">
-                    MOST POWERFUL FLAGSHIP
-                  </div>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl sm:text-2xl font-bold text-white">G-Flash PRO 30W</h3>
-                    <span className="px-2.5 py-0.5 rounded-full bg-primary-container/20 text-primary-container font-mono text-xs uppercase font-bold border border-primary-container/30">
-                      Save 32%
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <div className="flex text-primary-container">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} className="w-3.5 h-3.5 fill-primary-container text-primary-container" />
-                      ))}
+            {/* Model 2: Slot 2 (Flagship Pro) */}
+            {slot2 && (
+              <div className="rounded-3xl bg-surface-container p-6 sm:p-8 flex flex-col justify-between gap-8 relative shadow-[0_16px_48px_rgba(229,26,52,0.18)] border border-primary-container/30">
+                
+                <div className="flex flex-col gap-6">
+                  <div className="h-64 sm:h-72 rounded-2xl bg-surface-container-lowest overflow-hidden relative border border-white/10 group">
+                    <img
+                      src={slot2.image}
+                      alt={slot2.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                    <div className="absolute top-4 left-4 px-3 py-1 rounded bg-primary-container text-white font-mono text-xs uppercase font-bold tracking-wider shadow-[0_0_12px_rgba(229,26,52,0.6)]">
+                      {slot2.slotLabel}
                     </div>
-                    <span className="font-mono text-xs text-secondary">4.9 (341 verified studio reviews)</span>
                   </div>
-                </div>
 
-                <div className="flex items-baseline gap-3">
-                  <span className="text-3xl sm:text-4xl font-extrabold text-white">₹7,499</span>
-                  <span className="text-lg text-secondary line-through">₹10,999</span>
-                  <span className="font-mono text-xs text-primary font-semibold">
-                    In Stock — Ships in 24 Hours
-                  </span>
-                </div>
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl sm:text-2xl font-bold text-white">{slot2.name}</h3>
+                      {slot2.discount > 0 && (
+                        <span className="px-2.5 py-0.5 rounded-full bg-primary-container/20 text-primary-container font-mono text-xs uppercase font-bold border border-primary-container/30">
+                          Save {slot2.discount}%
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex text-primary-container">
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} className="w-3.5 h-3.5 fill-primary-container text-primary-container" />
+                        ))}
+                      </div>
+                      <span className="font-mono text-xs text-secondary">{slot2.rating} ({slot2.numReviews} verified studio reviews)</span>
+                    </div>
+                  </div>
 
-                {/* Coupon Promo Banner */}
-                <div className="p-3 rounded-xl bg-surface-container-high flex items-center justify-between border border-white/5">
-                  <div className="flex items-center gap-2">
-                    <span className="text-primary font-mono text-xs">🎟️</span>
-                    <span className="font-mono text-xs text-secondary">
-                      VIP Coupon applied: <strong className="text-white">STUDIO20</strong>
+                  <div className="flex items-baseline gap-3">
+                    <span className="text-3xl sm:text-4xl font-extrabold text-white">₹{slot2.price.toLocaleString()}</span>
+                    {slot2.mrp > slot2.price && (
+                      <span className="text-lg text-secondary line-through">₹{slot2.mrp.toLocaleString()}</span>
+                    )}
+                    <span className="font-mono text-xs text-primary font-semibold">
+                      {slot2.stock > 0 ? "In Stock — Ships in 24 Hours" : "Available on Order"}
                     </span>
                   </div>
-                  <span className="font-mono text-xs text-primary uppercase font-bold">Active</span>
+
+                  {/* Coupon Promo Banner */}
+                  <div className="p-3 rounded-xl bg-surface-container-high flex items-center justify-between border border-white/5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-primary font-mono text-xs">🎟️</span>
+                      <span className="font-mono text-xs text-secondary">
+                        VIP Coupon applied: <strong className="text-white">STUDIO20</strong>
+                      </span>
+                    </div>
+                    <span className="font-mono text-xs text-primary uppercase font-bold">Active</span>
+                  </div>
+
+                  {/* Spec Bullets */}
+                  <ul className="flex flex-col gap-3 text-sm text-secondary">
+                    {slot2.specBullets.map((bullet, idx) => (
+                      <li key={idx} className="flex items-center gap-2.5">
+                        {idx === 0 ? (
+                          <Zap className="w-4 h-4 text-primary shrink-0" />
+                        ) : (
+                          <CheckCircle className="w-4 h-4 text-primary shrink-0" />
+                        )}
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
-                {/* Spec Bullets */}
-                <ul className="flex flex-col gap-3 text-sm text-secondary">
-                  <li className="flex items-center gap-2.5">
-                    <Zap className="w-4 h-4 text-primary shrink-0" />
-                    <span><strong className="text-white">30W Ultra-High Output</strong> — 3x brighter than 10W standard</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-                    <span><strong className="text-white">CRI 98+</strong> True-to-life studio color rendering fidelity</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-                    <span>Silent active internal cooling fan for marathon long shoots</span>
-                  </li>
-                  <li className="flex items-center gap-2.5">
-                    <CheckCircle className="w-4 h-4 text-primary shrink-0" />
-                    <span>Push-pull zoom barrel + 4 magnetic diffusion gels included</span>
-                  </li>
-                </ul>
-              </div>
-
-              <div className="flex flex-col gap-3 pt-4">
-                <button
-                  type="button"
-                  onClick={() =>
-                    handleAddToCart({
-                      id: 15,
-                      variationId: 1,
-                      name: "Xevora G-Flash PRO 30W",
-                      price: 7499,
-                      image: "/images/landing/product-30w-pro.jpg",
-                      size: "Studio Pro Edition",
-                    })
-                  }
-                  className="w-full py-4 rounded-xl bg-primary-container hover:bg-tertiary-container text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(229,26,52,0.4)] active:scale-98"
-                >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>
-                    {addedItem === "Xevora G-Flash PRO 30W"
-                      ? "Added to Cart! ✓"
-                      : "Add G-Flash PRO — ₹7,499"}
-                  </span>
-                </button>
-                <div className="font-mono text-[11px] text-center text-slate-400">
-                  Free Express Priority Shipping • 1-Year Comprehensive Warranty
+                <div className="flex flex-col gap-3 pt-4">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      handleAddToCart({
+                        id: slot2.id,
+                        variationId: slot2.variationId,
+                        name: slot2.name,
+                        price: slot2.price,
+                        image: slot2.image,
+                        size: slot2.size,
+                      })
+                    }
+                    className="w-full py-4 rounded-xl bg-primary-container hover:bg-tertiary-container text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_24px_rgba(229,26,52,0.4)] active:scale-98"
+                  >
+                    <ShoppingBag className="w-4 h-4" />
+                    <span>
+                      {addedItem === slot2.name
+                        ? "Added to Cart! ✓"
+                        : `Add ${slot2.name} — ₹${slot2.price.toLocaleString()}`}
+                    </span>
+                  </button>
+                  <div className="font-mono text-[11px] text-center text-slate-400">
+                    Free Express Priority Shipping • 1-Year Comprehensive Warranty
+                  </div>
                 </div>
-              </div>
 
-            </div>
+              </div>
+            )}
 
           </div>
         </div>

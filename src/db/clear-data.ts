@@ -2,8 +2,6 @@ import { db } from "./index";
 import { 
   products, 
   productVariations, 
-  navigationMenu, 
-  pageSections, 
   homepageCategories, 
   cartItems, 
   orders, 
@@ -31,8 +29,6 @@ async function clearData() {
 
     // 2. Delete main entity tables
     await db.delete(products);
-    await db.delete(navigationMenu);
-    await db.delete(pageSections);
     await db.delete(homepageCategories);
     await db.delete(orders);
     await db.delete(events);

@@ -74,7 +74,7 @@ export default function AdminAboutPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-10 h-10 text-[#C5A059] animate-spin" />
+        <Loader2 className="w-10 h-10 text-[#e51a34] animate-spin" />
       </div>
     );
   }
@@ -82,7 +82,7 @@ export default function AdminAboutPage() {
   return (
     <div className="p-10 max-w-4xl mx-auto">
       <div className="mb-10 text-center flex flex-col items-center">
-        <h1 className="text-4xl font-playfair font-bold text-black">About Section Settings</h1>
+        <h1 className="text-4xl font-bold text-slate-900">About Section Settings</h1>
         <p className="mt-2 text-black/60 font-medium tracking-tight">
           Manage the 3 cards promoting the founder's mission on the homepage.
         </p>
@@ -101,13 +101,13 @@ export default function AdminAboutPage() {
         </div>
       )}
 
-      <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-brand/5">
-        <h2 className="text-xl font-playfair font-bold text-black mb-6 border-b border-brand/5 pb-4">Homepage Mission / About Cards (3 Cards)</h2>
+      <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-200/80">
+        <h2 className="text-xl font-bold text-slate-900 mb-6 border-b border-slate-200/80 pb-4">Homepage Mission / About Cards (3 Cards)</h2>
         
         <form onSubmit={handleSaveFounderPromo} className="space-y-8">
           {founderCards.map((card, idx) => (
-            <div key={idx} className="bg-brand/5 p-5 rounded-2xl border border-brand/10 space-y-4">
-              <h3 className="text-sm font-bold text-[#8c6239] uppercase tracking-wider">Card #{idx + 1}</h3>
+            <div key={idx} className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider">Card #{idx + 1}</h3>
               
               {/* Image URL Input */}
               <div>
@@ -122,9 +122,9 @@ export default function AdminAboutPage() {
                       setFounderCards(updated);
                     }}
                     placeholder="Paste image URL here"
-                    className="w-full bg-white border border-brand/20 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none focus:border-[#C5A059]/50 transition-all placeholder:text-black/20"
+                    className="w-full bg-white border border-brand/20 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none focus:border-[#e51a34]/50 transition-all placeholder:text-black/20"
                   />
-                  <label className="bg-white border border-brand/20 hover:border-[#8c6239] rounded-xl px-4 py-3 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0">
+                  <label className="bg-white border border-brand/20 hover:border-slate-200 rounded-xl px-4 py-3 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0">
                     Upload
                     <input
                       type="file"
@@ -169,7 +169,7 @@ export default function AdminAboutPage() {
                       updated[idx].text = (updated[idx].text || "") + " <b>bold text</b>";
                       setFounderCards(updated);
                     }}
-                    className="text-[9px] font-black uppercase tracking-wider text-[#8c6239] hover:underline cursor-pointer"
+                    className="text-[9px] font-black uppercase tracking-wider text-slate-900 hover:underline cursor-pointer"
                     title="Inserts bold tags"
                   >
                     [+ Add Bold Text]
@@ -184,7 +184,7 @@ export default function AdminAboutPage() {
                   }}
                   placeholder="Enter description text. Use <b>text</b> to make letters bold."
                   rows={3}
-                  className="w-full bg-white border border-brand/20 focus:border-[#C5A059]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20 resize-y min-h-[60px]"
+                  className="w-full bg-white border border-brand/20 focus:border-[#e51a34]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20 resize-y min-h-[60px]"
                 />
               </div>
             </div>
@@ -193,7 +193,7 @@ export default function AdminAboutPage() {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full flex items-center justify-center gap-2 bg-[#8c6239] hover:bg-[#734f2d] text-[#FAF6ED] py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-md cursor-pointer disabled:opacity-50"
+            className="w-full flex items-center justify-center gap-2 bg-[#e51a34] hover:bg-[#c9142b] text-[#FAF6ED] py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-md cursor-pointer disabled:opacity-50"
           >
             {isSubmitting ? (
               <Loader2 className="w-4 h-4 animate-spin text-[#FAF6ED]" />

@@ -192,7 +192,7 @@ export default function AdminBlogsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-10 h-10 text-[#C5A059] animate-spin" />
+        <Loader2 className="w-10 h-10 text-[#e51a34] animate-spin" />
       </div>
     );
   }
@@ -201,14 +201,14 @@ export default function AdminBlogsPage() {
     <div className="p-10">
       <div className="flex flex-col md:flex-row justify-between items-center mb-10 gap-4">
         <div>
-          <h1 className="text-4xl font-playfair font-bold text-black">Blogs &amp; Stories</h1>
+          <h1 className="text-4xl font-bold text-slate-900">Blogs &amp; Stories</h1>
           <p className="mt-2 text-black/60 font-medium tracking-tight">
             Create, edit and manage articles and recipe blogs shown on your storefront.
           </p>
         </div>
         <button
           onClick={handleOpenAddForm}
-          className="flex items-center gap-2 bg-[#8c6239] hover:bg-[#734f2d] text-[#FAF6ED] px-6 py-3.5 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-md cursor-pointer"
+          className="flex items-center gap-2 bg-[#e51a34] hover:bg-[#c9142b] text-white px-6 py-3.5 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-md cursor-pointer"
         >
           <Plus size={16} />
           <span>New Blog Post</span>
@@ -230,17 +230,17 @@ export default function AdminBlogsPage() {
 
       {/* Blogs Grid List */}
       {blogsList.length === 0 ? (
-        <div className="py-24 text-center bg-white rounded-[2.5rem] border border-brand/5 shadow-sm max-w-xl mx-auto px-6">
-          <div className="w-16 h-16 bg-brand/5 rounded-full flex items-center justify-center mx-auto mb-6 text-[#8c6239]">
+        <div className="py-24 text-center bg-white rounded-[2.5rem] border border-slate-200/80 shadow-sm max-w-xl mx-auto px-6">
+          <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-900">
             <FileText size={28} />
           </div>
           <h3 className="text-lg font-bold text-black mb-2">No Blog Posts Yet</h3>
           <p className="text-black/40 mb-6 text-xs leading-relaxed max-w-sm mx-auto">
-            Share news, recipe guides, and stories about traditional dry fish recipes with your storefront buyers.
+            Share lighting guides, optical comparisons, and creator stories with your storefront buyers.
           </p>
           <button
             onClick={handleOpenAddForm}
-            className="px-6 py-3 bg-[#8c6239] hover:bg-[#734f2d] text-[#FAF6ED] rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
+            className="px-6 py-3 bg-[#e51a34] hover:bg-[#c9142b] text-white rounded-xl text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer"
           >
             Create Your First Post
           </button>
@@ -250,9 +250,9 @@ export default function AdminBlogsPage() {
           {blogsList.map((blog) => (
             <div
               key={blog.id}
-              className="bg-white rounded-[2rem] border border-brand/5 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group"
+              className="bg-white rounded-[2rem] border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition-all flex flex-col group"
             >
-              <div className="aspect-[16/9] w-full bg-brand/5 relative overflow-hidden">
+              <div className="aspect-[16/9] w-full bg-slate-50 relative overflow-hidden">
                 <img
                   src={blog.coverImage || "/images/placeholder.png"}
                   alt={blog.title}
@@ -276,17 +276,17 @@ export default function AdminBlogsPage() {
                     {blog.summary}
                   </p>
                 </div>
-                <div className="flex gap-2 pt-4 border-t border-brand/5">
+                <div className="flex gap-2 pt-4 border-t border-slate-200/80">
                   <button
                     onClick={() => handleOpenEditForm(blog)}
-                    className="flex-1 flex items-center justify-center gap-1.5 bg-brand/5 hover:bg-brand/10 text-black py-2 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                    className="flex-1 flex items-center justify-center gap-1.5 bg-slate-100 hover:bg-[#e51a34] text-slate-700 hover:text-white py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border border-slate-200/60"
                   >
                     <Edit2 size={12} />
                     <span>Edit</span>
                   </button>
                   <button
                     onClick={() => handleDelete(blog.id)}
-                    className="p-2 bg-red-50 text-red-500 hover:bg-red-100 rounded-xl transition-all cursor-pointer"
+                    className="p-2 bg-red-50 text-red-600 hover:bg-red-500 hover:text-white rounded-xl transition-all cursor-pointer border border-red-200/60"
                   >
                     <Trash2 size={14} />
                   </button>
@@ -300,16 +300,16 @@ export default function AdminBlogsPage() {
       {/* Slide-out Form Drawer / Modal */}
       {isFormOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-[#8c6239]/60 backdrop-blur-sm" onClick={() => setIsFormOpen(false)} />
+          <div className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" onClick={() => setIsFormOpen(false)} />
           
           <div className="relative bg-white w-full max-w-2xl max-h-[90vh] rounded-[2.5rem] shadow-2xl overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
-            <div className="p-8 border-b border-brand/5 flex items-center justify-between bg-brand/5">
-              <h2 className="text-xl font-playfair font-bold text-black">
+            <div className="p-8 border-b border-slate-200/80 flex items-center justify-between bg-slate-50">
+              <h2 className="text-xl font-bold text-slate-900">
                 {editingBlog ? "Edit Blog Post" : "Create Blog Post"}
               </h2>
               <button
                 onClick={() => setIsFormOpen(false)}
-                className="p-2 hover:bg-brand/10 rounded-full transition-all cursor-pointer"
+                className="p-2 hover:bg-slate-100 rounded-full transition-all cursor-pointer"
               >
                 <X size={20} />
               </button>
@@ -325,10 +325,10 @@ export default function AdminBlogsPage() {
                     value={coverImage}
                     onChange={(e) => setCoverImage(e.target.value)}
                     placeholder="Paste cover image URL here"
-                    className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
+                    className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
                     required
                   />
-                  <label className="bg-brand/5 border border-brand/20 hover:border-[#8c6239] rounded-2xl px-5 py-4 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0">
+                  <label className="bg-slate-50 border border-brand/20 hover:border-slate-200 rounded-2xl px-5 py-4 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0">
                     {isUploading ? <Loader2 className="w-4 h-4 animate-spin" /> : "Upload Image"}
                     <input
                       type="file"
@@ -349,7 +349,7 @@ export default function AdminBlogsPage() {
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                   placeholder="e.g. Traditional way to sun-dry dry prawns"
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
+                  className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
                   required
                 />
               </div>
@@ -362,7 +362,7 @@ export default function AdminBlogsPage() {
                   value={slug}
                   onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/\s+/g, "-"))}
                   placeholder="slug-url-endpoint"
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
+                  className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
                   required
                 />
               </div>
@@ -375,7 +375,7 @@ export default function AdminBlogsPage() {
                   onChange={(e) => setSummary(e.target.value)}
                   placeholder="Brief synopsis of what this article is about..."
                   rows={2}
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20 resize-y"
+                  className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20 resize-y"
                   required
                 />
               </div>
@@ -389,7 +389,7 @@ export default function AdminBlogsPage() {
                     onClick={() => {
                       setContent((prev) => prev + " <b>bold text</b>");
                     }}
-                    className="text-[9px] font-black uppercase tracking-wider text-[#8c6239] hover:underline cursor-pointer"
+                    className="text-[9px] font-black uppercase tracking-wider text-slate-900 hover:underline cursor-pointer"
                   >
                     [+ Add Bold Text]
                   </button>
@@ -399,7 +399,7 @@ export default function AdminBlogsPage() {
                   onChange={(e) => setContent(e.target.value)}
                   placeholder="Write the full recipe details or story. HTML markup is allowed to format paragraphs and bold headers."
                   rows={8}
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20 resize-y min-h-[150px]"
+                  className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20 resize-y min-h-[150px]"
                   required
                 />
               </div>
@@ -412,22 +412,22 @@ export default function AdminBlogsPage() {
                   value={author}
                   onChange={(e) => setAuthor(e.target.value)}
                   placeholder="e.g. Venky"
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
+                  className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-4 text-sm font-semibold text-black outline-none transition-all placeholder:text-black/20"
                 />
               </div>
 
-              <div className="pt-4 border-t border-brand/5 flex justify-end gap-3">
+              <div className="pt-4 border-t border-slate-200/80 flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setIsFormOpen(false)}
-                  className="px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-black/60 hover:bg-brand/5 transition-all cursor-pointer"
+                  className="px-6 py-4 rounded-2xl text-xs font-black uppercase tracking-widest text-black/60 hover:bg-slate-50 transition-all cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting || isUploading}
-                  className="bg-[#8c6239] hover:bg-[#734f2d] text-[#FAF6ED] px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-md cursor-pointer flex items-center gap-2"
+                  className="bg-[#e51a34] hover:bg-[#c9142b] text-white px-8 py-4 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-md cursor-pointer flex items-center gap-2"
                 >
                   {isSubmitting ? (
                     <Loader2 className="w-4 h-4 animate-spin text-white" />

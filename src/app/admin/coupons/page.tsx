@@ -220,13 +220,13 @@ export default function CouponsAdminPage() {
     <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-10">
       {/* Centered Heading */}
       <div className="text-center space-y-2">
-        <div className="inline-flex p-3 bg-[#8c6239]/5 rounded-3xl text-[#8c6239] mb-2">
+        <div className="inline-flex p-3 bg-[#e51a34]/5 rounded-3xl text-slate-900 mb-2">
           <Ticket size={32} />
         </div>
-        <h1 className="text-4xl font-gabriola font-bold text-[#8c6239] tracking-wide">
+        <h1 className="text-4xl font-sans font-bold text-slate-900 tracking-wide">
           Manage Coupon Codes
         </h1>
-        <p className="text-xs uppercase tracking-widest text-[#C5A059] font-black">
+        <p className="text-xs uppercase tracking-widest text-[#e51a34] font-black">
           Add and configure storefront discount offers
         </p>
       </div>
@@ -248,15 +248,15 @@ export default function CouponsAdminPage() {
 
       {/* Add / Edit Form Panel */}
       {showForm ? (
-        <div className="bg-white border border-[#8c6239]/5 rounded-[2rem] p-8 shadow-xl animate-in zoom-in-95 duration-300">
-          <div className="flex items-center justify-between border-b border-brand/5 pb-4 mb-6">
-            <h3 className="text-lg font-bold text-[#8c6239] uppercase tracking-tight flex items-center gap-2">
-              <Sparkles size={18} className="text-[#C5A059]" />
+        <div className="bg-white border border-slate-200/5 rounded-[2rem] p-8 shadow-xl animate-in zoom-in-95 duration-300">
+          <div className="flex items-center justify-between border-b border-slate-200/80 pb-4 mb-6">
+            <h3 className="text-lg font-bold text-slate-900 uppercase tracking-tight flex items-center gap-2">
+              <Sparkles size={18} className="text-[#e51a34]" />
               {editingId ? "Edit Coupon Details" : "Create New Coupon"}
             </h3>
             <button 
               onClick={resetForm} 
-              className="p-2 text-[#8c6239]/40 hover:text-[#8c6239] rounded-full hover:bg-[#8c6239]/5 transition-all"
+              className="p-2 text-slate-900/40 hover:text-slate-900 rounded-full hover:bg-[#e51a34]/5 transition-all"
             >
               <X size={20} />
             </button>
@@ -266,27 +266,27 @@ export default function CouponsAdminPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Code */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest block ml-1">Coupon Code</label>
+                <label className="text-[10px] font-black text-slate-900/40 uppercase tracking-widest block ml-1">Coupon Code</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. FESTIVE15"
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
-                  className="w-full bg-brand-light border border-brand/5 rounded-2xl py-3.5 px-4 text-sm font-bold text-[#8c6239] focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 transition-all uppercase"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 transition-all uppercase"
                 />
               </div>
 
               {/* Description */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest block ml-1">Description</label>
+                <label className="text-[10px] font-black text-slate-900/40 uppercase tracking-widest block ml-1">Description</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Flat 15% Off above ₹15,000"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  className="w-full bg-brand-light border border-brand/5 rounded-2xl py-3.5 px-4 text-sm font-bold text-[#8c6239] focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 transition-all"
                 />
               </div>
             </div>
@@ -294,14 +294,14 @@ export default function CouponsAdminPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Discount Type */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest block ml-1">Discount Type</label>
+                <label className="text-[10px] font-black text-slate-900/40 uppercase tracking-widest block ml-1">Discount Type</label>
                 <select
                   value={discountType}
                   onChange={(e) => {
                     setDiscountType(e.target.value);
                     if (e.target.value === "flat") setCutoffPrice("");
                   }}
-                  className="w-full bg-brand-light border border-brand/5 rounded-2xl py-3.5 px-4 text-sm font-bold text-[#8c6239] focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 transition-all cursor-pointer"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 transition-all cursor-pointer"
                 >
                   <option value="flat">Flat Amount (₹)</option>
                   <option value="percentage">Percentage (%)</option>
@@ -310,7 +310,7 @@ export default function CouponsAdminPage() {
 
               {/* Discount Value */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest block ml-1">
+                <label className="text-[10px] font-black text-slate-900/40 uppercase tracking-widest block ml-1">
                   Discount Value {discountType === "flat" ? "(₹)" : "(%)"}
                 </label>
                 <input
@@ -320,20 +320,20 @@ export default function CouponsAdminPage() {
                   placeholder={discountType === "flat" ? "e.g. 500" : "e.g. 15"}
                   value={discountValue}
                   onChange={(e) => setDiscountValue(e.target.value)}
-                  className="w-full bg-brand-light border border-brand/5 rounded-2xl py-3.5 px-4 text-sm font-bold text-[#8c6239] focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 transition-all"
                 />
               </div>
 
               {/* Min Purchase Amount */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest block ml-1">Min Purchase (₹)</label>
+                <label className="text-[10px] font-black text-slate-900/40 uppercase tracking-widest block ml-1">Min Purchase (₹)</label>
                 <input
                   type="number"
                   min="0"
                   placeholder="e.g. 1999"
                   value={minPurchaseAmount}
                   onChange={(e) => setMinPurchaseAmount(e.target.value)}
-                  className="w-full bg-brand-light border border-brand/5 rounded-2xl py-3.5 px-4 text-sm font-bold text-[#8c6239] focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 transition-all"
                 />
               </div>
             </div>
@@ -341,7 +341,7 @@ export default function CouponsAdminPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Cutoff Price (only for percentage) */}
               <div className="space-y-2">
-                <label className={`text-[10px] font-black uppercase tracking-widest block ml-1 ${discountType === 'percentage' ? 'text-[#8c6239]/40' : 'text-[#8c6239]/20'}`}>
+                <label className={`text-[10px] font-black uppercase tracking-widest block ml-1 ${discountType === 'percentage' ? 'text-slate-900/40' : 'text-slate-900/20'}`}>
                   Cutoff Price Cap (₹) {discountType !== 'percentage' && '(Percentage Only)'}
                 </label>
                 <input
@@ -351,20 +351,20 @@ export default function CouponsAdminPage() {
                   placeholder="e.g. 20000"
                   value={cutoffPrice}
                   onChange={(e) => setCutoffPrice(e.target.value)}
-                  className="w-full bg-brand-light border border-brand/5 rounded-2xl py-3.5 px-4 text-sm font-bold text-[#8c6239] focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                 />
               </div>
 
               {/* Target Type */}
               <div className="space-y-2">
-                <label className="text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest block ml-1">Applicable Customer/Products</label>
+                <label className="text-[10px] font-black text-slate-900/40 uppercase tracking-widest block ml-1">Applicable Customer/Products</label>
                 <select
                   value={targetType}
                   onChange={(e) => {
                     setTargetType(e.target.value);
                     if (e.target.value === "all" || e.target.value === "first_order") setTargetValue("");
                   }}
-                  className="w-full bg-brand-light border border-brand/5 rounded-2xl py-3.5 px-4 text-sm font-bold text-[#8c6239] focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 transition-all cursor-pointer"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 transition-all cursor-pointer"
                 >
                   <option value="all">All Purchases</option>
                   <option value="first_order">First Order Placement Only</option>
@@ -375,7 +375,7 @@ export default function CouponsAdminPage() {
 
               {/* Target Value */}
               <div className="space-y-2">
-                <label className={`text-[10px] font-black uppercase tracking-widest block ml-1 ${['category', 'product'].includes(targetType) ? 'text-[#8c6239]/40' : 'text-[#8c6239]/20'}`}>
+                <label className={`text-[10px] font-black uppercase tracking-widest block ml-1 ${['category', 'product'].includes(targetType) ? 'text-slate-900/40' : 'text-slate-900/20'}`}>
                   Target Criteria {!['category', 'product'].includes(targetType) && '(Not Required)'}
                 </label>
                 
@@ -383,7 +383,7 @@ export default function CouponsAdminPage() {
                   <select
                     value={targetValue}
                     onChange={(e) => setTargetValue(e.target.value)}
-                    className="w-full bg-brand-light border border-brand/5 rounded-2xl py-3.5 px-4 text-sm font-bold text-[#8c6239] focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 transition-all cursor-pointer"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 transition-all cursor-pointer"
                   >
                     <option value="">-- Select Category --</option>
                     {categoriesList.map((cat) => (
@@ -401,12 +401,12 @@ export default function CouponsAdminPage() {
                     }
                     value={targetValue}
                     onChange={(e) => setTargetValue(e.target.value)}
-                    className="w-full bg-brand-light border border-brand/5 rounded-2xl py-3.5 px-4 text-sm font-bold text-[#8c6239] focus:outline-none focus:ring-2 focus:ring-[#C5A059]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
                   />
                 )}
 
                 {["category", "product"].includes(targetType) && (
-                  <p className="text-[9px] text-[#8c6239]/45 font-semibold ml-1 mt-1 leading-normal">
+                  <p className="text-[9px] text-slate-900/45 font-semibold ml-1 mt-1 leading-normal">
                     {targetType === "category" 
                       ? "* Select an available category from the dropdown menu to restrict this coupon." 
                       : "* Enter multiple product IDs or SKUs separated by commas. Any matching item in cart will get this discount."}
@@ -422,25 +422,25 @@ export default function CouponsAdminPage() {
                 id="isActiveCheckbox"
                 checked={isActive}
                 onChange={(e) => setIsActive(e.target.checked)}
-                className="w-5 h-5 rounded border-[#8c6239]/20 text-[#8c6239] focus:ring-[#C5A059]/20 cursor-pointer"
+                className="w-5 h-5 rounded border-slate-200/20 text-slate-900 focus:ring-[#e51a34]/20 cursor-pointer"
               />
-              <label htmlFor="isActiveCheckbox" className="text-xs font-bold text-[#8c6239]/80 uppercase tracking-widest cursor-pointer select-none">
+              <label htmlFor="isActiveCheckbox" className="text-xs font-bold text-slate-900/80 uppercase tracking-widest cursor-pointer select-none">
                 Enable Coupon Immediately
               </label>
             </div>
 
-            <div className="flex gap-4 pt-4 border-t border-brand/5">
+            <div className="flex gap-4 pt-4 border-t border-slate-200/80">
               <button
                 type="button"
                 onClick={resetForm}
-                className="flex-1 py-4 border-2 border-brand/5 rounded-xl text-[10px] font-black uppercase tracking-widest text-[#8c6239]/40 hover:bg-brand-light transition-all"
+                className="flex-1 py-4 border-2 border-slate-200/80 rounded-xl text-[10px] font-black uppercase tracking-widest text-slate-900/40 hover:bg-slate-100 transition-all"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="flex-[2] py-4 bg-[#8c6239] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#8c6239]/90 shadow-lg transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-[2] py-4 bg-[#e51a34] text-white rounded-xl text-[10px] font-black uppercase tracking-widest hover:bg-[#e51a34]/90 shadow-lg transition-all active:scale-95 disabled:opacity-50 flex items-center justify-center gap-2"
               >
                 {isSubmitting ? (
                   <>
@@ -459,7 +459,7 @@ export default function CouponsAdminPage() {
         <div className="flex justify-end">
           <button
             onClick={() => setShowForm(true)}
-            className="bg-[#8c6239] text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#8c6239]/90 transition-all shadow-md active:scale-95 flex items-center gap-2"
+            className="bg-[#e51a34] text-white px-8 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-[#e51a34]/90 transition-all shadow-md active:scale-95 flex items-center gap-2"
           >
             <Plus size={16} /> Add Coupon Code
           </button>
@@ -467,75 +467,75 @@ export default function CouponsAdminPage() {
       )}
 
       {/* Coupons Table Listing */}
-      <div className="bg-white border border-[#8c6239]/5 rounded-[2rem] overflow-hidden shadow-lg">
-        <div className="p-6 border-b border-brand/5 flex items-center justify-between">
-          <h3 className="text-md font-bold text-[#8c6239] uppercase tracking-tight">Active & Inactive Coupons</h3>
-          <span className="text-[10px] font-bold text-white bg-[#C5A059] px-3 py-1 rounded-full uppercase tracking-widest">
+      <div className="bg-white border border-slate-200/5 rounded-[2rem] overflow-hidden shadow-lg">
+        <div className="p-6 border-b border-slate-200/80 flex items-center justify-between">
+          <h3 className="text-md font-bold text-slate-900 uppercase tracking-tight">Active & Inactive Coupons</h3>
+          <span className="text-[10px] font-bold text-white bg-[#e51a34] px-3 py-1 rounded-full uppercase tracking-widest">
             {couponsList.length} Total
           </span>
         </div>
 
         {isLoading ? (
           <div className="py-20 flex items-center justify-center">
-            <Loader2 className="w-8 h-8 text-[#C5A059] animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#e51a34] animate-spin" />
           </div>
         ) : couponsList.length === 0 ? (
-          <div className="py-20 text-center text-[#8c6239]/40 font-bold text-sm">
+          <div className="py-20 text-center text-slate-900/40 font-bold text-sm">
             No coupons added yet. Click "Add Coupon Code" above to get started.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="bg-brand-light/50 border-b border-brand/5">
-                  <th className="py-4 px-6 text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest">Code</th>
-                  <th className="py-4 px-6 text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest">Description</th>
-                  <th className="py-4 px-6 text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest">Discount</th>
-                  <th className="py-4 px-6 text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest">Min Purchase</th>
-                  <th className="py-4 px-6 text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest">Cutoff Cap</th>
-                  <th className="py-4 px-6 text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest">Target</th>
-                  <th className="py-4 px-6 text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest">Status</th>
-                  <th className="py-4 px-6 text-[10px] font-black text-[#8c6239]/40 uppercase tracking-widest text-right">Actions</th>
+                <tr className="bg-slate-50 border-b border-slate-200">
+                  <th className="py-4 px-6 text-[10px] font-black text-slate-900/40 uppercase tracking-widest">Code</th>
+                  <th className="py-4 px-6 text-[10px] font-black text-slate-900/40 uppercase tracking-widest">Description</th>
+                  <th className="py-4 px-6 text-[10px] font-black text-slate-900/40 uppercase tracking-widest">Discount</th>
+                  <th className="py-4 px-6 text-[10px] font-black text-slate-900/40 uppercase tracking-widest">Min Purchase</th>
+                  <th className="py-4 px-6 text-[10px] font-black text-slate-900/40 uppercase tracking-widest">Cutoff Cap</th>
+                  <th className="py-4 px-6 text-[10px] font-black text-slate-900/40 uppercase tracking-widest">Target</th>
+                  <th className="py-4 px-6 text-[10px] font-black text-slate-900/40 uppercase tracking-widest">Status</th>
+                  <th className="py-4 px-6 text-[10px] font-black text-slate-900/40 uppercase tracking-widest text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-brand/5">
                 {couponsList.map((coupon) => (
-                  <tr key={coupon.id} className="hover:bg-brand-light/20 transition-all">
+                  <tr key={coupon.id} className="hover:bg-slate-50 transition-all">
                     {/* Code */}
                     <td className="py-4 px-6">
-                      <span className="font-bold text-[#8c6239] tracking-wider font-mono bg-brand-light px-3 py-1.5 rounded-lg border border-brand/5">
+                      <span className="font-bold text-slate-900 tracking-wider font-mono bg-slate-100 text-slate-900 px-3 py-1.5 rounded-lg border border-slate-200">
                         {coupon.code}
                       </span>
                     </td>
                     
                     {/* Description */}
-                    <td className="py-4 px-6 text-sm font-medium text-[#8c6239]/80 max-w-[200px] truncate">
+                    <td className="py-4 px-6 text-sm font-medium text-slate-900/80 max-w-[200px] truncate">
                       {coupon.description}
                     </td>
 
                     {/* Discount Value */}
-                    <td className="py-4 px-6 text-sm font-bold text-[#8c6239]">
+                    <td className="py-4 px-6 text-sm font-bold text-slate-900">
                       {coupon.discountType === "flat" ? `₹${coupon.discountValue}` : `${coupon.discountValue}%`}
                     </td>
 
                     {/* Min Purchase */}
-                    <td className="py-4 px-6 text-sm text-[#8c6239]/60 font-mono">
+                    <td className="py-4 px-6 text-sm text-slate-900/60 font-mono">
                       ₹{coupon.minPurchaseAmount}
                     </td>
 
                     {/* Cutoff Price */}
-                    <td className="py-4 px-6 text-sm text-[#8c6239]/60 font-mono">
+                    <td className="py-4 px-6 text-sm text-slate-900/60 font-mono">
                       {coupon.cutoffPrice ? `₹${coupon.cutoffPrice}` : "-"}
                     </td>
 
                     {/* Target */}
                     <td className="py-4 px-6">
                       <div className="flex flex-col gap-0.5">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#C5A059]">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-[#e51a34]">
                           {coupon.targetType === "first_order" ? "1st Purchase" : coupon.targetType === "all" ? "All Orders" : coupon.targetType}
                         </span>
                         {coupon.targetValue && (
-                          <span className="text-[9px] text-[#8c6239]/40 font-bold truncate max-w-[120px]">
+                          <span className="text-[9px] text-slate-900/40 font-bold truncate max-w-[120px]">
                             {coupon.targetValue}
                           </span>
                         )}
@@ -568,7 +568,7 @@ export default function CouponsAdminPage() {
                     <td className="py-4 px-6 text-right space-x-2">
                       <button
                         onClick={() => handleEditClick(coupon)}
-                        className="p-2 text-[#C5A059] hover:text-[#C5A059]/80 hover:bg-[#C5A059]/5 rounded-lg transition-all"
+                        className="p-2 text-[#e51a34] hover:text-[#e51a34]/80 hover:bg-slate-50 rounded-lg transition-all"
                         title="Edit Coupon"
                       >
                         <Edit3 size={16} />

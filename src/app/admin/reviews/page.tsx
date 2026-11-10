@@ -189,7 +189,7 @@ export default function AdminReviewsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-10 h-10 text-[#C5A059] animate-spin" />
+        <Loader2 className="w-10 h-10 text-[#e51a34] animate-spin" />
       </div>
     );
   }
@@ -197,9 +197,9 @@ export default function AdminReviewsPage() {
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto">
       <div className="mb-8 text-center flex flex-col items-center">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-[#3b2314]">Customer Review Cards</h1>
+        <h1 className="text-3xl md:text-4xl font-serif font-bold text-slate-800">Customer Review Cards</h1>
         <p className="mt-2 text-black/60 font-medium text-xs md:text-sm tracking-tight flex items-center justify-center">
-          <MessageSquare size={16} className="text-[#8c6239] mr-2" />
+          <MessageSquare size={16} className="text-slate-900 mr-2" />
           Manage testmonial cards shown on the website homepage.
         </p>
       </div>
@@ -223,7 +223,7 @@ export default function AdminReviewsPage() {
         <div className="lg:col-span-5">
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-black/5">
             <div className="flex items-center justify-between mb-6 border-b border-black/5 pb-4">
-              <h2 className="text-lg font-serif font-bold text-[#3b2314]">
+              <h2 className="text-lg font-serif font-bold text-slate-800">
                 {editingReviewId ? "Edit Customer Review Card" : "Add New Review Card"}
               </h2>
               {editingReviewId && (
@@ -257,7 +257,7 @@ export default function AdminReviewsPage() {
                   )}
 
                   <div className="flex items-center gap-2">
-                    <label className="flex-1 flex items-center justify-center space-x-2 bg-brand/5 hover:bg-brand/10 text-[#3b2314] px-4 py-3 rounded-2xl border border-black/10 text-xs font-bold cursor-pointer transition-colors">
+                    <label className="flex-1 flex items-center justify-center space-x-2 bg-slate-50 hover:bg-slate-100 text-slate-800 px-4 py-3 rounded-2xl border border-slate-200 text-xs font-bold cursor-pointer transition-colors">
                       {isUploading ? <Loader2 size={16} className="animate-spin" /> : <Upload size={16} />}
                       <span>{isUploading ? "Uploading Image..." : "Upload Image"}</span>
                       <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
@@ -268,7 +268,7 @@ export default function AdminReviewsPage() {
                     value={imageUrl}
                     onChange={(e) => setImageUrl(e.target.value)}
                     placeholder="Or paste image URL (e.g. https://...)"
-                    className="w-full bg-brand/5 border border-transparent focus:border-[#8c6239]/50 rounded-2xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30"
+                    className="w-full bg-slate-50 border border-transparent focus:border-slate-200/50 rounded-2xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30"
                   />
                 </div>
               </div>
@@ -283,7 +283,7 @@ export default function AdminReviewsPage() {
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
                   placeholder="e.g. Actress Priyanka / Adv. Tamilvendan"
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#8c6239]/50 rounded-2xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30"
+                  className="w-full bg-slate-50 border border-transparent focus:border-slate-200/50 rounded-2xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30"
                   required
                 />
               </div>
@@ -298,7 +298,7 @@ export default function AdminReviewsPage() {
                   value={designation}
                   onChange={(e) => setDesignation(e.target.value)}
                   placeholder="e.g. Actress Priyanka or Radha Rani Youtuber"
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#8c6239]/50 rounded-2xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30"
+                  className="w-full bg-slate-50 border border-transparent focus:border-slate-200/50 rounded-2xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30"
                 />
               </div>
 
@@ -334,7 +334,7 @@ export default function AdminReviewsPage() {
                   onChange={(e) => setComment(e.target.value)}
                   placeholder='e.g. "Authentic taste and amazing quality. Reminds me of my grandma’s homemade dried fish!"'
                   rows={4}
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#8c6239]/50 rounded-2xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30 resize-none leading-relaxed"
+                  className="w-full bg-slate-50 border border-transparent focus:border-slate-200/50 rounded-2xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30 resize-none leading-relaxed"
                   required
                 />
               </div>
@@ -342,7 +342,7 @@ export default function AdminReviewsPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full flex items-center justify-center space-x-2 bg-[#8c6239] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#734f2d] transition-all shadow-md disabled:opacity-50 mt-4 cursor-pointer"
+                className="w-full flex items-center justify-center space-x-2 bg-[#e51a34] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#c9142b] transition-all shadow-md disabled:opacity-50 mt-4 cursor-pointer"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -360,12 +360,12 @@ export default function AdminReviewsPage() {
         {/* List Column */}
         <div className="lg:col-span-7">
           <div className="bg-white rounded-3xl p-6 md:p-8 shadow-sm border border-black/5">
-            <h2 className="text-lg font-serif font-bold text-[#3b2314] mb-6 border-b border-black/5 pb-4">
+            <h2 className="text-lg font-serif font-bold text-slate-800 mb-6 border-b border-black/5 pb-4">
               Configured Reviews ({reviews.length})
             </h2>
 
             {reviews.length === 0 ? (
-              <div className="text-center py-20 border border-dashed border-brand/10 rounded-3xl text-black/30">
+              <div className="text-center py-20 border border-dashed border-slate-200 rounded-3xl text-black/30">
                 <MessageSquare className="mx-auto mb-4 text-black/20 animate-bounce" size={40} />
                 <p className="text-xs font-bold uppercase tracking-widest">No customer reviews configured yet</p>
                 <p className="text-xs mt-2 text-black/40">Use the form on the left to add your first customer review card.</p>
@@ -375,11 +375,11 @@ export default function AdminReviewsPage() {
                 {reviews.map((review) => (
                   <div
                     key={review.id}
-                    className="p-4 bg-[#FAF6ED] border border-[#8c6239]/20 rounded-2xl flex flex-col justify-between relative group hover:border-[#8c6239] transition-all shadow-sm"
+                    className="p-4 bg-[#FAF6ED] border border-slate-200/20 rounded-2xl flex flex-col justify-between relative group hover:border-slate-200 transition-all shadow-sm"
                   >
                     <div>
                       {/* Image Preview */}
-                      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-brand/5 border border-black/5">
+                      <div className="w-full aspect-[4/3] rounded-xl overflow-hidden mb-3 bg-slate-50 border border-black/5">
                         {review.imageUrl ? (
                           <img src={review.imageUrl} alt={review.userName} className="w-full h-full object-cover" />
                         ) : (
@@ -412,7 +412,7 @@ export default function AdminReviewsPage() {
                       </p>
 
                       {review.designation && review.designation !== review.userName && (
-                        <p className="text-[10px] font-bold text-[#8c6239] text-center uppercase tracking-wider mt-0.5">
+                        <p className="text-[10px] font-bold text-slate-900 text-center uppercase tracking-wider mt-0.5">
                           {review.designation}
                         </p>
                       )}
@@ -426,14 +426,14 @@ export default function AdminReviewsPage() {
                       <div className="flex items-center justify-end space-x-2 pt-1">
                         <button
                           onClick={() => handleEdit(review)}
-                          className="p-2 bg-brand/10 text-[#8c6239] rounded-xl hover:bg-brand/20 transition-colors"
+                          className="p-2 bg-slate-100 hover:bg-[#e51a34] text-slate-600 hover:text-white rounded-xl transition-all border border-slate-200/60 cursor-pointer"
                           title="Edit Review"
                         >
                           <Edit3 size={14} />
                         </button>
                         <button
                           onClick={() => handleDeleteReview(review.id)}
-                          className="p-2 bg-red-50 text-red-500 rounded-xl hover:bg-red-100 transition-colors"
+                          className="p-2 bg-red-50 text-red-600 hover:bg-red-500 hover:text-white rounded-xl transition-all border border-red-200/60 cursor-pointer"
                           title="Delete Review"
                         >
                           <Trash2 size={14} />

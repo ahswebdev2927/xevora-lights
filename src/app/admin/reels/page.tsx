@@ -236,17 +236,17 @@ export default function AdminReelsPage() {
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8 font-sans">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#8c6239]/15 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/15 pb-6">
         <div>
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 bg-[#8c6239] text-white rounded-2xl shadow-md">
+            <div className="p-2.5 bg-[#e51a34] text-white rounded-2xl shadow-md">
               <Video className="h-6 w-6" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-serif font-black text-[#3b2314] tracking-tight">
+              <h1 className="text-2xl md:text-3xl font-serif font-black text-slate-800 tracking-tight">
                 Shoppable Video Reels
               </h1>
-              <p className="text-xs text-[#8c6239]/80 font-medium mt-1">
+              <p className="text-xs text-slate-900/80 font-medium mt-1">
                 Manage vertical video reels displayed below customer reviews on your homepage.
               </p>
             </div>
@@ -255,7 +255,7 @@ export default function AdminReelsPage() {
 
         <button
           onClick={handleOpenAddModal}
-          className="flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-[#8c6239] hover:bg-[#734f2d] text-white font-bold text-xs uppercase tracking-widest transition-all shadow-md hover:shadow-lg cursor-pointer"
+          className="flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-[#e51a34] hover:bg-[#c9142b] text-white font-bold text-xs uppercase tracking-widest transition-all shadow-md hover:shadow-lg cursor-pointer"
         >
           <Plus size={16} />
           <span>Add New Reel</span>
@@ -278,20 +278,20 @@ export default function AdminReelsPage() {
 
       {/* Loading State */}
       {isLoading ? (
-        <div className="py-24 text-center text-[#8c6239]/60 flex flex-col items-center">
-          <Loader2 className="animate-spin h-8 w-8 mb-3 text-[#8c6239]" />
+        <div className="py-24 text-center text-slate-900/60 flex flex-col items-center">
+          <Loader2 className="animate-spin h-8 w-8 mb-3 text-slate-900" />
           <p className="text-sm font-medium">Loading video reels...</p>
         </div>
       ) : reels.length === 0 ? (
-        <div className="bg-[#FAF6ED] border border-[#8c6239]/20 rounded-3xl p-12 text-center max-w-lg mx-auto">
-          <Video className="mx-auto h-12 w-12 text-[#8c6239]/40 mb-4 animate-bounce" />
-          <h3 className="text-lg font-serif font-bold text-[#3b2314] mb-2">No Video Reels Yet</h3>
-          <p className="text-xs text-[#8c6239]/70 mb-6 leading-relaxed">
+        <div className="bg-[#FAF6ED] border border-slate-200/20 rounded-3xl p-12 text-center max-w-lg mx-auto">
+          <Video className="mx-auto h-12 w-12 text-slate-900/40 mb-4 animate-bounce" />
+          <h3 className="text-lg font-serif font-bold text-slate-800 mb-2">No Video Reels Yet</h3>
+          <p className="text-xs text-slate-900/70 mb-6 leading-relaxed">
             Create video reels to engage customers and feature specific products right on your store homepage.
           </p>
           <button
             onClick={handleOpenAddModal}
-            className="px-6 py-3 bg-[#8c6239] text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-[#734f2d] transition-all cursor-pointer shadow-md"
+            className="px-6 py-3 bg-[#e51a34] text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-[#c9142b] transition-all cursor-pointer shadow-md"
           >
             Create First Reel
           </button>
@@ -307,7 +307,7 @@ export default function AdminReelsPage() {
               <div
                 key={reel.id}
                 className={`relative bg-[#FAF6ED] border rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between ${
-                  reel.isActive ? "border-[#8c6239]/25" : "border-gray-300 opacity-60"
+                  reel.isActive ? "border-slate-200/25" : "border-gray-300 opacity-60"
                 }`}
               >
                 {/* Top Video Preview Header */}
@@ -334,7 +334,7 @@ export default function AdminReelsPage() {
 
                   {/* Play Button Indicator */}
                   <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-80 group-hover:opacity-100 transition-opacity">
-                    <div className="w-12 h-12 rounded-full bg-white/90 text-[#3b2314] flex items-center justify-center shadow-xl backdrop-blur-sm">
+                    <div className="w-12 h-12 rounded-full bg-white/90 text-slate-800 flex items-center justify-center shadow-xl backdrop-blur-sm">
                       <Video size={22} className="ml-0.5" />
                     </div>
                   </div>
@@ -345,13 +345,13 @@ export default function AdminReelsPage() {
                       <img
                         src={productImage}
                         alt={linkedProduct.name}
-                        className="w-10 h-10 rounded-xl object-cover border border-black/10 flex-shrink-0 bg-brand/5"
+                        className="w-10 h-10 rounded-xl object-cover border border-black/10 flex-shrink-0 bg-slate-50"
                       />
                       <div className="min-w-0 flex-1">
-                        <h4 className="text-[11px] font-bold text-[#3b2314] truncate leading-snug">
+                        <h4 className="text-[11px] font-bold text-slate-800 truncate leading-snug">
                           {linkedProduct.name}
                         </h4>
-                        <div className="text-[10px] font-bold text-[#8c6239] mt-0.5">
+                        <div className="text-[10px] font-bold text-slate-900 mt-0.5">
                           ₹{linkedProduct.salePrice || linkedProduct.basePrice}
                           {linkedProduct.salePrice && (
                             <span className="line-through text-gray-400 font-normal ml-1">
@@ -365,9 +365,9 @@ export default function AdminReelsPage() {
                 </div>
 
                 {/* Footer Info & Actions */}
-                <div className="p-4 bg-white border-t border-[#8c6239]/10 space-y-3">
+                <div className="p-4 bg-white border-t border-slate-200/10 space-y-3">
                   <div>
-                    <h3 className="font-serif font-bold text-sm text-[#3b2314] truncate">
+                    <h3 className="font-serif font-bold text-sm text-slate-800 truncate">
                       {reel.title}
                     </h3>
                     <p className="text-[10px] text-gray-500 font-semibold tracking-wider mt-0.5">
@@ -414,14 +414,14 @@ export default function AdminReelsPage() {
       {/* Add/Edit Modal */}
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl border border-brand/10 p-6 md:p-8 space-y-6 animate-in zoom-in-95 duration-200 custom-scrollbar">
+          <div className="bg-white rounded-3xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 p-6 md:p-8 space-y-6 animate-in zoom-in-95 duration-200 custom-scrollbar">
             {/* Header */}
             <div className="flex items-center justify-between border-b border-gray-100 pb-4">
               <div className="flex items-center space-x-3">
-                <div className="p-2 bg-[#8c6239] text-white rounded-xl">
+                <div className="p-2 bg-[#e51a34] text-white rounded-xl">
                   <Video size={20} />
                 </div>
-                <h3 className="text-lg font-serif font-bold text-[#3b2314]">
+                <h3 className="text-lg font-serif font-bold text-slate-800">
                   {editingReel ? "Edit Video Reel" : "Add New Video Reel"}
                 </h3>
               </div>
@@ -436,7 +436,7 @@ export default function AdminReelsPage() {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Reel Title */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#3b2314] mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
                   Reel Title *
                 </label>
                 <input
@@ -445,13 +445,13 @@ export default function AdminReelsPage() {
                   placeholder="e.g. King fish recipe video"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8c6239] text-sm text-black"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
                 />
               </div>
 
               {/* Video File / URL Uploader */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#3b2314] mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
                   Video File / Video URL *
                 </label>
                 <div className="flex gap-2">
@@ -461,9 +461,9 @@ export default function AdminReelsPage() {
                     placeholder="Upload video or paste MP4 / Video URL"
                     value={formVideoUrl}
                     onChange={(e) => setFormVideoUrl(e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8c6239] text-sm text-black"
+                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
                   />
-                  <label className="flex items-center justify-center px-4 py-3 bg-[#8c6239] text-white rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#734f2d] transition-colors cursor-pointer flex-shrink-0">
+                  <label className="flex items-center justify-center px-4 py-3 bg-[#e51a34] text-white rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#c9142b] transition-colors cursor-pointer flex-shrink-0">
                     {isUploadingVideo ? (
                       <Loader2 className="animate-spin h-4 w-4" />
                     ) : (
@@ -492,13 +492,13 @@ export default function AdminReelsPage() {
 
               {/* Linked Product Dropdown */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#3b2314] mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
                   Linked Product (Shows product overlay on video)
                 </label>
                 <select
                   value={formProductId}
                   onChange={(e) => setFormProductId(e.target.value ? Number(e.target.value) : "")}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8c6239] text-sm text-black bg-white"
+                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black bg-white"
                 >
                   <option value="">-- No Product Linked --</option>
                   {products.map((prod) => (
@@ -511,7 +511,7 @@ export default function AdminReelsPage() {
 
               {/* Cover Thumbnail Image (Optional) */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-[#3b2314] mb-2">
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
                   Cover Thumbnail Image (Optional)
                 </label>
                 <div className="flex gap-2">
@@ -520,9 +520,9 @@ export default function AdminReelsPage() {
                     placeholder="Upload image or paste image URL"
                     value={formThumbnailUrl}
                     onChange={(e) => setFormThumbnailUrl(e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8c6239] text-sm text-black"
+                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
                   />
-                  <label className="flex items-center justify-center px-4 py-3 bg-[#8c6239]/10 text-[#3b2314] rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#8c6239]/20 transition-colors cursor-pointer flex-shrink-0">
+                  <label className="flex items-center justify-center px-4 py-3 bg-[#e51a34]/10 text-slate-800 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#e51a34]/20 transition-colors cursor-pointer flex-shrink-0">
                     {isUploadingThumb ? (
                       <Loader2 className="animate-spin h-4 w-4" />
                     ) : (
@@ -547,7 +547,7 @@ export default function AdminReelsPage() {
               {/* Badge & Views Count Row */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#3b2314] mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
                     Badge Text
                   </label>
                   <input
@@ -555,11 +555,11 @@ export default function AdminReelsPage() {
                     placeholder="e.g. NEW or TRENDING"
                     value={formBadgeText}
                     onChange={(e) => setFormBadgeText(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8c6239] text-sm text-black"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#3b2314] mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
                     Views Count Display
                   </label>
                   <input
@@ -567,7 +567,7 @@ export default function AdminReelsPage() {
                     placeholder="e.g. 2.9M or 1.5M"
                     value={formViewsCount}
                     onChange={(e) => setFormViewsCount(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8c6239] text-sm text-black"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
                   />
                 </div>
               </div>
@@ -575,7 +575,7 @@ export default function AdminReelsPage() {
               {/* Order & Status Row */}
               <div className="grid grid-cols-2 gap-4 items-center pt-2">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-[#3b2314] mb-2">
+                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
                     Display Order
                   </label>
                   <input
@@ -583,7 +583,7 @@ export default function AdminReelsPage() {
                     min="0"
                     value={formDisplayOrder}
                     onChange={(e) => setFormDisplayOrder(Number(e.target.value))}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#8c6239] text-sm text-black"
+                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
                   />
                 </div>
 
@@ -593,9 +593,9 @@ export default function AdminReelsPage() {
                       type="checkbox"
                       checked={formIsActive}
                       onChange={(e) => setFormIsActive(e.target.checked)}
-                      className="w-5 h-5 accent-[#8c6239] rounded"
+                      className="w-5 h-5 accent-[#e51a34] rounded"
                     />
-                    <span className="text-xs font-bold uppercase tracking-wider text-[#3b2314]">
+                    <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
                       Active on Homepage
                     </span>
                   </label>
@@ -614,7 +614,7 @@ export default function AdminReelsPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest bg-[#8c6239] hover:bg-[#734f2d] text-white transition-all shadow-md flex items-center space-x-2 disabled:opacity-50 cursor-pointer"
+                  className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest bg-[#e51a34] hover:bg-[#c9142b] text-white transition-all shadow-md flex items-center space-x-2 disabled:opacity-50 cursor-pointer"
                 >
                   {isSubmitting ? (
                     <Loader2 className="animate-spin h-4 w-4" />

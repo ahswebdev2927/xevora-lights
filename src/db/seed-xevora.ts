@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { navigationMenu, products, productVariations, users, siteSettings, offerBanners } from "./schema";
+import { products, productVariations, users, siteSettings, offerBanners } from "./schema";
 import { eq } from "drizzle-orm";
 
 async function seedXevora() {
@@ -113,15 +113,6 @@ async function seedXevora() {
         console.log("Seeded Product Variations/Kits.");
       }
     }
-
-    // 3. Navigation Menu
-    await db.delete(navigationMenu);
-    await db.insert(navigationMenu).values([
-      { label: "G-Flash Series", href: `/product/${productId || 1}`, order: 1, isActive: true },
-      { label: "Optical Technology", href: "/#technology", order: 2, isActive: true },
-      { label: "About Xevora", href: "/about", order: 3, isActive: true },
-      { label: "Support & Warranty", href: "/contact", order: 4, isActive: true }
-    ]);
 
     // 4. Offer Banners
     await db.delete(offerBanners);

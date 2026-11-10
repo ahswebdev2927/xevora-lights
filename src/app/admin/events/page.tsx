@@ -420,7 +420,7 @@ export default function AdminEventsPage() {
   return (
     <div className="p-10 min-h-screen bg-gray-50/50">
       {toast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-[#8c6239] text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 font-bold text-sm border border-[#C5A059]/20 animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-[#e51a34] text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 font-bold text-sm border border-[#e51a34]/20 animate-in fade-in slide-in-from-bottom-5 duration-300">
           <Check size={18} />
           <span>{toast}</span>
         </div>
@@ -428,12 +428,12 @@ export default function AdminEventsPage() {
 
       {/* HEADER SECTION */}
       <div className="mb-10 text-center flex flex-col items-center">
-        <h1 className="text-4xl font-playfair font-bold text-black flex items-center justify-center">
-          <Calendar className="mr-3 text-[#C5A059]" size={36} />
+        <h1 className="text-4xl font-bold text-slate-900 flex items-center justify-center">
+          <Calendar className="mr-3 text-[#e51a34]" size={36} />
           Manage Events
         </h1>
         <p className="mt-2 text-black/60 font-medium tracking-tight flex items-center justify-center">
-          <Sparkles size={16} className="text-[#C5A059] mr-2" />
+          <Sparkles size={16} className="text-[#e51a34] mr-2" />
           Create, edit, and publish company gatherings, workshops, and outdoor festivals.
         </p>
       </div>
@@ -441,7 +441,7 @@ export default function AdminEventsPage() {
       <div className="flex justify-center mb-10">
         <button
           onClick={openAddModal}
-          className="flex items-center justify-center bg-[#8c6239] hover:bg-[#8c6239]/90 text-white font-bold px-6 py-3.5 rounded-2xl transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
+          className="flex items-center justify-center bg-[#e51a34] hover:bg-[#e51a34]/90 text-white font-bold px-6 py-3.5 rounded-2xl transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0"
         >
           <Plus size={18} className="mr-2" />
           Add New Event
@@ -450,29 +450,29 @@ export default function AdminEventsPage() {
 
       {/* QUICK STATS */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-        <div className="bg-white p-6 rounded-2xl border border-brand/5 shadow-sm">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <span className="text-[10px] font-black text-black/35 uppercase tracking-[0.2em] block mb-1">Total Events</span>
           <span className="text-3xl font-bold text-black">{events.length}</span>
         </div>
-        <div className="bg-white p-6 rounded-2xl border border-brand/5 shadow-sm">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <span className="text-[10px] font-black text-black/35 uppercase tracking-[0.2em] block mb-1">Indoor Events</span>
           <span className="text-3xl font-bold text-black">{indoorCount}</span>
         </div>
-        <div className="bg-white p-6 rounded-2xl border border-brand/5 shadow-sm">
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
           <span className="text-[10px] font-black text-black/35 uppercase tracking-[0.2em] block mb-1">Outdoor Events</span>
           <span className="text-3xl font-bold text-black">{outdoorCount}</span>
         </div>
       </div>
 
       {/* SEARCH AND FILTER BAR */}
-      <div className="bg-white p-4 rounded-2xl border border-brand/5 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+      <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <div className="w-full md:max-w-md">
           <input
             type="text"
             placeholder="Search by event title or location..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#8c6239]/10 focus:border-[#8c6239] text-sm text-black"
+            className="w-full px-4 py-2.5 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 focus:border-slate-200 text-sm text-black"
           />
         </div>
         <div className="flex items-center space-x-2">
@@ -480,7 +480,7 @@ export default function AdminEventsPage() {
             onClick={() => setFilterType("all")}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               filterType === "all"
-                ? "bg-[#8c6239] text-white"
+                ? "bg-[#e51a34] text-white"
                 : "bg-gray-100 text-black/60 hover:bg-gray-200"
             }`}
           >
@@ -490,7 +490,7 @@ export default function AdminEventsPage() {
             onClick={() => setFilterType("indoor")}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               filterType === "indoor"
-                ? "bg-[#8c6239] text-white"
+                ? "bg-[#e51a34] text-white"
                 : "bg-gray-100 text-black/60 hover:bg-gray-200"
             }`}
           >
@@ -500,7 +500,7 @@ export default function AdminEventsPage() {
             onClick={() => setFilterType("outdoor")}
             className={`px-4 py-2 rounded-xl text-xs font-bold transition-all ${
               filterType === "outdoor"
-                ? "bg-[#8c6239] text-white"
+                ? "bg-[#e51a34] text-white"
                 : "bg-gray-100 text-black/60 hover:bg-gray-200"
             }`}
           >
@@ -511,14 +511,14 @@ export default function AdminEventsPage() {
 
       {/* EVENTS TABLE/LIST */}
       {isLoading ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-brand/5 shadow-sm">
-          <Loader2 className="w-10 h-10 text-[#C5A059] animate-spin mb-4" />
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-200/80 shadow-sm">
+          <Loader2 className="w-10 h-10 text-[#e51a34] animate-spin mb-4" />
           <p className="text-sm font-bold text-black/40 uppercase tracking-widest">Loading events...</p>
         </div>
       ) : filteredEvents.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-brand/5 shadow-sm text-center px-4">
-          <Calendar className="w-16 h-16 text-[#C5A059]/30 mb-4" />
-          <h3 className="text-xl font-playfair font-bold text-black mb-1">No Events Found</h3>
+        <div className="flex flex-col items-center justify-center py-20 bg-white rounded-3xl border border-slate-200/80 shadow-sm text-center px-4">
+          <Calendar className="w-16 h-16 text-[#e51a34]/30 mb-4" />
+          <h3 className="text-xl font-bold text-slate-900 mb-1">No Events Found</h3>
           <p className="text-sm text-black/60 max-w-sm">
             {searchTerm || filterType !== "all" 
               ? "Try adjusting your search filters to find what you are looking for." 
@@ -526,11 +526,11 @@ export default function AdminEventsPage() {
           </p>
         </div>
       ) : (
-        <div className="bg-white rounded-3xl border border-brand/5 shadow-sm overflow-hidden">
+        <div className="bg-white rounded-3xl border border-slate-200/80 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-brand/5 bg-brand/5 text-[10px] font-black text-black/35 uppercase tracking-widest">
+                <tr className="border-b border-slate-200/80 bg-slate-50 text-[10px] font-black text-black/35 uppercase tracking-widest">
                   <th className="py-4 px-6">Media Preview</th>
                   <th className="py-4 px-6">Event Details</th>
                   <th className="py-4 px-6">Category</th>
@@ -538,20 +538,20 @@ export default function AdminEventsPage() {
                   <th className="py-4 px-6 text-center">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-brand/5">
+              <tbody className="divide-y divide-slate-100">
                 {filteredEvents.map((evt) => {
                   const mediaPreview = getFirstMediaPreview(evt.imageUrl);
                   const isVid = mediaPreview ? isVideo(mediaPreview) : false;
                   const categoryName = CATEGORIES_MAP[evt.category]?.label || evt.category;
 
                   return (
-                    <tr key={evt.id} className="hover:bg-brand/[0.01] transition-colors group">
+                    <tr key={evt.id} className="hover:bg-slate-50 transition-colors group">
                       <td className="py-5 px-6">
-                        <div className="w-16 h-16 rounded-xl overflow-hidden border border-brand/5 bg-gray-100 relative">
+                        <div className="w-16 h-16 rounded-xl overflow-hidden border border-slate-200/80 bg-gray-100 relative">
                           {mediaPreview ? (
                             isVid ? (
-                              <div className="w-full h-full flex items-center justify-center bg-brand text-white">
-                                <Video size={20} className="text-[#C5A059]" />
+                              <div className="w-full h-full flex items-center justify-center bg-slate-900 text-white">
+                                <Video size={20} className="text-[#e51a34]" />
                               </div>
                             ) : (
                               <img
@@ -569,7 +569,7 @@ export default function AdminEventsPage() {
                       </td>
                       <td className="py-5 px-6">
                         <div>
-                          <h4 className="font-bold text-black group-hover:text-[#C5A059] transition-colors line-clamp-1">{evt.title}</h4>
+                          <h4 className="font-bold text-black group-hover:text-[#e51a34] transition-colors line-clamp-1">{evt.title}</h4>
                           {evt.duration && (
                             <p className="text-[10px] font-bold text-black/40 uppercase tracking-widest mt-1">Duration: {evt.duration}</p>
                           )}
@@ -578,8 +578,8 @@ export default function AdminEventsPage() {
                       <td className="py-5 px-6">
                         <span className={`inline-block px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider ${
                           CATEGORIES_MAP[evt.category]?.type === "indoor" 
-                            ? "bg-[#8c6239]/10 text-[#8c6239]" 
-                            : "bg-[#C5A059]/10 text-[#C5A059]"
+                            ? "bg-[#e51a34]/10 text-slate-900" 
+                            : "bg-[#e51a34]/10 text-[#e51a34]"
                         }`}>
                           {categoryName}
                         </span>
@@ -600,14 +600,14 @@ export default function AdminEventsPage() {
                         <div className="flex items-center justify-center space-x-2">
                           <button
                             onClick={() => fetchAndShowRegistrations(evt)}
-                            className="p-2 hover:bg-brand/5 rounded-lg text-black/70 hover:text-black transition-all flex items-center justify-center"
+                            className="p-2 hover:bg-slate-50 rounded-lg text-black/70 hover:text-black transition-all flex items-center justify-center"
                             title="View Registrations"
                           >
                             <Users size={16} />
                           </button>
                           <button
                             onClick={() => openEditModal(evt)}
-                            className="p-2 hover:bg-brand/5 rounded-lg text-black/70 hover:text-black transition-all"
+                            className="p-2 hover:bg-slate-50 rounded-lg text-black/70 hover:text-black transition-all"
                             title="Edit Event"
                           >
                             <Edit3 size={16} />
@@ -634,14 +634,14 @@ export default function AdminEventsPage() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div 
-            className="absolute inset-0 bg-brand/40 backdrop-blur-sm" 
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" 
             onClick={() => !isSubmitting && setIsModalOpen(false)} 
           />
-          <div className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-brand/5 overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Modal Header */}
-            <div className="p-8 border-b border-brand/5 flex items-center justify-between bg-brand/5">
+            <div className="p-8 border-b border-slate-200/80 flex items-center justify-between bg-slate-50">
               <div>
-                <h2 className="text-2xl font-playfair font-bold text-black">
+                <h2 className="text-2xl font-bold text-slate-900">
                   {editingEvent ? "Edit Event Details" : "Add New Event"}
                 </h2>
                 <p className="text-[10px] font-black text-black/35 uppercase tracking-widest mt-1">
@@ -650,7 +650,7 @@ export default function AdminEventsPage() {
               </div>
               <button 
                 onClick={() => setIsModalOpen(false)} 
-                className="p-2 hover:bg-brand/10 rounded-xl transition-all"
+                className="p-2 hover:bg-slate-100 rounded-xl transition-all"
                 disabled={isSubmitting}
               >
                 <X size={20} className="text-black/40" />
@@ -662,7 +662,7 @@ export default function AdminEventsPage() {
               <div className="max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar space-y-6">
                 
                 {/* Section 1: Basic Information */}
-                <div className="bg-gray-50/50 p-6 rounded-2xl border border-brand/5 space-y-4">
+                <div className="bg-gray-50/50 p-6 rounded-2xl border border-slate-200/80 space-y-4">
                   <h3 className="text-xs font-black text-black/35 uppercase tracking-wider mb-2">Basic Info</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -715,7 +715,7 @@ export default function AdminEventsPage() {
                 </div>
 
                 {/* Section 2: Date & Location */}
-                <div className="bg-gray-50/50 p-6 rounded-2xl border border-brand/5 space-y-4">
+                <div className="bg-gray-50/50 p-6 rounded-2xl border border-slate-200/80 space-y-4">
                   <h3 className="text-xs font-black text-black/35 uppercase tracking-wider mb-2">Schedule & Location</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
@@ -767,7 +767,7 @@ export default function AdminEventsPage() {
                 </div>
 
                 {/* Section 3: Event Specifications (Metadata) */}
-                <div className="bg-gray-50/50 p-6 rounded-2xl border border-brand/5 space-y-4">
+                <div className="bg-gray-50/50 p-6 rounded-2xl border border-slate-200/80 space-y-4">
                   <h3 className="text-xs font-black text-black/35 uppercase tracking-wider mb-2">Event Specifications (Metadata)</h3>
                   <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div className="col-span-1">
@@ -814,7 +814,7 @@ export default function AdminEventsPage() {
                 </div>
 
                 {/* Section 4: Media Uploads */}
-                <div className="bg-gray-50/50 p-6 rounded-2xl border border-brand/5 space-y-4">
+                <div className="bg-gray-50/50 p-6 rounded-2xl border border-slate-200/80 space-y-4">
                   <div className="flex items-center justify-between">
                     <h3 className="text-xs font-black text-black/35 uppercase tracking-wider">Media Gallery (Images & Videos)</h3>
                     <span className="text-[10px] font-bold text-black/40 uppercase tracking-wider">{mediaList.length} item(s)</span>
@@ -835,7 +835,7 @@ export default function AdminEventsPage() {
                         />
                         {isUploading ? (
                           <div className="flex flex-col items-center">
-                            <Loader2 className="w-8 h-8 text-[#C5A059] animate-spin mb-2" />
+                            <Loader2 className="w-8 h-8 text-[#e51a34] animate-spin mb-2" />
                             <span className="text-[10px] font-black text-black/40 uppercase tracking-widest">Uploading files...</span>
                           </div>
                         ) : (
@@ -862,7 +862,7 @@ export default function AdminEventsPage() {
                         <button
                           type="button"
                           onClick={addCustomMediaUrl}
-                          className="bg-[#8c6239] hover:bg-[#8c6239]/90 text-white font-bold px-4 rounded-xl text-sm transition-all"
+                          className="bg-[#e51a34] hover:bg-[#e51a34]/90 text-white font-bold px-4 rounded-xl text-sm transition-all"
                         >
                           Add URL
                         </button>
@@ -875,17 +875,17 @@ export default function AdminEventsPage() {
 
                   {/* List of current media */}
                   {mediaList.length > 0 && (
-                    <div className="mt-4 pt-4 border-t border-brand/5">
+                    <div className="mt-4 pt-4 border-t border-slate-200/80">
                       <p className="text-xs font-bold text-black/50 mb-3 uppercase tracking-wider">Current Media Items (Drag/Order list)</p>
                       <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
                         {mediaList.map((url, index) => {
                           const isVid = isVideo(url);
                           return (
-                            <div key={index} className="relative group/item aspect-square rounded-xl overflow-hidden border border-brand/10 bg-black/5 flex items-center justify-center">
+                            <div key={index} className="relative group/item aspect-square rounded-xl overflow-hidden border border-slate-200 bg-black/5 flex items-center justify-center">
                               {isVid ? (
-                                <div className="w-full h-full flex flex-col items-center justify-center bg-[#8c6239] p-2 text-center text-white">
-                                  <Video size={24} className="text-[#C5A059] mb-1" />
-                                  <span className="text-[8px] font-bold tracking-tight text-[#C5A059] truncate w-full">{url.split('/').pop()}</span>
+                                <div className="w-full h-full flex flex-col items-center justify-center bg-[#e51a34] p-2 text-center text-white">
+                                  <Video size={24} className="text-[#e51a34] mb-1" />
+                                  <span className="text-[8px] font-bold tracking-tight text-[#e51a34] truncate w-full">{url.split('/').pop()}</span>
                                 </div>
                               ) : (
                                 <img src={url} alt="" className="w-full h-full object-cover" />
@@ -925,7 +925,7 @@ export default function AdminEventsPage() {
                 </div>
 
                 {/* Section 5: Disclaimer */}
-                <div className="bg-gray-50/50 p-6 rounded-2xl border border-brand/5 space-y-4">
+                <div className="bg-gray-50/50 p-6 rounded-2xl border border-slate-200/80 space-y-4">
                   <h3 className="text-xs font-black text-black/35 uppercase tracking-wider mb-2">Disclaimer</h3>
                   <div>
                     <label className="block text-xs font-bold text-black mb-1.5">Event Disclaimer / Notes</label>
@@ -942,7 +942,7 @@ export default function AdminEventsPage() {
               </div>
 
               {/* Modal Footer */}
-              <div className="mt-8 pt-6 border-t border-brand/5 flex items-center justify-end space-x-4">
+              <div className="mt-8 pt-6 border-t border-slate-200/80 flex items-center justify-end space-x-4">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
@@ -954,7 +954,7 @@ export default function AdminEventsPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting || isUploading}
-                  className="flex items-center bg-[#8c6239] hover:bg-[#8c6239]/90 text-white font-bold px-8 py-3.5 rounded-2xl text-sm transition-all shadow-md"
+                  className="flex items-center bg-[#e51a34] hover:bg-[#e51a34]/90 text-white font-bold px-8 py-3.5 rounded-2xl text-sm transition-all shadow-md"
                 >
                   {isSubmitting ? (
                     <>
@@ -977,20 +977,20 @@ export default function AdminEventsPage() {
       {/* REGISTRATIONS VIEW MODAL */}
       {isRegModalOpen && selectedRegEvent && (
         <div 
-          className="fixed inset-0 z-50 bg-[#8c6239]/40 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 bg-[#e51a34]/40 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto animate-in fade-in duration-200"
           onClick={() => setIsRegModalOpen(false)}
         >
           <div 
-            className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-brand/5 overflow-hidden animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-4xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Modal Header */}
-            <div className="p-8 border-b border-brand/5 flex items-center justify-between bg-brand/5">
+            <div className="p-8 border-b border-slate-200/80 flex items-center justify-between bg-slate-50">
               <div>
-                <span className="bg-[#8c6239]/10 text-[#8c6239] text-[10px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
+                <span className="bg-[#e51a34]/10 text-slate-900 text-[10px] font-black uppercase tracking-wider px-3.5 py-1.5 rounded-full">
                   Registrations
                 </span>
-                <h3 className="text-2xl font-playfair font-black text-black mt-2">
+                <h3 className="text-2xl font-sans font-black text-black mt-2">
                   {selectedRegEvent.title}
                 </h3>
                 <p className="text-xs text-black/50 font-medium mt-1">
@@ -999,7 +999,7 @@ export default function AdminEventsPage() {
               </div>
               <button
                 onClick={() => setIsRegModalOpen(false)}
-                className="p-3 bg-white hover:bg-gray-100 rounded-full border border-brand/5 shadow-sm text-black transition-all cursor-pointer"
+                className="p-3 bg-white hover:bg-gray-100 rounded-full border border-slate-200/80 shadow-sm text-black transition-all cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -1009,22 +1009,22 @@ export default function AdminEventsPage() {
             <div className="p-8 max-h-[60vh] overflow-y-auto custom-scrollbar">
               {isLoadingRegs ? (
                 <div className="flex flex-col items-center justify-center py-16">
-                  <Loader2 className="w-10 h-10 text-[#C5A059] animate-spin mb-4" />
+                  <Loader2 className="w-10 h-10 text-[#e51a34] animate-spin mb-4" />
                   <p className="text-xs font-bold text-black/40 uppercase tracking-widest">Loading registrations...</p>
                 </div>
               ) : registrations.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-16 text-center">
-                  <Users className="w-16 h-16 text-[#C5A059]/30 mb-4 animate-pulse" />
-                  <h4 className="text-lg font-bold text-black font-playfair mb-1">No Registrations Yet</h4>
+                  <Users className="w-16 h-16 text-[#e51a34]/30 mb-4 animate-pulse" />
+                  <h4 className="text-lg font-bold text-black font-sans mb-1">No Registrations Yet</h4>
                   <p className="text-xs text-black/60 max-w-xs">
                     Once users start registering for this event, their details will appear here.
                   </p>
                 </div>
               ) : (
-                <div className="overflow-x-auto border border-brand/5 rounded-2xl">
+                <div className="overflow-x-auto border border-slate-200/80 rounded-2xl">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="bg-brand/5 border-b border-brand/5 text-[9px] font-black text-black/35 uppercase tracking-widest">
+                      <tr className="bg-slate-50 border-b border-slate-200/80 text-[9px] font-black text-black/35 uppercase tracking-widest">
                         <th className="py-3.5 px-5">Name</th>
                         <th className="py-3.5 px-5">Contact Details</th>
                         <th className="py-3.5 px-5 text-center">Tickets</th>
@@ -1033,9 +1033,9 @@ export default function AdminEventsPage() {
                         <th className="py-3.5 px-5 text-center">Actions</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-brand/5">
+                    <tbody className="divide-y divide-slate-100">
                       {registrations.map((reg) => (
-                        <tr key={reg.id} className="hover:bg-brand/[0.005] transition-colors text-sm text-black">
+                        <tr key={reg.id} className="hover:bg-slate-50 transition-colors text-sm text-black">
                           <td className="py-4 px-5 font-bold">{reg.name}</td>
                           <td className="py-4 px-5">
                             <div className="space-y-0.5">
@@ -1044,7 +1044,7 @@ export default function AdminEventsPage() {
                             </div>
                           </td>
                           <td className="py-4 px-5 text-center">
-                            <span className="inline-block px-2.5 py-1 bg-brand/5 rounded-lg font-black text-xs">
+                            <span className="inline-block px-2.5 py-1 bg-slate-50 rounded-lg font-black text-xs">
                               {reg.ticketsCount}
                             </span>
                           </td>
@@ -1079,10 +1079,10 @@ export default function AdminEventsPage() {
             </div>
 
             {/* Modal Footer */}
-            <div className="p-6 border-t border-brand/5 bg-gray-50 flex justify-end">
+            <div className="p-6 border-t border-slate-200/80 bg-gray-50 flex justify-end">
               <button
                 onClick={() => setIsRegModalOpen(false)}
-                className="px-6 py-2.5 bg-[#8c6239] hover:bg-[#8c6239]/90 text-white font-bold rounded-2xl text-xs uppercase tracking-widest transition-all cursor-pointer shadow-md"
+                className="px-6 py-2.5 bg-[#e51a34] hover:bg-[#e51a34]/90 text-white font-bold rounded-2xl text-xs uppercase tracking-widest transition-all cursor-pointer shadow-md"
               >
                 Close
               </button>

@@ -139,23 +139,23 @@ export default function FAQSettingsPage() {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] p-8">
-        <Loader2 className="animate-spin text-[#8c6239] mb-4" size={40} />
-        <p className="text-[#8c6239]/60 text-sm font-bold uppercase tracking-wider">Loading FAQs...</p>
+        <Loader2 className="animate-spin text-slate-900 mb-4" size={40} />
+        <p className="text-slate-900/60 text-sm font-bold uppercase tracking-wider">Loading FAQs...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-brand-light text-brand-dark custom-scrollbar h-full">
+    <div className="flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] text-slate-900 custom-scrollbar h-full">
       <div className="max-w-6xl mx-auto space-y-8">
         
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-brand-dark/10 pb-6">
           <div>
-            <h1 className="text-3xl font-playfair font-black text-[#8c6239] tracking-tight">
+            <h1 className="text-3xl font-sans font-black text-slate-900 tracking-tight">
               FAQs Settings
             </h1>
-            <p className="text-[#8c6239]/60 text-xs font-semibold uppercase tracking-wider mt-1">
+            <p className="text-slate-900/60 text-xs font-semibold uppercase tracking-wider mt-1">
               Configure frequently asked questions for the storefront layout
             </p>
           </div>
@@ -179,27 +179,27 @@ export default function FAQSettingsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
           {/* Add / Edit Form Column */}
-          <div className="bg-[#FFFDF6] p-6 rounded-3xl border border-brand-accent/15 shadow-sm space-y-6">
-            <h2 className="text-lg font-bold text-[#8c6239] uppercase tracking-tight">
+          <div className="bg-white p-6 rounded-3xl border border-brand-accent/15 shadow-sm space-y-6">
+            <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight">
               {editingId ? "Edit FAQ" : "Add New FAQ"}
             </h2>
             
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-[#8c6239]/60 mb-2">
+                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-900/60 mb-2">
                   Question
                 </label>
                 <input
                   type="text"
                   value={question}
                   onChange={(e) => setQuestion(e.target.value)}
-                  placeholder="e.g. Is dry fish good for health?"
-                  className="w-full bg-white border border-[#8c6239]/15 rounded-xl px-4 py-3 text-xs font-bold text-black focus:outline-none focus:border-brand-accent placeholder:text-[#8c6239]/35 shadow-sm"
+                  placeholder="e.g. What is the color temperature range of the G-Flash?"
+                  className="w-full bg-white border border-slate-200/15 rounded-xl px-4 py-3 text-xs font-bold text-black focus:outline-none focus:border-brand-accent placeholder:text-slate-900/35 shadow-sm"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-[#8c6239]/60 mb-2">
+                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-900/60 mb-2">
                   Answer
                 </label>
                 <textarea
@@ -207,19 +207,19 @@ export default function FAQSettingsPage() {
                   onChange={(e) => setAnswer(e.target.value)}
                   placeholder="Provide a detailed answer here..."
                   rows={6}
-                  className="w-full bg-white border border-[#8c6239]/15 rounded-xl px-4 py-3 text-xs font-bold text-black focus:outline-none focus:border-brand-accent placeholder:text-[#8c6239]/35 shadow-sm resize-none"
+                  className="w-full bg-white border border-slate-200/15 rounded-xl px-4 py-3 text-xs font-bold text-black focus:outline-none focus:border-brand-accent placeholder:text-slate-900/35 shadow-sm resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-[10px] font-black uppercase tracking-wider text-[#8c6239]/60 mb-2">
+                <label className="block text-[10px] font-black uppercase tracking-wider text-slate-900/60 mb-2">
                   Display Order
                 </label>
                 <input
                   type="number"
                   value={displayOrder}
                   onChange={(e) => setDisplayOrder(Number(e.target.value))}
-                  className="w-full bg-white border border-[#8c6239]/15 rounded-xl px-4 py-3 text-xs font-bold text-black focus:outline-none focus:border-brand-accent shadow-sm"
+                  className="w-full bg-white border border-slate-200/15 rounded-xl px-4 py-3 text-xs font-bold text-black focus:outline-none focus:border-brand-accent shadow-sm"
                 />
               </div>
 
@@ -227,7 +227,7 @@ export default function FAQSettingsPage() {
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="flex-1 bg-brand hover:bg-brand-hover text-[#FAF6ED] font-bold text-xs uppercase tracking-widest py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  className="flex-1 bg-[#e51a34] hover:bg-[#c9142b] text-white font-bold text-xs uppercase tracking-widest py-3 px-4 rounded-xl shadow-md shadow-[#e51a34]/20 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <Loader2 size={14} className="animate-spin" />
@@ -253,13 +253,13 @@ export default function FAQSettingsPage() {
 
           {/* List FAQs Column */}
           <div className="lg:col-span-2 space-y-4">
-            <h2 className="text-lg font-bold text-[#8c6239] uppercase tracking-tight mb-2">
+            <h2 className="text-lg font-bold text-slate-900 uppercase tracking-tight mb-2">
               FAQs List ({faqs.length})
             </h2>
 
             {faqs.length === 0 ? (
-              <div className="bg-[#FFFDF6] p-10 text-center border border-dashed border-[#8c6239]/15 rounded-3xl">
-                <p className="text-[#8c6239]/40 font-bold uppercase tracking-widest text-xs">
+              <div className="bg-white p-10 text-center border border-dashed border-slate-200/15 rounded-3xl">
+                <p className="text-slate-900/40 font-bold uppercase tracking-widest text-xs">
                   No FAQs configured. Use the form to add some!
                 </p>
               </div>
@@ -268,11 +268,11 @@ export default function FAQSettingsPage() {
                 {faqs.map((faq) => (
                   <div 
                     key={faq.id} 
-                    className="bg-[#FFFDF6] p-5 rounded-2xl border border-brand-accent/15 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-md transition-all animate-in fade-in duration-300"
+                    className="bg-white p-5 rounded-2xl border border-brand-accent/15 shadow-sm flex flex-col md:flex-row justify-between items-start md:items-center gap-4 hover:shadow-md transition-all animate-in fade-in duration-300"
                   >
                     <div className="flex-1 space-y-1.5 pr-0 md:pr-4">
                       <div className="flex items-center gap-2">
-                        <span className="text-[9px] font-black uppercase tracking-wider bg-brand-light px-2 py-0.5 rounded text-brand-dark border border-brand-dark/5">
+                        <span className="text-[9px] font-black uppercase tracking-wider bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
                           Order: {faq.displayOrder}
                         </span>
                       </div>

@@ -395,7 +395,7 @@ export default function SettingsPage() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-10 h-10 text-[#C5A059] animate-spin" />
+        <Loader2 className="w-10 h-10 text-[#e51a34] animate-spin" />
       </div>
     );
   }
@@ -405,7 +405,7 @@ export default function SettingsPage() {
       <div className="mb-10 text-center flex flex-col items-center">
         <h1 className="text-4xl font-serif font-bold text-black">Site Settings</h1>
         <p className="mt-2 text-black/60 font-medium tracking-tight flex items-center justify-center font-sans">
-          <Sparkles size={16} className="text-[#C5A059] mr-2" />
+          <Sparkles size={16} className="text-[#e51a34] mr-2" />
           Customize the layout, banners, and options for laptop and mobile view.
         </p>
       </div>
@@ -429,8 +429,8 @@ export default function SettingsPage() {
         <div className="space-y-10">
           
           {/* Banner Setting Form (Separate Laptop and Mobile Views) */}
-          <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-brand/5">
-            <h2 className="text-xl font-serif font-bold text-black mb-2 border-b border-brand/5 pb-3">
+          <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-200/80">
+            <h2 className="text-xl font-serif font-bold text-black mb-2 border-b border-slate-200/80 pb-3">
               Homepage Hero Banner Carousel
             </h2>
             <p className="text-xs text-black/50 mb-6 font-sans">
@@ -439,8 +439,8 @@ export default function SettingsPage() {
 
             <form onSubmit={handleSaveBanner} className="space-y-6">
               {/* Add New Slide Form Card */}
-              <div className="bg-brand/5 p-6 rounded-2xl border border-brand/10 space-y-5">
-                <h3 className="text-sm font-bold text-[#8c6239] uppercase tracking-wider font-serif">
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200 space-y-5">
+                <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-serif">
                   + Add New Banner Carousel Slide
                 </h3>
 
@@ -455,10 +455,10 @@ export default function SettingsPage() {
                       value={tempDesktopUrl}
                       onChange={(e) => setTempDesktopUrl(e.target.value)}
                       placeholder="Paste Laptop view image URL here"
-                      className="w-full bg-white border border-brand/20 focus:border-[#C5A059]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30 font-sans"
+                      className="w-full bg-white border border-brand/20 focus:border-[#e51a34]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30 font-sans"
                     />
-                    <label className="bg-white border border-brand/20 hover:border-[#8c6239] rounded-xl px-4 py-3 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0 shadow-xs font-sans">
-                      {isUploadingDesktop ? <Loader2 size={14} className="animate-spin text-[#8c6239]" /> : "Upload"}
+                    <label className="bg-white border border-brand/20 hover:border-slate-200 rounded-xl px-4 py-3 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0 shadow-xs font-sans">
+                      {isUploadingDesktop ? <Loader2 size={14} className="animate-spin text-slate-900" /> : "Upload"}
                       <input
                         type="file"
                         accept="image/*,video/*"
@@ -483,10 +483,10 @@ export default function SettingsPage() {
                       value={tempMobileUrl}
                       onChange={(e) => setTempMobileUrl(e.target.value)}
                       placeholder="Paste Mobile view image URL here (optional, falls back to Laptop image if empty)"
-                      className="w-full bg-white border border-brand/20 focus:border-[#C5A059]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30 font-sans"
+                      className="w-full bg-white border border-brand/20 focus:border-[#e51a34]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/30 font-sans"
                     />
-                    <label className="bg-white border border-brand/20 hover:border-[#8c6239] rounded-xl px-4 py-3 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0 shadow-xs font-sans">
-                      {isUploadingMobile ? <Loader2 size={14} className="animate-spin text-[#8c6239]" /> : "Upload"}
+                    <label className="bg-white border border-brand/20 hover:border-slate-200 rounded-xl px-4 py-3 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0 shadow-xs font-sans">
+                      {isUploadingMobile ? <Loader2 size={14} className="animate-spin text-slate-900" /> : "Upload"}
                       <input
                         type="file"
                         accept="image/*,video/*"
@@ -508,7 +508,7 @@ export default function SettingsPage() {
                   <select
                     value={selectedBannerLink}
                     onChange={(e) => setSelectedBannerLink(e.target.value)}
-                    className="w-full bg-white border border-brand/20 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none focus:border-[#C5A059]/50 transition-all cursor-pointer"
+                    className="w-full bg-white border border-brand/20 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none focus:border-[#e51a34]/50 transition-all cursor-pointer"
                   >
                     <option value="">No Navigation Link (Optional)</option>
                     {premadeLinks.map((option) => (
@@ -525,7 +525,7 @@ export default function SettingsPage() {
                       value={customLinkText}
                       onChange={(e) => setCustomLinkText(e.target.value)}
                       placeholder="e.g. /my-story or /category/dry-fish"
-                      className="w-full bg-white border border-brand/20 focus:border-[#C5A059]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all mt-2 placeholder:text-black/30"
+                      className="w-full bg-white border border-brand/20 focus:border-[#e51a34]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all mt-2 placeholder:text-black/30"
                     />
                   )}
                 </div>
@@ -533,7 +533,7 @@ export default function SettingsPage() {
                 <button
                   type="button"
                   onClick={handleAddBannerSlide}
-                  className="w-full flex items-center justify-center gap-2 bg-[#8c6239] hover:bg-[#734f2d] text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-md font-sans cursor-pointer"
+                  className="w-full flex items-center justify-center gap-2 bg-[#e51a34] hover:bg-[#c9142b] text-white py-3.5 rounded-xl font-black uppercase tracking-widest text-xs transition-all shadow-md font-sans cursor-pointer"
                 >
                   <Plus size={14} />
                   <span>Add Banner Carousel Slide</span>
@@ -549,9 +549,9 @@ export default function SettingsPage() {
 
                   <div className="space-y-4">
                     {bannersList.map((banner, idx) => (
-                      <div key={idx} className="bg-brand/5 border border-brand/10 rounded-2xl p-4 space-y-3 relative group">
-                        <div className="flex items-center justify-between border-b border-brand/10 pb-2">
-                          <span className="font-bold text-xs text-[#8c6239] uppercase tracking-wider">
+                      <div key={idx} className="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3 relative group">
+                        <div className="flex items-center justify-between border-b border-slate-200 pb-2">
+                          <span className="font-bold text-xs text-slate-900 uppercase tracking-wider">
                             Slide #{idx + 1}
                           </span>
                           <div className="flex items-center space-x-1">
@@ -567,7 +567,7 @@ export default function SettingsPage() {
                                     return copy;
                                   });
                                 }}
-                                className="p-1 bg-white hover:bg-brand/10 border border-brand/10 rounded text-black text-xs cursor-pointer"
+                                className="p-1 bg-white hover:bg-slate-100 border border-slate-200 rounded text-black text-xs cursor-pointer"
                                 title="Move Up"
                               >
                                 ↑
@@ -585,7 +585,7 @@ export default function SettingsPage() {
                                     return copy;
                                   });
                                 }}
-                                className="p-1 bg-white hover:bg-brand/10 border border-brand/10 rounded text-black text-xs cursor-pointer"
+                                className="p-1 bg-white hover:bg-slate-100 border border-slate-200 rounded text-black text-xs cursor-pointer"
                                 title="Move Down"
                               >
                                 ↓
@@ -607,7 +607,7 @@ export default function SettingsPage() {
                           {/* Laptop View */}
                           <div className="space-y-1.5">
                             <span className="text-[10px] font-bold text-black/60 uppercase">💻 Laptop View Image</span>
-                            <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-white border border-brand/10 flex items-center justify-center">
+                            <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-white border border-slate-200 flex items-center justify-center">
                               {banner.url ? (
                                 isVideoUrl(banner.url) ? (
                                   <video src={banner.url} className="w-full h-full object-cover" muted playsInline />
@@ -637,7 +637,7 @@ export default function SettingsPage() {
                           {/* Mobile View */}
                           <div className="space-y-1.5">
                             <span className="text-[10px] font-bold text-black/60 uppercase">📱 Mobile View Image</span>
-                            <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-white border border-brand/10 flex items-center justify-center">
+                            <div className="relative aspect-[16/9] rounded-xl overflow-hidden bg-white border border-slate-200 flex items-center justify-center">
                               {(banner.mobileUrl || banner.url) ? (
                                 isVideoUrl(banner.mobileUrl || banner.url) ? (
                                   <video src={banner.mobileUrl || banner.url} className="w-full h-full object-cover" muted playsInline />
@@ -666,7 +666,7 @@ export default function SettingsPage() {
                         </div>
 
                         {banner.link && (
-                          <div className="text-[10px] text-[#C5A059] font-bold truncate pt-1">
+                          <div className="text-[10px] text-[#e51a34] font-bold truncate pt-1">
                             Link target: {banner.link}
                           </div>
                         )}
@@ -679,7 +679,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full flex items-center justify-center space-x-2 bg-[#8c6239] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#734f2d] transition-all shadow-lg disabled:opacity-50 font-sans cursor-pointer"
+                className="w-full flex items-center justify-center space-x-2 bg-[#e51a34] text-white py-4 rounded-2xl font-black uppercase tracking-widest text-xs hover:bg-[#c9142b] transition-all shadow-lg disabled:opacity-50 font-sans cursor-pointer"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin" />
@@ -692,8 +692,8 @@ export default function SettingsPage() {
           </div>
 
           {/* Offer Ticker Settings Form */}
-          <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-brand/5">
-            <h2 className="text-xl font-serif font-bold text-black mb-6 border-b border-brand/5 pb-4">Offer Announcement Carousel</h2>
+          <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-200/80">
+            <h2 className="text-xl font-serif font-bold text-black mb-6 border-b border-slate-200/80 pb-4">Offer Announcement Carousel</h2>
             
             <form onSubmit={handleAddOffer} className="space-y-4 mb-8 font-sans">
               <div>
@@ -703,7 +703,7 @@ export default function SettingsPage() {
                   value={newOfferText}
                   onChange={(e) => setNewOfferText(e.target.value)}
                   placeholder="e.g. FLAT ₹500 OFF"
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-3.5 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20"
+                  className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-3.5 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20"
                   required
                 />
               </div>
@@ -715,7 +715,7 @@ export default function SettingsPage() {
                   value={newOfferSubtext}
                   onChange={(e) => setNewOfferSubtext(e.target.value)}
                   placeholder="e.g. On First Purchase"
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-3.5 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20"
+                  className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-3.5 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20"
                 />
               </div>
 
@@ -726,14 +726,14 @@ export default function SettingsPage() {
                   value={newOfferLink}
                   onChange={(e) => setNewOfferLink(e.target.value)}
                   placeholder="e.g. /category/dry-fish"
-                  className="w-full bg-brand/5 border border-transparent focus:border-[#C5A059]/50 rounded-2xl px-5 py-3.5 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20"
+                  className="w-full bg-slate-50 border border-transparent focus:border-[#e51a34]/50 rounded-2xl px-5 py-3.5 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full flex items-center justify-center space-x-2 bg-[#C5A059] text-white py-3.5 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-[#b39150] transition-all shadow-md disabled:opacity-50 cursor-pointer"
+                className="w-full flex items-center justify-center space-x-2 bg-[#e51a34] text-white py-3.5 rounded-2xl font-black uppercase tracking-widest text-[10px] hover:bg-[#b39150] transition-all shadow-md disabled:opacity-50 cursor-pointer"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -746,17 +746,17 @@ export default function SettingsPage() {
 
             {/* List of current offers */}
             <div className="font-sans">
-              <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.25em] mb-4 border-b border-brand/5 pb-2">Active Slides ({offers.length})</p>
+              <p className="text-[10px] font-black text-black/40 uppercase tracking-[0.25em] mb-4 border-b border-slate-200/80 pb-2">Active Slides ({offers.length})</p>
               
               {offers.length === 0 ? (
-                <div className="text-center py-6 border border-dashed border-brand/10 rounded-2xl text-black/30">
+                <div className="text-center py-6 border border-dashed border-slate-200 rounded-2xl text-black/30">
                   <Megaphone className="mx-auto mb-2 text-black/20" size={24} />
                   <p className="text-[10px] font-bold uppercase tracking-widest">No active offer slides</p>
                 </div>
               ) : (
                 <div className="space-y-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
                   {offers.map((offer) => (
-                    <div key={offer.id} className="flex items-center justify-between p-4 bg-brand/5 border border-brand/5 rounded-2xl group transition-all hover:bg-brand/10">
+                    <div key={offer.id} className="flex items-center justify-between p-4 bg-slate-50 border border-slate-200/80 rounded-2xl group transition-all hover:bg-slate-100">
                       <div className="flex-1 min-w-0 pr-4">
                         {(() => {
                           const { title, subtitle } = parseOfferText(offer.text);
@@ -772,7 +772,7 @@ export default function SettingsPage() {
                           );
                         })()}
                         {offer.link && (
-                          <p className="text-[9px] font-black text-[#C5A059] uppercase tracking-wider mt-1 truncate">Link: {offer.link}</p>
+                          <p className="text-[9px] font-black text-[#e51a34] uppercase tracking-wider mt-1 truncate">Link: {offer.link}</p>
                         )}
                       </div>
                       <button
@@ -790,13 +790,13 @@ export default function SettingsPage() {
           </div>
 
           {/* Founder Promotion Section (3 Cards) */}
-          <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-brand/5">
-            <h2 className="text-xl font-serif font-bold text-black mb-6 border-b border-brand/5 pb-4">Founder Promotion Section (3 Cards)</h2>
+          <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-200/80">
+            <h2 className="text-xl font-serif font-bold text-black mb-6 border-b border-slate-200/80 pb-4">Founder Promotion Section (3 Cards)</h2>
             
             <form onSubmit={handleSaveFounderPromo} className="space-y-8 font-sans">
               {founderCards.map((card, idx) => (
-                <div key={idx} className="bg-brand/5 p-5 rounded-2xl border border-brand/10 space-y-4">
-                  <h3 className="text-sm font-bold text-[#8c6239] uppercase tracking-wider font-serif">Card #{idx + 1}</h3>
+                <div key={idx} className="bg-slate-50 p-5 rounded-2xl border border-slate-200 space-y-4">
+                  <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider font-serif">Card #{idx + 1}</h3>
                   
                   {/* Image URL Input */}
                   <div>
@@ -811,9 +811,9 @@ export default function SettingsPage() {
                           setFounderCards(updated);
                         }}
                         placeholder="Paste image URL here"
-                        className="w-full bg-white border border-brand/20 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none focus:border-[#C5A059]/50 transition-all placeholder:text-black/20"
+                        className="w-full bg-white border border-brand/20 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none focus:border-[#e51a34]/50 transition-all placeholder:text-black/20"
                       />
-                      <label className="bg-white border border-brand/20 hover:border-[#8c6239] rounded-xl px-4 py-3 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0">
+                      <label className="bg-white border border-brand/20 hover:border-slate-200 rounded-xl px-4 py-3 text-xs font-bold text-black cursor-pointer select-none flex items-center justify-center shrink-0">
                         Upload
                         <input
                           type="file"
@@ -858,7 +858,7 @@ export default function SettingsPage() {
                           updated[idx].text = (updated[idx].text || "") + " <b>bold text</b>";
                           setFounderCards(updated);
                         }}
-                        className="text-[9px] font-black uppercase tracking-wider text-[#8c6239] hover:underline cursor-pointer"
+                        className="text-[9px] font-black uppercase tracking-wider text-slate-900 hover:underline cursor-pointer"
                         title="Inserts bold tags"
                       >
                         [+ Add Bold Text]
@@ -873,7 +873,7 @@ export default function SettingsPage() {
                       }}
                       placeholder="Enter description text. Use <b>text</b> to make letters bold."
                       rows={3}
-                      className="w-full bg-white border border-brand/20 focus:border-[#C5A059]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20 resize-y min-h-[60px]"
+                      className="w-full bg-white border border-brand/20 focus:border-[#e51a34]/50 rounded-xl px-4 py-3 text-xs font-semibold text-black outline-none transition-all placeholder:text-black/20 resize-y min-h-[60px]"
                     />
                   </div>
                 </div>
@@ -882,7 +882,7 @@ export default function SettingsPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full flex items-center justify-center gap-2 bg-[#8c6239] hover:bg-[#734f2d] text-[#FAF6ED] py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-md cursor-pointer disabled:opacity-50 font-sans"
+                className="w-full flex items-center justify-center gap-2 bg-[#e51a34] hover:bg-[#c9142b] text-[#FAF6ED] py-4 rounded-2xl font-black uppercase tracking-widest text-xs transition-all shadow-md cursor-pointer disabled:opacity-50 font-sans"
               >
                 {isSubmitting ? (
                   <Loader2 className="w-4 h-4 animate-spin text-[#FAF6ED]" />
@@ -896,16 +896,16 @@ export default function SettingsPage() {
         </div>
 
         {/* Live Preview Column */}
-        <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-brand/5 flex flex-col h-fit">
-          <div className="flex items-center justify-between mb-6 border-b border-brand/5 pb-4">
+        <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-200/80 flex flex-col h-fit">
+          <div className="flex items-center justify-between mb-6 border-b border-slate-200/80 pb-4">
             <h2 className="text-xl font-serif font-bold text-black">Banner Preview</h2>
             {/* View Switcher: Laptop vs Mobile */}
-            <div className="flex bg-brand/5 p-1 rounded-xl border border-brand/10 font-sans">
+            <div className="flex bg-slate-50 p-1 rounded-xl border border-slate-200 font-sans">
               <button
                 type="button"
                 onClick={() => setPreviewDevice("laptop")}
                 className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  previewDevice === "laptop" ? "bg-[#8c6239] text-white shadow-xs" : "text-black/60 hover:text-black"
+                  previewDevice === "laptop" ? "bg-[#e51a34] text-white shadow-xs" : "text-black/60 hover:text-black"
                 }`}
               >
                 💻 Laptop View
@@ -914,7 +914,7 @@ export default function SettingsPage() {
                 type="button"
                 onClick={() => setPreviewDevice("mobile")}
                 className={`px-3 py-1.5 text-xs font-bold rounded-lg transition-all cursor-pointer ${
-                  previewDevice === "mobile" ? "bg-[#8c6239] text-white shadow-xs" : "text-black/60 hover:text-black"
+                  previewDevice === "mobile" ? "bg-[#e51a34] text-white shadow-xs" : "text-black/60 hover:text-black"
                 }`}
               >
                 📱 Mobile View
@@ -922,7 +922,7 @@ export default function SettingsPage() {
             </div>
           </div>
           
-          <div className="rounded-2xl border border-brand/10 overflow-hidden relative flex flex-col p-0 bg-brand/5">
+          <div className="rounded-2xl border border-slate-200 overflow-hidden relative flex flex-col p-0 bg-slate-50">
 
             {/* Offer Carousel Banner Mockup */}
             <div className="h-20 bg-[#F5EBE0] text-[#064e3b] flex items-center justify-center px-4 relative z-10 shadow-sm border-b border-[#064e3b]/10 font-sans">
@@ -1023,7 +1023,7 @@ export default function SettingsPage() {
                                 type="button"
                                 onClick={() => setCurrentPreviewIndex(idx)}
                                 className={`h-1.5 rounded-full transition-all cursor-pointer ${
-                                  idx === currentPreviewIndex ? "bg-[#C5A059] w-4" : "bg-white/60 w-1.5"
+                                  idx === currentPreviewIndex ? "bg-[#e51a34] w-4" : "bg-white/60 w-1.5"
                                 }`}
                               />
                             ))}

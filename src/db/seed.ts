@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { navigationMenu, products, users, siteSettings, offerBanners } from "./schema";
+import { products, users, siteSettings, offerBanners } from "./schema";
 
 async function seed() {
   console.log("Seeding database...");
@@ -11,14 +11,6 @@ async function seed() {
       fullName: "System Admin",
       role: "admin",
     }).onConflictDoNothing();
-
-
-    // Navigation
-    await db.insert(navigationMenu).values([
-      { label: "Men", href: "/category/men", order: 1 },
-      { label: "Women", href: "/category/women", order: 2 },
-      { label: "Ethnic Wear", href: "/category/ethnic-wear", order: 3 },
-    ]);
 
     // Default Site Settings (Homepage Banner)
     await db.insert(siteSettings).values({

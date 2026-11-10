@@ -27,6 +27,21 @@
   --color-secondary-container: #454954;
   --color-outline: #ad8886;
 
+  /* Dedicated Admin Design Tokens */
+  --color-admin-bg: #f8fafc;
+  --color-admin-card: #ffffff;
+  --color-admin-card-subtle: #f1f5f9;
+  --color-admin-sidebar: #0f1117;
+  --color-admin-sidebar-hover: #1b1e28;
+  --color-admin-sidebar-border: #1f2432;
+  --color-admin-accent: #e51a34;
+  --color-admin-accent-hover: #c9142b;
+  --color-admin-gold: #f59e0b;
+  --color-admin-gold-subtle: #fef3c7;
+  --color-admin-text: #0f172a;
+  --color-admin-muted: #64748b;
+  --color-admin-border: #e2e8f0;
+
   --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-inter: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-serif: var(--font-inter), sans-serif;

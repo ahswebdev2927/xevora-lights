@@ -233,7 +233,7 @@ export default function AdminOrders() {
     return (
       <div className="flex flex-col items-center justify-center py-40">
         <Loader2 className="animate-spin text-black-accent mb-4" size={40} />
-        <p className="text-black/40 font-bold uppercase tracking-widest text-xs">Loading Orders...</p>
+        <p className="text-slate-400 font-bold uppercase tracking-widest text-xs">Loading Orders...</p>
       </div>
     );
   }
@@ -241,19 +241,19 @@ export default function AdminOrders() {
   return (
     <div className="pb-20 px-8 pt-8 font-inter">
       <div className="mb-10 text-center flex flex-col items-center">
-        <h1 className="text-4xl font-playfair font-bold text-black">Order Fulfillment</h1>
-        <p className="mt-2 text-black/60 font-medium">Track and manage customer purchases and custom fits.</p>
+        <h1 className="text-4xl font-extrabold text-slate-900">Order Fulfillment</h1>
+        <p className="mt-2 text-slate-500 font-medium">Track and manage customer purchases and custom fits.</p>
       </div>
 
       <div className="mb-10 flex justify-center">
         <div className="relative group min-w-[300px] max-w-md w-full">
-          <ShoppingBag className="absolute left-4 top-1/2 -translate-y-1/2 text-black/30 group-focus-within:text-[#C5A059] transition-colors" size={18} />
+          <ShoppingBag className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#e51a34] transition-colors" size={18} />
           <input 
             type="text" 
             placeholder="Search by order # or mobile..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full bg-white border border-brand/10 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm"
+            className="w-full bg-white border border-slate-200 rounded-2xl py-4 pl-12 pr-6 text-sm font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm"
           />
         </div>
       </div>
@@ -267,12 +267,12 @@ export default function AdminOrders() {
           { label: "Delivered", count: statusCounts.delivered, icon: ShoppingBag, color: "text-green-500", bg: "bg-green-50" },
           { label: "Cancelled", count: statusCounts.cancelled, icon: X, color: "text-red-500", bg: "bg-red-50" },
         ].map((s) => (
-          <div key={s.label} className="bg-white p-4 rounded-3xl border border-brand/5 shadow-sm flex items-center space-x-3">
+          <div key={s.label} className="bg-white p-4 rounded-3xl border border-slate-200/80 shadow-sm flex items-center space-x-3">
             <div className={`p-2.5 rounded-2xl ${s.bg} ${s.color} flex-shrink-0`}>
               <s.icon size={16} />
             </div>
             <div className="min-w-0">
-              <p className="text-[8px] font-black text-black/40 uppercase tracking-widest truncate">{s.label}</p>
+              <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest truncate">{s.label}</p>
               <p className="text-base font-bold text-black">{s.count}</p>
             </div>
           </div>
@@ -280,9 +280,9 @@ export default function AdminOrders() {
       </div>
 
       {/* FILTER ORDERS SECTION */}
-      <div className="bg-white rounded-3xl p-6 border border-brand/5 shadow-sm mb-10">
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm mb-10">
         <div className="flex items-center space-x-2 mb-6">
-          <div className="w-1.5 h-4 bg-brand rounded-full"></div>
+          <div className="w-1.5 h-4 bg-[#e51a34] rounded-full"></div>
           <h3 className="text-xs font-black text-black uppercase tracking-widest flex items-center gap-2">
             Filter Orders
           </h3>
@@ -290,12 +290,12 @@ export default function AdminOrders() {
         
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-end">
           <div>
-            <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">Status</label>
+            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Status</label>
             <div className="relative">
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-full bg-white border border-brand/10 rounded-2xl py-3 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm appearance-none pr-10"
+                className="w-full bg-white border border-slate-200 rounded-2xl py-3 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm appearance-none pr-10"
               >
                 <option value="all">All Statuses</option>
                 <option value="pending">Pending</option>
@@ -310,22 +310,22 @@ export default function AdminOrders() {
           </div>
 
           <div>
-            <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">From Date</label>
+            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">From Date</label>
             <input
               type="date"
               value={fromDate}
               onChange={(e) => setFromDate(e.target.value)}
-              className="w-full bg-white border border-brand/10 rounded-2xl py-3 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm"
+              className="w-full bg-white border border-slate-200 rounded-2xl py-3 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm"
             />
           </div>
 
           <div>
-            <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">To Date</label>
+            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">To Date</label>
             <input
               type="date"
               value={toDate}
               onChange={(e) => setToDate(e.target.value)}
-              className="w-full bg-white border border-[#064e3b]/10 rounded-2xl py-3 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm"
+              className="w-full bg-white border border-[#064e3b]/10 rounded-2xl py-3 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm"
             />
           </div>
 
@@ -346,12 +346,12 @@ export default function AdminOrders() {
       </div>
 
       {filteredOrders.length === 0 ? (
-        <div className="bg-white rounded-[2.5rem] p-20 shadow-sm border border-brand/5 text-center">
-          <div className="w-20 h-20 bg-brand/5 rounded-full flex items-center justify-center mx-auto mb-6">
-            <ShoppingBag size={40} className="text-black/20" />
+        <div className="bg-white rounded-[2.5rem] p-20 shadow-sm border border-slate-200/80 text-center">
+          <div className="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <ShoppingBag size={40} className="text-slate-300" />
           </div>
-          <h3 className="text-2xl font-playfair font-bold text-black mb-2">{searchTerm ? "No matching orders" : "No orders to display"}</h3>
-          <p className="text-black/60 font-medium max-w-sm mx-auto">
+          <h3 className="text-2xl font-extrabold text-slate-900 mb-2">{searchTerm ? "No matching orders" : "No orders to display"}</h3>
+          <p className="text-slate-500 font-medium max-w-sm mx-auto">
             {searchTerm ? "Adjust your search filters to find what you are looking for." : "When customers start placing orders for their custom-fit apparel, they will appear here."}
           </p>
         </div>
@@ -361,21 +361,21 @@ export default function AdminOrders() {
             const hasBespokeItems = order.items.some(item => item.customizations?.type === "Bespoke" || (item.customizations?.measurements && Object.keys(item.customizations.measurements).length > 0));
             
             return (
-            <div key={order.id} className={`rounded-[2rem] border overflow-hidden shadow-sm hover:shadow-md transition-all ${hasBespokeItems ? 'bg-[#F9F6EE] border-[#C5A059]/30 ring-1 ring-[#C5A059]/10' : 'bg-white border-brand/5'}`}>
+            <div key={order.id} className={`rounded-[2rem] border overflow-hidden shadow-sm hover:shadow-md transition-all ${hasBespokeItems ? 'bg-amber-50/50 border-amber-200 ring-1 ring-amber-100' : 'bg-white border-slate-200/80'}`}>
               {/* Order Header */}
               <div 
                 className="p-6 flex flex-col md:flex-row justify-between items-center cursor-pointer"
                 onClick={() => setExpandedOrder(expandedOrder === order.id ? null : order.id)}
               >
           <div className="flex items-center space-x-6">
-            <div className="bg-brand/5 p-4 rounded-2xl">
+            <div className="bg-slate-50 p-4 rounded-2xl">
               <ShoppingBag className="text-black" size={24} />
             </div>
             <div>
               <div className="flex items-center space-x-3">
                 <span className="text-lg font-bold text-black">Order #{order.id}</span>
                 {hasBespokeItems && (
-                  <div className="flex items-center space-x-1 px-3 py-1 bg-[#C5A059] text-white rounded-full">
+                  <div className="flex items-center space-x-1 px-3 py-1 bg-[#e51a34] text-white rounded-full">
                     <Scissors size={10} />
                     <span className="text-[8px] font-black uppercase tracking-widest">Bespoke Order</span>
                   </div>
@@ -411,7 +411,7 @@ export default function AdminOrders() {
                   <ChevronDown size={10} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-40" />
                 </div>
               </div>
-                    <p className="text-xs text-black/40 font-medium mt-1">
+                    <p className="text-xs text-slate-400 font-medium mt-1">
                       Placed on {new Date(order.createdAt).toLocaleDateString()}
                     </p>
                   </div>
@@ -419,10 +419,10 @@ export default function AdminOrders() {
 
                 <div className="flex items-center space-x-10 mt-4 md:mt-0">
                   <div className="text-right">
-                    <p className="text-[10px] font-black text-black/40 uppercase tracking-widest mb-1">Amount</p>
+                    <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Amount</p>
                     <p className="text-xl font-bold text-black">₹{order.totalAmount.toLocaleString()}</p>
                   </div>
-                  <div className="p-2 rounded-full bg-brand/5 text-black/40">
+                  <div className="p-2 rounded-full bg-slate-50 text-slate-400">
                     {expandedOrder === order.id ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
                   </div>
                 </div>
@@ -430,20 +430,20 @@ export default function AdminOrders() {
 
               {/* Order Details (Expanded) */}
               {expandedOrder === order.id && (
-                <div className="border-t border-brand/5 p-8 bg-brand/[0.01]">
+                <div className="border-t border-slate-200/80 p-8 bg-slate-50">
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
                     {/* Customer Info */}
                     <div className="space-y-6">
                       <h4 className="text-xs font-black text-black uppercase tracking-widest flex items-center gap-2">
                         <User size={14} className="text-black-accent" /> Customer Details
                       </h4>
-                      <div className="bg-white p-5 rounded-2xl border border-brand/5 space-y-4">
+                      <div className="bg-white p-5 rounded-2xl border border-slate-200/80 space-y-4">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-black/40 uppercase">Name</span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">Name</span>
                           <span className="text-xs font-black text-black">{order.customerName || "Guest User"}</span>
                         </div>
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-bold text-black/40 uppercase">Phone</span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase">Phone</span>
                           <span className="text-xs font-black text-black flex items-center gap-1">
                             <Phone size={10} /> {order.customerPhone}
                           </span>
@@ -455,7 +455,7 @@ export default function AdminOrders() {
                         <h4 className="text-xs font-black text-black uppercase tracking-widest flex items-center gap-2">
                           <MapPin size={14} className="text-black-accent" /> Delivery Address
                         </h4>
-                        <div className="bg-white p-5 rounded-2xl border border-brand/5">
+                        <div className="bg-white p-5 rounded-2xl border border-slate-200/80">
                           <p className="text-xs font-bold text-black/70 leading-relaxed">
                             {order.shippingAddress || "No address provided"}
                           </p>
@@ -467,9 +467,9 @@ export default function AdminOrders() {
                         <h4 className="text-xs font-black text-black uppercase tracking-widest flex items-center gap-2">
                           <CreditCard size={14} className="text-black-accent" /> Payment Details
                         </h4>
-                        <div className="bg-white p-5 rounded-2xl border border-brand/5 space-y-4">
+                        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 space-y-4">
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-black/40 uppercase">Payment Status</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase">Payment Status</span>
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[9px] font-bold uppercase tracking-widest border ${
                               order.paymentStatus === 'paid' 
                                 ? 'bg-green-500/10 text-green-600 border-green-500/20' 
@@ -480,28 +480,28 @@ export default function AdminOrders() {
                           </div>
                           
                           <div className="flex items-center justify-between gap-4">
-                            <span className="text-[10px] font-bold text-black/40 uppercase whitespace-nowrap">PhonePe Order ID</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase whitespace-nowrap">PhonePe Order ID</span>
                             <span className="text-[10px] font-mono font-bold text-black/70 truncate max-w-[150px]" title={order.phonepeOrderId || "N/A"}>
                               {order.phonepeOrderId || "N/A"}
                             </span>
                           </div>
 
                           <div className="flex items-center justify-between gap-4">
-                            <span className="text-[10px] font-bold text-black/40 uppercase whitespace-nowrap">Payment ID</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase whitespace-nowrap">Payment ID</span>
                             <span className="text-[10px] font-mono font-bold text-black/70 truncate max-w-[150px]" title={order.phonepePaymentId || "N/A"}>
                               {order.phonepePaymentId || "N/A"}
                             </span>
                           </div>
 
                           <div className="flex items-center justify-between">
-                            <span className="text-[10px] font-bold text-black/40 uppercase">Amount Received</span>
+                            <span className="text-[10px] font-bold text-slate-400 uppercase">Amount Received</span>
                             <span className="text-xs font-black text-black">
                               {order.paymentStatus === 'paid' ? `₹${order.totalAmount.toLocaleString()}` : '₹0'}
                             </span>
                           </div>
 
                           {order.paymentStatus !== 'paid' && order.status?.toLowerCase() !== 'cancelled' && (
-                            <div className="pt-2 border-t border-brand/5 flex flex-col gap-2">
+                            <div className="pt-2 border-t border-slate-200/80 flex flex-col gap-2">
                               <button
                                 onClick={(e) => {
                                   e.stopPropagation();
@@ -509,7 +509,7 @@ export default function AdminOrders() {
                                   setPaymentForm({ phonepePaymentId: "" });
                                   setShowPaymentModal(true);
                                 }}
-                                className="w-full bg-[#C5A059] hover:bg-[#C5A059]/90 text-white font-black text-[9px] uppercase tracking-widest rounded-xl py-2 px-4 transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-sm"
+                                className="w-full bg-[#e51a34] hover:bg-[#c9142b] text-white font-black text-[9px] uppercase tracking-widest rounded-xl py-2 px-4 transition-all flex items-center justify-center space-x-1.5 cursor-pointer shadow-sm"
                               >
                                 <CreditCard size={12} />
                                 <span>Update Payment Status</span>
@@ -536,9 +536,9 @@ export default function AdminOrders() {
                         {order.items.map((item) => {
                           const imgUrl = getProductImage(item.productImages, item.color);
                           return (
-                            <div key={item.id} className="bg-white p-6 rounded-3xl border border-brand/5 shadow-sm">
+                            <div key={item.id} className="bg-white p-6 rounded-3xl border border-slate-200/80 shadow-sm">
                               <div className="flex gap-4 items-start mb-6">
-                                <div className="w-16 h-20 rounded-xl overflow-hidden border border-brand/5 bg-brand-light/20 flex-shrink-0 relative">
+                                <div className="w-16 h-20 rounded-xl overflow-hidden border border-slate-200/80 bg-slate-100 flex-shrink-0 relative">
                                   <img 
                                     src={imgUrl} 
                                     alt={item.productName} 
@@ -553,7 +553,7 @@ export default function AdminOrders() {
                                   <div className="flex justify-between items-start">
                                     <div>
                                       <h5 className="text-sm font-black text-black line-clamp-1">{item.productName}</h5>
-                                      <p className="text-[10px] text-black/40 font-bold mt-1 uppercase tracking-widest">
+                                      <p className="text-[10px] text-slate-400 font-bold mt-1 uppercase tracking-widest">
                                         {item.size} / {item.color} — Qty: {item.quantity}
                                       </p>
                                     </div>
@@ -563,15 +563,15 @@ export default function AdminOrders() {
                               </div>
 
                               {item.customizations && item.customizations.measurements && Object.keys(item.customizations.measurements).length > 0 && (
-                                <div className="bg-[#8c6239]/5 rounded-2xl p-5 border border-[#8c6239]/10">
+                                <div className="bg-slate-50 rounded-2xl p-5 border border-slate-200">
                                   <div className="flex items-center space-x-2 mb-4">
-                                    <Sparkles size={12} className="text-[#C5A059]" />
-                                    <span className="text-[10px] font-black text-[#8c6239] uppercase tracking-[0.2em]">Bespoke Measurements (Inches)</span>
+                                    <Sparkles size={12} className="text-[#e51a34]" />
+                                    <span className="text-[10px] font-black text-slate-900 uppercase tracking-[0.2em]">Bespoke Measurements (Inches)</span>
                                   </div>
                                   <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                                     {Object.entries(item.customizations.measurements).map(([key, val]) => (
-                                      <div key={key} className="bg-white/80 p-3 rounded-xl border border-[#8c6239]/5">
-                                        <p className="text-[8px] font-black text-black/40 uppercase tracking-widest mb-1">{key}</p>
+                                      <div key={key} className="bg-white/80 p-3 rounded-xl border border-slate-200">
+                                        <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">{key}</p>
                                         <p className="text-xs font-black text-black">{val}"</p>
                                       </div>
                                     ))}
@@ -584,13 +584,13 @@ export default function AdminOrders() {
                         })}
 
                         {/* Order Summary / Pricing Breakdown */}
-                        <div className="bg-brand/5 border border-brand/10 rounded-3xl p-6 mt-4 space-y-4 text-black">
+                        <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 mt-4 space-y-4 text-black">
                           <h5 className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5">
                             <ShoppingBag size={12} className="text-black-accent" /> Order Summary
                           </h5>
                           <div className="space-y-2">
                             <div className="flex justify-between items-center text-xs">
-                              <span className="font-semibold text-black/60">Actual Price (Subtotal)</span>
+                              <span className="font-semibold text-slate-500">Actual Price (Subtotal)</span>
                               <span className="font-bold text-black">₹{(order.totalAmount + (order.discountAmount || 0)).toLocaleString()}</span>
                             </div>
                             
@@ -603,13 +603,13 @@ export default function AdminOrders() {
                               </div>
                             )}
 
-                            <div className="border-t border-brand/10 pt-2 flex justify-between items-center text-sm font-black mt-2">
+                            <div className="border-t border-slate-200 pt-2 flex justify-between items-center text-sm font-black mt-2">
                               <span>Grand Total</span>
                               <span className="text-black-accent">₹{order.totalAmount.toLocaleString()}</span>
                             </div>
 
                             {/* Shipping Info Action Button */}
-                            <div className="pt-4 border-t border-brand/10 mt-4">
+                            <div className="pt-4 border-t border-slate-200 mt-4">
                               <button
                                 disabled={order.status?.toLowerCase() !== "processing"}
                                 onClick={(e) => {
@@ -627,7 +627,7 @@ export default function AdminOrders() {
                                   });
                                   setShowShippingModal(true);
                                 }}
-                                className="w-full bg-[#8c6239] hover:bg-[#8c6239]/90 disabled:bg-[#8c6239]/20 disabled:text-black/40 disabled:cursor-not-allowed text-white hover:text-[#C5A059]/90 disabled:text-[#C5A059]/30 font-black text-[10px] uppercase tracking-widest rounded-2xl py-3 px-6 transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-sm border border-[#C5A059]/20"
+                                className="w-full bg-[#0f1117] hover:bg-[#0f1117]/90 disabled:bg-[#0f1117]/20 disabled:text-slate-400 disabled:cursor-not-allowed text-white hover:text-[#e51a34]/90 disabled:text-[#e51a34]/30 font-black text-[10px] uppercase tracking-widest rounded-2xl py-3 px-6 transition-all flex items-center justify-center space-x-2 cursor-pointer shadow-sm border border-white/10"
                               >
                                 <Truck size={14} />
                                 <span>Add shipping Info</span>
@@ -638,33 +638,33 @@ export default function AdminOrders() {
 
                         {/* Shipping Details (Admin view) */}
                         {order.courierServiceName && order.trackingNumber && (
-                          <div className="bg-[#8c6239]/5 border border-[#8c6239]/10 rounded-3xl p-6 mt-4 space-y-4 text-black">
-                            <h5 className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5 text-[#C5A059]">
+                          <div className="bg-slate-50 border border-slate-200 rounded-3xl p-6 mt-4 space-y-4 text-black">
+                            <h5 className="text-[10px] font-black uppercase tracking-[0.2em] mb-2 flex items-center gap-1.5 text-[#e51a34]">
                               🚚 Shipping Details
                             </h5>
                              <div className="grid grid-cols-2 gap-4 text-xs">
                               <div>
-                                <span className="font-semibold text-black/60 uppercase text-[9px] tracking-wider block">Courier Service</span>
+                                <span className="font-semibold text-slate-500 uppercase text-[9px] tracking-wider block">Courier Service</span>
                                 <span className="font-bold text-black">{order.courierServiceName}</span>
                               </div>
                               {order.courierId && (
                                 <div>
-                                  <span className="font-semibold text-black/60 uppercase text-[9px] tracking-wider block">Courier ID</span>
+                                  <span className="font-semibold text-slate-500 uppercase text-[9px] tracking-wider block">Courier ID</span>
                                   <span className="font-bold text-black">{order.courierId}</span>
                                 </div>
                               )}
                               <div>
-                                <span className="font-semibold text-black/60 uppercase text-[9px] tracking-wider block">Tracking Number</span>
+                                <span className="font-semibold text-slate-500 uppercase text-[9px] tracking-wider block">Tracking Number</span>
                                 <span className="font-bold text-black">{order.trackingNumber}</span>
                               </div>
                               {order.trackingLink && (
                                 <div>
-                                  <span className="font-semibold text-black/60 uppercase text-[9px] tracking-wider block mb-1">Tracking Link</span>
+                                  <span className="font-semibold text-slate-500 uppercase text-[9px] tracking-wider block mb-1">Tracking Link</span>
                                   <a 
                                     href={order.trackingLink} 
                                     target="_blank" 
                                     rel="noopener noreferrer" 
-                                    className="text-[#C5A059] hover:underline font-bold"
+                                    className="text-[#e51a34] hover:underline font-bold"
                                   >
                                     Track Package →
                                   </a>
@@ -672,8 +672,8 @@ export default function AdminOrders() {
                               )}
                               {order.estimatedDeliveryDate && (
                                 <div>
-                                  <span className="font-semibold text-black/60 uppercase text-[9px] tracking-wider block">Estimated Delivery</span>
-                                  <span className="font-bold text-[#C5A059]">
+                                  <span className="font-semibold text-slate-500 uppercase text-[9px] tracking-wider block">Estimated Delivery</span>
+                                  <span className="font-bold text-[#e51a34]">
                                     {new Date(order.estimatedDeliveryDate).toLocaleDateString('en-US', {
                                       month: 'short',
                                       day: 'numeric',
@@ -683,8 +683,8 @@ export default function AdminOrders() {
                                 </div>
                               )}
                               {order.shippingNotes && (
-                                <div className="col-span-2 border-t border-[#8c6239]/10 pt-2">
-                                  <span className="font-semibold text-black/40 uppercase text-[9px] tracking-wider block mb-1">Shipping Notes</span>
+                                <div className="col-span-2 border-t border-slate-200 pt-2">
+                                  <span className="font-semibold text-slate-400 uppercase text-[9px] tracking-wider block mb-1">Shipping Notes</span>
                                   <span className="italic text-black/70">{order.shippingNotes}</span>
                                 </div>
                               )}
@@ -703,7 +703,7 @@ export default function AdminOrders() {
       )}
 
       {toast && (
-        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-[#8c6239] text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 font-bold text-sm border border-[#C5A059]/20 animate-in fade-in slide-in-from-bottom-5 duration-300">
+        <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-[#0f1117] text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 font-bold text-sm border border-white/10 animate-in fade-in slide-in-from-bottom-5 duration-300">
           <CheckCircle2 size={18} /><span>{toast}</span>
         </div>
       )}
@@ -712,25 +712,25 @@ export default function AdminOrders() {
       {showShippingModal && selectedOrderForShipping && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div 
-            className="absolute inset-0 bg-brand/40 backdrop-blur-sm" 
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" 
             onClick={() => !isSubmittingShipping && setShowShippingModal(false)} 
           />
-          <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border border-brand/5 overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-xl bg-white rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="p-8 border-b border-brand/5 flex items-center justify-between bg-brand/5">
+            <div className="p-8 border-b border-slate-200/80 flex items-center justify-between bg-slate-50">
               <div>
-                <h3 className="text-xl font-playfair font-bold text-black flex items-center gap-2">
-                  <Truck className="text-[#C5A059]" size={20} />
+                <h3 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                  <Truck className="text-[#e51a34]" size={20} />
                   Add Shipping Info
                 </h3>
-                <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest mt-1">
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
                   Order #AS-{selectedOrderForShipping.id}
                 </p>
               </div>
               <button 
                 onClick={() => setShowShippingModal(false)}
                 disabled={isSubmittingShipping}
-                className="p-2 rounded-full hover:bg-brand/5 text-black/40 hover:text-black transition-colors cursor-pointer"
+                className="p-2 rounded-full hover:bg-slate-50 text-slate-400 hover:text-black transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -775,7 +775,7 @@ export default function AdminOrders() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {/* Courier Service Name */}
                 <div>
-                  <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
                     Courier Service Name <span className="text-red-500">*</span>
                   </label>
                   <input 
@@ -784,13 +784,13 @@ export default function AdminOrders() {
                     value={shippingForm.courierServiceName}
                     onChange={(e) => setShippingForm(prev => ({ ...prev, courierServiceName: e.target.value }))}
                     placeholder="e.g. Blue Dart, Delhivery"
-                    className="w-full bg-white border border-brand/10 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm"
+                    className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm"
                   />
                 </div>
 
                 {/* Courier ID */}
                 <div>
-                  <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
                     Courier ID / Code
                   </label>
                   <input 
@@ -798,13 +798,13 @@ export default function AdminOrders() {
                     value={shippingForm.courierId}
                     onChange={(e) => setShippingForm(prev => ({ ...prev, courierId: e.target.value }))}
                     placeholder="e.g. BD_EXP"
-                    className="w-full bg-white border border-brand/10 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm"
+                    className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm"
                   />
                 </div>
 
                 {/* Tracking Number */}
                 <div>
-                  <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
                     Tracking Number <span className="text-red-500">*</span>
                   </label>
                   <input 
@@ -813,13 +813,13 @@ export default function AdminOrders() {
                     value={shippingForm.trackingNumber}
                     onChange={(e) => setShippingForm(prev => ({ ...prev, trackingNumber: e.target.value }))}
                     placeholder="e.g. 1234567890"
-                    className="w-full bg-white border border-brand/10 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm"
+                    className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm"
                   />
                 </div>
 
                 {/* Tracking Link */}
                 <div>
-                  <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
                     Tracking Link
                   </label>
                   <input 
@@ -827,13 +827,13 @@ export default function AdminOrders() {
                     value={shippingForm.trackingLink}
                     onChange={(e) => setShippingForm(prev => ({ ...prev, trackingLink: e.target.value }))}
                     placeholder="e.g. https://track.bluedart.com/..."
-                    className="w-full bg-white border border-brand/10 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm"
+                    className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm"
                   />
                 </div>
 
                 {/* Estimated Delivery Date */}
                 <div className="md:col-span-2">
-                  <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
                     Estimated Delivery Date <span className="text-red-500">*</span>
                   </label>
                   <div className="relative">
@@ -842,14 +842,14 @@ export default function AdminOrders() {
                       required
                       value={shippingForm.estimatedDeliveryDate}
                       onChange={(e) => setShippingForm(prev => ({ ...prev, estimatedDeliveryDate: e.target.value }))}
-                      className="w-full bg-white border border-brand/10 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm"
+                      className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm"
                     />
                   </div>
                 </div>
 
                 {/* Shipping Notes */}
                 <div className="md:col-span-2">
-                  <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
                     Shipping Notes / Dispatch Notes
                   </label>
                   <textarea 
@@ -857,25 +857,25 @@ export default function AdminOrders() {
                     value={shippingForm.shippingNotes}
                     onChange={(e) => setShippingForm(prev => ({ ...prev, shippingNotes: e.target.value }))}
                     placeholder="e.g. Signature required, deliver after 2 PM..."
-                    className="w-full bg-white border border-brand/10 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm resize-none"
+                    className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm resize-none"
                   />
                 </div>
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex items-center space-x-4 pt-4 border-t border-brand/5">
+              <div className="flex items-center space-x-4 pt-4 border-t border-slate-200/80">
                 <button
                   type="button"
                   disabled={isSubmittingShipping}
                   onClick={() => setShowShippingModal(false)}
-                  className="flex-1 py-3.5 bg-brand/5 text-black/60 hover:text-black disabled:opacity-40 font-black text-[10px] uppercase tracking-widest rounded-2xl cursor-pointer border border-brand/5 hover:bg-brand/10 transition-all text-center"
+                  className="flex-1 py-3.5 bg-slate-50 text-slate-500 hover:text-black disabled:opacity-40 font-black text-[10px] uppercase tracking-widest rounded-2xl cursor-pointer border border-slate-200/80 hover:bg-slate-100 transition-all text-center"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingShipping}
-                  className="flex-1 py-3.5 bg-brand text-white hover:bg-brand/90 disabled:opacity-40 font-black text-[10px] uppercase tracking-widest rounded-2xl cursor-pointer shadow-lg hover:shadow-xl transition-all text-center flex items-center justify-center gap-2"
+                  className="flex-1 py-3.5 bg-[#e51a34] hover:bg-[#c9142b] text-white disabled:opacity-40 font-black text-[10px] uppercase tracking-widest rounded-2xl cursor-pointer shadow-md shadow-[#e51a34]/20 transition-all text-center flex items-center justify-center gap-2"
                 >
                   {isSubmittingShipping ? (
                     <>
@@ -899,25 +899,25 @@ export default function AdminOrders() {
       {showPaymentModal && selectedOrderForPayment && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div 
-            className="absolute inset-0 bg-brand/40 backdrop-blur-sm" 
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" 
             onClick={() => !isSubmittingPayment && setShowPaymentModal(false)} 
           />
-          <div className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl border border-brand/5 overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="p-8 border-b border-brand/5 flex items-center justify-between bg-brand/5">
+            <div className="p-8 border-b border-slate-200/80 flex items-center justify-between bg-slate-50">
               <div>
-                <h3 className="text-xl font-playfair font-bold text-black flex items-center gap-2">
-                  <CreditCard className="text-[#C5A059]" size={20} />
+                <h3 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
+                  <CreditCard className="text-[#e51a34]" size={20} />
                   Update Payment Status
                 </h3>
-                <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest mt-1">
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
                   Order #AS-{selectedOrderForPayment.id}
                 </p>
               </div>
               <button 
                 onClick={() => setShowPaymentModal(false)}
                 disabled={isSubmittingPayment}
-                className="p-2 rounded-full hover:bg-brand/5 text-black/40 hover:text-black transition-colors cursor-pointer"
+                className="p-2 rounded-full hover:bg-slate-50 text-slate-400 hover:text-black transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -962,7 +962,7 @@ export default function AdminOrders() {
                 </div>
 
                 <div>
-                  <label className="block text-[10px] font-black text-black/40 uppercase tracking-widest mb-2">
+                  <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
                     PhonePe Payment ID <span className="text-red-500">*</span>
                   </label>
                   <input 
@@ -971,28 +971,28 @@ export default function AdminOrders() {
                     value={paymentForm.phonepePaymentId}
                     onChange={(e) => setPaymentForm({ phonepePaymentId: e.target.value })}
                     placeholder="e.g. T26091812345678"
-                    className="w-full bg-white border border-brand/10 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#C5A059]/5 transition-all shadow-sm"
+                    className="w-full bg-white border border-slate-200 rounded-2xl py-3.5 px-4 text-xs font-bold text-black focus:outline-none focus:ring-4 focus:ring-[#e51a34]/15 focus:border-[#e51a34] transition-all shadow-sm"
                   />
-                  <p className="text-[9px] text-black/40 font-medium mt-2 leading-relaxed">
+                  <p className="text-[9px] text-slate-400 font-medium mt-2 leading-relaxed">
                     Verify the payment status on your PhonePe dashboard for order <span className="font-mono font-bold">{selectedOrderForPayment.phonepeOrderId}</span>, copy the Payment ID, and paste it here.
                   </p>
                 </div>
               </div>
 
               {/* Submit Buttons */}
-              <div className="flex items-center space-x-4 pt-4 border-t border-brand/5">
+              <div className="flex items-center space-x-4 pt-4 border-t border-slate-200/80">
                 <button
                   type="button"
                   disabled={isSubmittingPayment}
                   onClick={() => setShowPaymentModal(false)}
-                  className="flex-1 py-3.5 bg-brand/5 text-black/60 hover:text-black disabled:opacity-40 font-black text-[10px] uppercase tracking-widest rounded-2xl cursor-pointer border border-brand/5 hover:bg-brand/10 transition-all text-center"
+                  className="flex-1 py-3.5 bg-slate-50 text-slate-500 hover:text-black disabled:opacity-40 font-black text-[10px] uppercase tracking-widest rounded-2xl cursor-pointer border border-slate-200/80 hover:bg-slate-100 transition-all text-center"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmittingPayment}
-                  className="flex-1 py-3.5 bg-brand text-white hover:bg-brand/90 disabled:opacity-40 font-black text-[10px] uppercase tracking-widest rounded-2xl cursor-pointer shadow-lg hover:shadow-xl transition-all text-center flex items-center justify-center gap-2"
+                  className="flex-1 py-3.5 bg-[#e51a34] hover:bg-[#c9142b] text-white disabled:opacity-40 font-black text-[10px] uppercase tracking-widest rounded-2xl cursor-pointer shadow-md shadow-[#e51a34]/20 transition-all text-center flex items-center justify-center gap-2"
                 >
                   {isSubmittingPayment ? (
                     <>
@@ -1016,24 +1016,24 @@ export default function AdminOrders() {
       {showCancelModal && cancelOrderId && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <div 
-            className="absolute inset-0 bg-brand/40 backdrop-blur-sm" 
+            className="absolute inset-0 bg-slate-900/60 backdrop-blur-sm" 
             onClick={() => !isSubmittingCancel && setShowCancelModal(false)} 
           />
-          <div className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl border border-brand/5 overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="relative w-full max-w-md bg-white rounded-[2.5rem] shadow-2xl border border-slate-200/80 overflow-hidden animate-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="p-8 border-b border-brand/5 flex items-center justify-between bg-brand/5">
+            <div className="p-8 border-b border-slate-200/80 flex items-center justify-between bg-slate-50">
               <div>
-                <h3 className="text-xl font-playfair font-bold text-black flex items-center gap-2">
+                <h3 className="text-xl font-extrabold text-slate-900 flex items-center gap-2">
                   Cancel Order
                 </h3>
-                <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest mt-1">
+                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">
                   Order #AS-{cancelOrderId}
                 </p>
               </div>
               <button 
                 onClick={() => setShowCancelModal(false)}
                 disabled={isSubmittingCancel}
-                className="p-2 rounded-full hover:bg-brand/5 text-black/40 hover:text-black transition-colors cursor-pointer"
+                className="p-2 rounded-full hover:bg-slate-50 text-slate-400 hover:text-black transition-colors cursor-pointer"
               >
                 <X size={18} />
               </button>
@@ -1042,7 +1042,7 @@ export default function AdminOrders() {
             {/* Form */}
             <div className="p-8 space-y-6">
               <div>
-                <label className="block text-[10px] font-bold text-black/40 uppercase tracking-widest mb-2 ml-1">
+                <label className="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 ml-1">
                   Reason for Cancellation
                 </label>
                 <textarea
@@ -1050,7 +1050,7 @@ export default function AdminOrders() {
                   onChange={(e) => setCancelReason(e.target.value)}
                   placeholder="Enter the reason why this order is being cancelled..."
                   rows={4}
-                  className="w-full bg-brand/5 border border-brand/10 rounded-2xl py-3.5 px-4 text-xs font-bold text-black placeholder-brand/30 focus:outline-none focus:border-[#C5A059]/30 focus:ring-4 focus:ring-[#C5A059]/10 transition-all resize-none"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-2xl py-3.5 px-4 text-xs font-bold text-black placeholder-brand/30 focus:outline-none focus:border-[#e51a34] focus:ring-2 focus:ring-[#e51a34]/20 transition-all resize-none"
                   required
                 />
               </div>
@@ -1060,7 +1060,7 @@ export default function AdminOrders() {
                   type="button"
                   onClick={() => setShowCancelModal(false)}
                   disabled={isSubmittingCancel}
-                  className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-black/40 hover:bg-brand/5 rounded-xl transition-all cursor-pointer"
+                  className="px-5 py-3 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:bg-slate-50 rounded-xl transition-all cursor-pointer"
                 >
                   Close
                 </button>

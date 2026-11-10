@@ -1,7 +1,8 @@
 import { db } from "@/db";
-import { navigationMenu, pageSections, products, homepageCategories, productVariations } from "@/db/schema";
-import { eq, inArray, asc, or, and } from "drizzle-orm";
+import { products, homepageCategories, productVariations } from "@/db/schema";
+import { eq, inArray, or, and } from "drizzle-orm";
 import CategoryFilterSection from "@/components/CategoryFilterSection";
+import { getFirstProductImageUrl } from "@/utils/product";
 import Link from "next/link";
 
 interface PageProps {
@@ -10,42 +11,27 @@ interface PageProps {
 
 export default async function CategoryPage({ params }: PageProps) {
   const { slug } = await params;
-  
-  // 1. Find the category item (first check navigation menu)
   const href = `/category/${slug}`;
-  const menuResult = await db.select()
-    .from(navigationMenu)
-    .where(and(eq(navigationMenu.href, href), eq(navigationMenu.isActive, true)))
-    .limit(1);
 
-  let categoryName = "";
-  let isFromNav = false;
-  let filterTypes: string | null = null;
-
+  // 1. Find the category item from homepageCategories
   const homeCatResult = await db.select()
     .from(homepageCategories)
     .where(eq(homepageCategories.isActive, true))
     .limit(100);
 
-  let matchingHomeCat = homeCatResult.find(
+  const matchingHomeCat = homeCatResult.find(
     (item) => item.name.toLowerCase().trim().replace(/\s+/g, "-") === slug || item.link === href
   );
 
-  if (menuResult.length > 0) {
-    categoryName = menuResult[0].label;
-    isFromNav = true;
-    filterTypes = menuResult[0].filterTypes;
-    if (!matchingHomeCat) {
-      matchingHomeCat = homeCatResult.find(
-        (item) => item.name.toLowerCase() === categoryName.toLowerCase()
-      );
-    }
-  } else if (matchingHomeCat) {
+  let categoryName = "";
+  let filterTypes: string | null = null;
+
+  if (matchingHomeCat) {
     categoryName = matchingHomeCat.name;
     filterTypes = matchingHomeCat.filterTypes;
   }
 
-  // 2. If not found in either, show Not Found
+  // 2. If not found in categories, show Not Found
   if (!categoryName) {
     return (
       <div className="min-h-[70vh] flex flex-col items-center justify-center px-4">
@@ -55,59 +41,23 @@ export default async function CategoryPage({ params }: PageProps) {
     );
   }
 
-  // 3. Fetch sections for this category (if it is a navigation item)
-  let sectionsWithProducts: any[] = [];
-  if (isFromNav && menuResult.length > 0) {
-    const sections = await db.select()
-      .from(pageSections)
-      .where(eq(pageSections.menuId, menuResult[0].id))
-      .orderBy(asc(pageSections.displayOrder));
-
-    sectionsWithProducts = await Promise.all(
-      sections.map(async (section) => {
-        const productIds = section.productIds
-          .split(",")
-          .map(id => parseInt(id.trim()))
-          .filter(id => !isNaN(id));
-
-        let hydratedProducts: any[] = [];
-        if (productIds.length > 0) {
-          hydratedProducts = await db.select()
-            .from(products)
-            .where(and(inArray(products.id, productIds), eq(products.isActive, true)));
-        }
-
-        return {
-          ...section,
-          products: hydratedProducts
-        };
-      })
+  // 3. Query all active products matching this category name or slug
+  const categorySlug = categoryName.toLowerCase().trim().replace(/\s+/g, "-");
+  const rawProducts = await db.select()
+    .from(products)
+    .where(
+      and(
+        or(
+          eq(products.category, categoryName),
+          eq(products.category, slug),
+          eq(products.category, categorySlug)
+        ),
+        eq(products.isActive, true)
+      )
     );
-  }
 
-  // 4. If no custom sections exist, dynamically query all products matching this category name
-  let displayProducts: any[] = [];
-  if (sectionsWithProducts.length === 0) {
-    const categorySlug = categoryName.toLowerCase().trim().replace(/\s+/g, "-");
-    displayProducts = await db.select()
-      .from(products)
-      .where(
-        and(
-          or(
-            eq(products.category, categoryName),
-            eq(products.category, slug),
-            eq(products.category, categorySlug)
-          ),
-          eq(products.isActive, true)
-        )
-      );
-  }
-
-  // 5. Query sizes (variations) for all products in this category
-  const allProductIds = [
-    ...displayProducts.map((p) => p.id),
-    ...sectionsWithProducts.flatMap((s) => (s.products || []).map((p: any) => p.id)),
-  ];
+  // 4. Query variations/sizes for all products in this category
+  const allProductIds = rawProducts.map((p) => p.id);
 
   let allVariations: any[] = [];
   if (allProductIds.length > 0) {
@@ -137,28 +87,18 @@ export default async function CategoryPage({ params }: PageProps) {
     stockMap.set(v.productId, currentStock + (v.stock || 0));
   });
 
-  // Attach sizes and totalStock to displayProducts
-  displayProducts = displayProducts.map((p) => ({
+  // Attach sizes, imageUrl, and totalStock to displayProducts
+  const displayProducts = rawProducts.map((p) => ({
     ...p,
+    imageUrl: getFirstProductImageUrl(p.images),
     sizes: sizeMap.get(p.id) || [],
     totalStock: stockMap.has(p.id) ? stockMap.get(p.id) : 0,
   }));
 
-  // Attach sizes and totalStock to sectionsWithProducts
-  sectionsWithProducts = sectionsWithProducts.map((s) => ({
-    ...s,
-    products: (s.products || []).map((p: any) => ({
-      ...p,
-      sizes: sizeMap.get(p.id) || [],
-      totalStock: stockMap.has(p.id) ? stockMap.get(p.id) : 0,
-    })),
-  }));
-
   return (
     <div className="w-full bg-brand-light min-h-[calc(100vh-48px)] flex flex-col">
-      {/* Rendering sections and fallback products via interactive CategoryFilterSection component */}
       <CategoryFilterSection
-        initialSections={sectionsWithProducts}
+        initialSections={[]}
         initialDisplayProducts={displayProducts}
         categoryName={categoryName}
         slug={slug}
