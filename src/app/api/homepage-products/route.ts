@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { products, productVariations } from "@/db/schema";
+import { products, productVariations, siteSettings } from "@/db/schema";
 import { eq, or, and } from "drizzle-orm";
 
 export async function GET() {
@@ -99,13 +99,40 @@ export async function GET() {
     const featuredMrps = [slot1?.mrp, slot2?.mrp].filter((p): p is number => typeof p === "number" && p > 0);
     const heroMrp = featuredMrps.length > 0 ? Math.max(...featuredMrps) : 7999;
 
+    // Fetch Hero Card Media & Badges setting
+    const heroMediaSetting = await db
+      .select()
+      .from(siteSettings)
+      .where(eq(siteSettings.key, "hero_media"))
+      .limit(1);
+
+    let heroMedia = {
+      mediaUrl: "/images/landing/hero-gflash.jpg",
+      tag1: "TYPE-C FAST CHARGING",
+      tag2: "CNC AEROSPACE CHASSIS",
+    };
+
+    if (heroMediaSetting.length > 0 && heroMediaSetting[0].value) {
+      try {
+        const parsed = JSON.parse(heroMediaSetting[0].value);
+        if (parsed.mediaUrl) heroMedia.mediaUrl = parsed.mediaUrl;
+        if (parsed.tag1 !== undefined) heroMedia.tag1 = parsed.tag1;
+        if (parsed.tag2 !== undefined) heroMedia.tag2 = parsed.tag2;
+      } catch {
+        if (typeof heroMediaSetting[0].value === "string") {
+          heroMedia.mediaUrl = heroMediaSetting[0].value;
+        }
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: {
         slot1,
         slot2,
         heroStartingPrice: heroPrice,
-        heroStartingMrp: heroMrp
+        heroStartingMrp: heroMrp,
+        heroMedia,
       }
     });
 

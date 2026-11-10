@@ -71,3 +71,18 @@ export function getFirstProductImageUrl(
   const urls = getProductImageUrls(imagesJson, colorsJson, selectedColor);
   return urls.length > 0 ? urls[0] : "/images/placeholder.png";
 }
+
+export function isVideoUrl(url?: string | null): boolean {
+  if (!url) return false;
+  const cleanUrl = url.split("?")[0].toLowerCase();
+  return (
+    cleanUrl.endsWith(".mp4") ||
+    cleanUrl.endsWith(".webm") ||
+    cleanUrl.endsWith(".mov") ||
+    cleanUrl.endsWith(".avi") ||
+    cleanUrl.endsWith(".mkv") ||
+    cleanUrl.includes("/video/upload/") ||
+    (cleanUrl.includes(".cloudinary.com/") && cleanUrl.includes("/video/"))
+  );
+}
+

@@ -37,6 +37,7 @@ client.execute("ALTER TABLE navigation_menu ADD COLUMN is_active INTEGER NOT NUL
 client.execute("ALTER TABLE orders ADD COLUMN phonepe_order_id TEXT;").catch(() => {});
 client.execute("ALTER TABLE orders ADD COLUMN phonepe_payment_id TEXT;").catch(() => {});
 client.execute("ALTER TABLE orders ADD COLUMN payment_gateway TEXT DEFAULT 'phonepe';").catch(() => {});
+client.execute("ALTER TABLE reels ADD COLUMN creator_handle TEXT DEFAULT '@creator';").catch(() => {});
 client.execute(`
   CREATE TABLE IF NOT EXISTS reels (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,10 +46,25 @@ client.execute(`
     thumbnail_url TEXT,
     product_id INTEGER REFERENCES products(id) ON DELETE SET NULL,
     badge_text TEXT DEFAULT 'NEW',
+    creator_handle TEXT DEFAULT '@creator',
     views_count TEXT DEFAULT '2.5M',
     display_order INTEGER NOT NULL DEFAULT 0,
     is_active INTEGER NOT NULL DEFAULT 1,
     created_at TEXT
+  );
+`).catch(() => {});
+client.execute(`
+  CREATE TABLE IF NOT EXISTS product_reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    order_id INTEGER NOT NULL REFERENCES orders(id) ON DELETE CASCADE,
+    rating INTEGER NOT NULL DEFAULT 5,
+    title TEXT NOT NULL,
+    comment TEXT NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
   );
 `).catch(() => {});
 

@@ -7,15 +7,16 @@ import {
   Trash2, 
   Edit, 
   Upload, 
-  Eye, 
   Check, 
   AlertCircle, 
   Loader2, 
   X, 
-  Tag, 
   Sparkles,
-  ShoppingBag
+  ShoppingBag,
+  ExternalLink,
+  Volume2
 } from "lucide-react";
+import { isVideoUrl } from "@/utils/product";
 
 interface ProductOption {
   id: number;
@@ -28,6 +29,7 @@ interface ProductOption {
 interface ReelItem {
   id: number;
   title: string;
+  creatorHandle: string;
   videoUrl: string;
   thumbnailUrl: string | null;
   productId: number | null;
@@ -54,10 +56,11 @@ export default function AdminReelsPage() {
 
   // Form states
   const [formTitle, setFormTitle] = useState("");
+  const [formCreatorHandle, setFormCreatorHandle] = useState("@creator");
   const [formVideoUrl, setFormVideoUrl] = useState("");
   const [formThumbnailUrl, setFormThumbnailUrl] = useState("");
   const [formProductId, setFormProductId] = useState<number | "">("");
-  const [formBadgeText, setFormBadgeText] = useState("NEW");
+  const [formBadgeText, setFormBadgeText] = useState("PRO IN ACTION");
   const [formViewsCount, setFormViewsCount] = useState("2.5M");
   const [formDisplayOrder, setFormDisplayOrder] = useState<number>(0);
   const [formIsActive, setFormIsActive] = useState<boolean>(true);
@@ -86,7 +89,7 @@ export default function AdminReelsPage() {
         setProducts(dataProducts.data || []);
       }
     } catch (err) {
-      setError("Failed to load data.");
+      setError("Failed to load reels data.");
     } finally {
       setIsLoading(false);
     }
@@ -99,10 +102,11 @@ export default function AdminReelsPage() {
   const handleOpenAddModal = () => {
     setEditingReel(null);
     setFormTitle("");
+    setFormCreatorHandle("@creator");
     setFormVideoUrl("");
     setFormThumbnailUrl("");
     setFormProductId("");
-    setFormBadgeText("NEW");
+    setFormBadgeText("PRO IN ACTION");
     setFormViewsCount("2.5M");
     setFormDisplayOrder(reels.length + 1);
     setFormIsActive(true);
@@ -114,10 +118,11 @@ export default function AdminReelsPage() {
   const handleOpenEditModal = (reel: ReelItem) => {
     setEditingReel(reel);
     setFormTitle(reel.title || "");
+    setFormCreatorHandle(reel.creatorHandle || "@creator");
     setFormVideoUrl(reel.videoUrl || "");
     setFormThumbnailUrl(reel.thumbnailUrl || "");
     setFormProductId(reel.productId || "");
-    setFormBadgeText(reel.badgeText || "NEW");
+    setFormBadgeText(reel.badgeText || "PRO IN ACTION");
     setFormViewsCount(reel.viewsCount || "2.5M");
     setFormDisplayOrder(reel.displayOrder || 0);
     setFormIsActive(reel.isActive);
@@ -130,7 +135,7 @@ export default function AdminReelsPage() {
     if (type === "video") setIsUploadingVideo(true);
     if (type === "thumb") setIsUploadingThumb(true);
     setError("");
-    setSuccess(`Uploading ${type}... please wait`);
+    setSuccess(`Uploading ${type === "video" ? "video" : "poster thumbnail"}... please wait`);
 
     try {
       const formData = new FormData();
@@ -145,7 +150,7 @@ export default function AdminReelsPage() {
         setSuccess("");
         setError(data.error || "Upload failed.");
       }
-    } catch (err) {
+    } catch {
       setSuccess("");
       setError("Error uploading file.");
     } finally {
@@ -161,19 +166,26 @@ export default function AdminReelsPage() {
       return;
     }
 
+    const activeCount = reels.filter(r => r.isActive).length;
+    if (formIsActive && (!editingReel || !editingReel.isActive) && activeCount >= 10) {
+      setError("Maximum of 10 active reels can be displayed on the storefront. Please deactivate an existing reel first.");
+      return;
+    }
+
     setIsSubmitting(true);
     setError("");
     setSuccess("");
 
     const payload = {
       id: editingReel?.id,
-      title: formTitle,
-      videoUrl: formVideoUrl,
-      thumbnailUrl: formThumbnailUrl || null,
+      title: formTitle.trim(),
+      creatorHandle: formCreatorHandle.trim(),
+      videoUrl: formVideoUrl.trim(),
+      thumbnailUrl: formThumbnailUrl ? formThumbnailUrl.trim() : null,
       productId: formProductId === "" ? null : Number(formProductId),
-      badgeText: formBadgeText,
-      viewsCount: formViewsCount,
-      displayOrder: formDisplayOrder,
+      badgeText: formBadgeText.trim(),
+      viewsCount: formViewsCount.trim(),
+      displayOrder: Number(formDisplayOrder) || 0,
       isActive: formIsActive,
     };
 
@@ -193,32 +205,37 @@ export default function AdminReelsPage() {
       } else {
         setError(data.error || "Operation failed.");
       }
-    } catch (err) {
-      setError("An error occurred.");
+    } catch {
+      setError("An error occurred while saving the reel.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm("Are you sure you want to delete this video reel?")) return;
+    if (!confirm("Are you sure you want to delete this reel?")) return;
 
     try {
       const res = await fetch(`/api/admin/reels?id=${id}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setReels(reels.filter(r => r.id !== id));
+        setSuccess("Reel deleted successfully!");
       } else {
-        alert(data.error || "Failed to delete reel.");
+        setError(data.error || "Failed to delete reel.");
       }
-    } catch (err) {
-      alert("Error deleting reel.");
+    } catch {
+      setError("Error deleting reel.");
     }
   };
 
   const handleToggleStatus = async (reel: ReelItem) => {
+    const updatedStatus = !reel.isActive;
+    if (updatedStatus && reels.filter((r) => r.isActive).length >= 10) {
+      alert("Maximum 10 active reels allowed on the storefront. Please deactivate another reel first.");
+      return;
+    }
     try {
-      const updatedStatus = !reel.isActive;
       const res = await fetch("/api/admin/reels", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -226,183 +243,202 @@ export default function AdminReelsPage() {
       });
       const data = await res.json();
       if (data.success) {
-        setReels(reels.map(r => r.id === reel.id ? { ...r, isActive: updatedStatus } : r));
+        setReels(reels.map((r) => (r.id === reel.id ? { ...r, isActive: updatedStatus } : r)));
       }
     } catch (err) {
       console.error("Toggle error", err);
     }
   };
 
+  const activeReelsCount = reels.filter((r) => r.isActive).length;
+
   return (
     <div className="p-6 md:p-10 max-w-7xl mx-auto space-y-8 font-sans">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/15 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/80 pb-6">
         <div>
           <div className="flex items-center space-x-3">
-            <div className="p-2.5 bg-[#e51a34] text-white rounded-2xl shadow-md">
+            <div className="p-2.5 bg-[#e51a34] text-white rounded-2xl shadow-md shadow-[#e51a34]/20">
               <Video className="h-6 w-6" />
             </div>
             <div>
-              <h1 className="text-2xl md:text-3xl font-serif font-black text-slate-800 tracking-tight">
-                Shoppable Video Reels
+              <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight">
+                In the Wild — Watch It In Action
               </h1>
-              <p className="text-xs text-slate-900/80 font-medium mt-1">
-                Manage vertical video reels displayed below customer reviews on your homepage.
+              <p className="text-xs text-slate-500 font-medium mt-1">
+                Manage video reels and raw camera footage showcasing Xevora spotlights on your homepage.
               </p>
             </div>
           </div>
         </div>
 
-        <button
-          onClick={handleOpenAddModal}
-          className="flex items-center justify-center space-x-2 px-5 py-3 rounded-2xl bg-[#e51a34] hover:bg-[#c9142b] text-white font-bold text-xs uppercase tracking-widest transition-all shadow-md hover:shadow-lg cursor-pointer"
-        >
-          <Plus size={16} />
-          <span>Add New Reel</span>
-        </button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center space-x-2 px-3.5 py-2.5 rounded-xl bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-700">
+            <span
+              className={`inline-block w-2.5 h-2.5 rounded-full ${
+                activeReelsCount >= 10 ? "bg-amber-500 animate-pulse" : "bg-emerald-500"
+              }`}
+            />
+            <span>
+              Active Reels: <strong className="text-slate-900">{activeReelsCount}</strong> / 10
+            </span>
+          </div>
+
+          <button
+            onClick={handleOpenAddModal}
+            className="flex items-center justify-center space-x-2 px-5 py-3 rounded-xl bg-[#e51a34] hover:bg-[#c9142b] text-white font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-[#e51a34]/20 cursor-pointer shrink-0"
+          >
+            <Plus size={16} />
+            <span>Add New Reel</span>
+          </button>
+        </div>
       </div>
 
-      {/* Alert Banner */}
+      {/* Alert Banners */}
       {error && (
-        <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-red-700 flex items-center space-x-3 text-sm font-semibold animate-in fade-in">
-          <AlertCircle size={20} className="flex-shrink-0" />
+        <div className="p-4 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-700 flex items-center space-x-3 text-sm font-semibold animate-in fade-in">
+          <AlertCircle size={20} className="shrink-0 text-rose-600" />
           <span>{error}</span>
         </div>
       )}
       {success && (
-        <div className="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-800 flex items-center space-x-3 text-sm font-semibold animate-in fade-in">
-          <Check size={20} className="flex-shrink-0 text-emerald-600" />
+        <div className="p-4 rounded-xl bg-emerald-50 border border-emerald-200/80 text-emerald-800 flex items-center space-x-3 text-sm font-semibold animate-in fade-in">
+          <Check size={20} className="shrink-0 text-emerald-600" />
           <span>{success}</span>
         </div>
       )}
 
       {/* Loading State */}
       {isLoading ? (
-        <div className="py-24 text-center text-slate-900/60 flex flex-col items-center">
-          <Loader2 className="animate-spin h-8 w-8 mb-3 text-slate-900" />
-          <p className="text-sm font-medium">Loading video reels...</p>
+        <div className="py-24 text-center text-slate-500 flex flex-col items-center">
+          <Loader2 className="animate-spin h-8 w-8 mb-3 text-[#e51a34]" />
+          <p className="text-sm font-medium">Loading reels...</p>
         </div>
       ) : reels.length === 0 ? (
-        <div className="bg-[#FAF6ED] border border-slate-200/20 rounded-3xl p-12 text-center max-w-lg mx-auto">
-          <Video className="mx-auto h-12 w-12 text-slate-900/40 mb-4 animate-bounce" />
-          <h3 className="text-lg font-serif font-bold text-slate-800 mb-2">No Video Reels Yet</h3>
-          <p className="text-xs text-slate-900/70 mb-6 leading-relaxed">
-            Create video reels to engage customers and feature specific products right on your store homepage.
+        <div className="bg-white border border-slate-200/80 rounded-3xl p-12 text-center max-w-lg mx-auto shadow-sm">
+          <Video className="mx-auto h-12 w-12 text-slate-400 mb-4 animate-bounce" />
+          <h3 className="text-lg font-bold text-slate-900 mb-2">No Video Reels Yet</h3>
+          <p className="text-xs text-slate-500 mb-6 leading-relaxed">
+            Create video reels to showcase Xevora spotlight setups, GOBO projections, and creator reviews right on your homepage.
           </p>
           <button
             onClick={handleOpenAddModal}
-            className="px-6 py-3 bg-[#e51a34] text-white rounded-xl text-xs font-bold uppercase tracking-widest hover:bg-[#c9142b] transition-all cursor-pointer shadow-md"
+            className="px-6 py-3 bg-[#e51a34] text-white rounded-xl text-xs font-bold uppercase tracking-wider hover:bg-[#c9142b] transition-all cursor-pointer shadow-md"
           >
             Create First Reel
           </button>
         </div>
       ) : (
         /* Reels Grid */
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
           {reels.map((reel) => {
             const linkedProduct = reel.product;
             const productImage = linkedProduct?.images?.[0] || "/images/placeholder.png";
+            const isVideo = isVideoUrl(reel.videoUrl);
 
             return (
               <div
                 key={reel.id}
-                className={`relative bg-[#FAF6ED] border rounded-3xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between ${
-                  reel.isActive ? "border-slate-200/25" : "border-gray-300 opacity-60"
+                className={`relative bg-[#0d0e12] border rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between ${
+                  reel.isActive ? "border-white/10" : "border-white/5 opacity-50"
                 }`}
               >
-                {/* Top Video Preview Header */}
-                <div className="relative aspect-[9/16] w-full bg-black overflow-hidden group">
-                  <video
-                    src={reel.videoUrl}
-                    poster={reel.thumbnailUrl || undefined}
-                    muted
-                    loop
-                    playsInline
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                {/* 9:16 Video / Thumbnail Preview Header */}
+                <div className="relative aspect-[9/16] w-full bg-black/60 overflow-hidden group">
+                  {isVideo ? (
+                    <video
+                      src={reel.videoUrl}
+                      poster={reel.thumbnailUrl || undefined}
+                      muted
+                      loop
+                      playsInline
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <img
+                      src={reel.thumbnailUrl || "/images/landing/reel-1.jpg"}
+                      alt={reel.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      onError={(e) => {
+                        (e.currentTarget as HTMLImageElement).src = "/images/landing/reel-1.jpg";
+                      }}
+                    />
+                  )}
+
+                  {/* Gradient Overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-black/40 pointer-events-none" />
 
                   {/* Badges Overlay */}
-                  <div className="absolute top-3 inset-x-3 flex items-center justify-between z-10">
-                    <span className="px-2.5 py-1 bg-blue-600 text-white font-bold text-[10px] uppercase tracking-wider rounded-lg shadow-md">
+                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10">
+                    <span className="px-2 py-0.5 bg-black/80 backdrop-blur-md text-white font-mono text-[9px] font-semibold uppercase tracking-wider rounded border border-white/10">
                       {reel.badgeText}
                     </span>
-                    <span className="px-2.5 py-1 bg-black/60 backdrop-blur-md text-white font-bold text-[10px] tracking-wider rounded-lg shadow-md flex items-center gap-1">
-                      <Eye size={12} />
-                      <span>{reel.viewsCount}</span>
+                    <span className="p-1 rounded-full bg-black/50 backdrop-blur-md text-white/80">
+                      <Volume2 size={12} />
                     </span>
                   </div>
 
-                  {/* Play Button Indicator */}
-                  <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-80 group-hover:opacity-100 transition-opacity">
-                    <div className="w-12 h-12 rounded-full bg-white/90 text-slate-800 flex items-center justify-center shadow-xl backdrop-blur-sm">
-                      <Video size={22} className="ml-0.5" />
-                    </div>
-                  </div>
-
-                  {/* Linked Product Card Overlay Preview */}
-                  {linkedProduct && (
-                    <div className="absolute bottom-3 inset-x-3 bg-white/95 backdrop-blur-md rounded-2xl p-2.5 border border-black/10 shadow-lg flex items-center space-x-3">
-                      <img
-                        src={productImage}
-                        alt={linkedProduct.name}
-                        className="w-10 h-10 rounded-xl object-cover border border-black/10 flex-shrink-0 bg-slate-50"
-                      />
-                      <div className="min-w-0 flex-1">
-                        <h4 className="text-[11px] font-bold text-slate-800 truncate leading-snug">
-                          {linkedProduct.name}
-                        </h4>
-                        <div className="text-[10px] font-bold text-slate-900 mt-0.5">
-                          ₹{linkedProduct.salePrice || linkedProduct.basePrice}
-                          {linkedProduct.salePrice && (
-                            <span className="line-through text-gray-400 font-normal ml-1">
-                              ₹{linkedProduct.basePrice}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                {/* Footer Info & Actions */}
-                <div className="p-4 bg-white border-t border-slate-200/10 space-y-3">
-                  <div>
-                    <h3 className="font-serif font-bold text-sm text-slate-800 truncate">
+                  {/* Bottom Info on Card */}
+                  <div className="absolute bottom-3 left-3 right-3 z-10">
+                    <h3 className="font-bold text-xs text-white truncate drop-shadow">
                       {reel.title}
                     </h3>
-                    <p className="text-[10px] text-gray-500 font-semibold tracking-wider mt-0.5">
-                      Order: {reel.displayOrder} • {reel.isActive ? "Active" : "Hidden"}
+                    <p className="font-mono text-[10px] text-slate-300 truncate mt-0.5">
+                      {reel.creatorHandle || "@creator"}
                     </p>
-                  </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                    {/* Linked Product Preview Pill */}
+                    {linkedProduct && (
+                      <div className="mt-2 bg-black/70 backdrop-blur-md rounded-lg p-1.5 border border-white/10 flex items-center gap-2">
+                        <img
+                          src={productImage}
+                          alt={linkedProduct.name}
+                          className="w-6 h-6 rounded object-cover flex-shrink-0 bg-white/10"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[9px] font-bold text-white truncate">
+                            {linkedProduct.name}
+                          </p>
+                          <p className="text-[8px] font-mono text-[#e51a34]">
+                            ₹{linkedProduct.salePrice || linkedProduct.basePrice}
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer Controls & Actions */}
+                <div className="p-3 bg-[#13141b] border-t border-white/5 space-y-2.5">
+                  <div className="flex items-center justify-between text-[10px] font-mono text-slate-400">
+                    <span>Pos #{reel.displayOrder}</span>
                     <button
                       onClick={() => handleToggleStatus(reel)}
-                      className={`px-3 py-1.5 rounded-xl text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer ${
+                      className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase transition-colors cursor-pointer ${
                         reel.isActive
-                          ? "bg-emerald-100 text-emerald-800 hover:bg-emerald-200"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                          ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                          : "bg-slate-700/40 text-slate-400 border border-slate-600/30"
                       }`}
                     >
-                      {reel.isActive ? "Active" : "Disabled"}
+                      {reel.isActive ? "Active" : "Hidden"}
                     </button>
+                  </div>
 
-                    <div className="flex items-center space-x-2">
-                      <button
-                        onClick={() => handleOpenEditModal(reel)}
-                        className="p-2 rounded-xl text-blue-600 hover:bg-blue-50 transition-colors cursor-pointer"
-                        title="Edit Reel"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(reel.id)}
-                        className="p-2 rounded-xl text-red-600 hover:bg-red-50 transition-colors cursor-pointer"
-                        title="Delete Reel"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
+                  <div className="flex items-center justify-end gap-1 pt-1 border-t border-white/5">
+                    <button
+                      onClick={() => handleOpenEditModal(reel)}
+                      className="p-1.5 rounded-lg text-slate-300 hover:text-white hover:bg-white/10 transition-colors cursor-pointer"
+                      title="Edit Reel"
+                    >
+                      <Edit size={14} />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(reel.id)}
+                      className="p-1.5 rounded-lg text-slate-300 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+                      title="Delete Reel"
+                    >
+                      <Trash2 size={14} />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -411,216 +447,197 @@ export default function AdminReelsPage() {
         </div>
       )}
 
-      {/* Add/Edit Modal */}
+      {/* Add / Edit Reel Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
-          <div className="bg-white rounded-3xl w-full max-w-xl max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 p-6 md:p-8 space-y-6 animate-in zoom-in-95 duration-200 custom-scrollbar">
-            {/* Header */}
-            <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-              <div className="flex items-center space-x-3">
-                <div className="p-2 bg-[#e51a34] text-white rounded-xl">
-                  <Video size={20} />
-                </div>
-                <h3 className="text-lg font-serif font-bold text-slate-800">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-in fade-in">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200 space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div>
+                <h2 className="text-xl font-bold text-slate-900">
                   {editingReel ? "Edit Video Reel" : "Add New Video Reel"}
-                </h3>
+                </h2>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Set video footage, creator handle, and badge tags for the homepage.
+                </p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="p-2 text-gray-400 hover:text-gray-700 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+                className="p-2 text-slate-400 hover:text-slate-600 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
               >
                 <X size={20} />
               </button>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Reel Title */}
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Title */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                   Reel Title *
                 </label>
                 <input
                   type="text"
-                  required
-                  placeholder="e.g. King fish recipe video"
                   value={formTitle}
                   onChange={(e) => setFormTitle(e.target.value)}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
+                  placeholder="e.g. Dramatic Rim Light or RGB Mood Shifter"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 focus:border-[#e51a34]"
+                  required
                 />
               </div>
 
-              {/* Video File / URL Uploader */}
+              {/* Creator Handle & Badge Tag */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Creator Handle *
+                  </label>
+                  <input
+                    type="text"
+                    value={formCreatorHandle}
+                    onChange={(e) => setFormCreatorHandle(e.target.value)}
+                    placeholder="e.g. @filmmaker_sam"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 focus:border-[#e51a34]"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Badge Tag (Top-Left)
+                  </label>
+                  <input
+                    type="text"
+                    value={formBadgeText}
+                    onChange={(e) => setFormBadgeText(e.target.value)}
+                    placeholder="e.g. PRO IN ACTION, GOBO EFFECTS"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 focus:border-[#e51a34]"
+                  />
+                </div>
+              </div>
+
+              {/* Video URL & Upload */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
-                  Video File / Video URL *
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  Video URL (MP4 / WebM / Cloudinary) *
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    required
-                    placeholder="Upload video or paste MP4 / Video URL"
                     value={formVideoUrl}
                     onChange={(e) => setFormVideoUrl(e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
+                    placeholder="e.g. /videos/reels/reel-1.mp4 or Cloudinary URL"
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 focus:border-[#e51a34]"
+                    required
                   />
-                  <label className="flex items-center justify-center px-4 py-3 bg-[#e51a34] text-white rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#c9142b] transition-colors cursor-pointer flex-shrink-0">
-                    {isUploadingVideo ? (
-                      <Loader2 className="animate-spin h-4 w-4" />
-                    ) : (
-                      <>
-                        <Upload size={14} className="mr-1.5" />
-                        <span>Upload Video</span>
-                      </>
-                    )}
+                  <label className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 font-semibold text-xs rounded-xl cursor-pointer transition-colors shrink-0">
+                    {isUploadingVideo ? <Loader2 size={14} className="animate-spin text-[#e51a34]" /> : <Upload size={14} />}
+                    <span>{isUploadingVideo ? "Uploading..." : "Upload Video"}</span>
                     <input
                       type="file"
                       accept="video/*"
                       className="hidden"
+                      disabled={isUploadingVideo}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) handleFileUpload(file, "video");
+                        e.target.value = "";
                       }}
                     />
                   </label>
                 </div>
-                {formVideoUrl && (
-                  <div className="mt-2 p-2 bg-gray-50 rounded-xl border border-gray-100">
-                    <p className="text-[10px] text-emerald-700 font-bold truncate">Video linked: {formVideoUrl}</p>
-                  </div>
-                )}
               </div>
 
-              {/* Linked Product Dropdown */}
+              {/* Poster Thumbnail URL & Upload */}
               <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
-                  Linked Product (Shows product overlay on video)
-                </label>
-                <select
-                  value={formProductId}
-                  onChange={(e) => setFormProductId(e.target.value ? Number(e.target.value) : "")}
-                  className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black bg-white"
-                >
-                  <option value="">-- No Product Linked --</option>
-                  {products.map((prod) => (
-                    <option key={prod.id} value={prod.id}>
-                      {prod.name} (₹{prod.salePrice || prod.basePrice})
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Cover Thumbnail Image (Optional) */}
-              <div>
-                <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
-                  Cover Thumbnail Image (Optional)
+                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                  Poster Thumbnail URL (Image)
                 </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
-                    placeholder="Upload image or paste image URL"
                     value={formThumbnailUrl}
                     onChange={(e) => setFormThumbnailUrl(e.target.value)}
-                    className="flex-1 px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
+                    placeholder="e.g. /images/landing/reel-1.jpg"
+                    className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 focus:border-[#e51a34]"
                   />
-                  <label className="flex items-center justify-center px-4 py-3 bg-[#e51a34]/10 text-slate-800 rounded-xl font-bold text-xs uppercase tracking-wider hover:bg-[#e51a34]/20 transition-colors cursor-pointer flex-shrink-0">
-                    {isUploadingThumb ? (
-                      <Loader2 className="animate-spin h-4 w-4" />
-                    ) : (
-                      <>
-                        <Upload size={14} className="mr-1.5" />
-                        <span>Upload Thumb</span>
-                      </>
-                    )}
+                  <label className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 font-semibold text-xs rounded-xl cursor-pointer transition-colors shrink-0">
+                    {isUploadingThumb ? <Loader2 size={14} className="animate-spin text-[#e51a34]" /> : <Upload size={14} />}
+                    <span>{isUploadingThumb ? "Uploading..." : "Upload Image"}</span>
                     <input
                       type="file"
                       accept="image/*"
                       className="hidden"
+                      disabled={isUploadingThumb}
                       onChange={(e) => {
                         const file = e.target.files?.[0];
                         if (file) handleFileUpload(file, "thumb");
+                        e.target.value = "";
                       }}
                     />
                   </label>
                 </div>
               </div>
 
-              {/* Badge & Views Count Row */}
-              <div className="grid grid-cols-2 gap-4">
+              {/* Linked Product & Position */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
-                    Badge Text
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Link Product (Optional)
                   </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. NEW or TRENDING"
-                    value={formBadgeText}
-                    onChange={(e) => setFormBadgeText(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
-                  />
+                  <select
+                    value={formProductId}
+                    onChange={(e) => setFormProductId(e.target.value === "" ? "" : Number(e.target.value))}
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 focus:border-[#e51a34]"
+                  >
+                    <option value="">No linked product</option>
+                    {products.map((p) => (
+                      <option key={p.id} value={p.id}>
+                        {p.name} (₹{p.salePrice || p.basePrice})
+                      </option>
+                    ))}
+                  </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
-                    Views Count Display
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="e.g. 2.9M or 1.5M"
-                    value={formViewsCount}
-                    onChange={(e) => setFormViewsCount(e.target.value)}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
-                  />
-                </div>
-              </div>
-
-              {/* Order & Status Row */}
-              <div className="grid grid-cols-2 gap-4 items-center pt-2">
-                <div>
-                  <label className="block text-xs font-bold uppercase tracking-wider text-slate-800 mb-2">
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                     Display Order
                   </label>
                   <input
                     type="number"
-                    min="0"
                     value={formDisplayOrder}
                     onChange={(e) => setFormDisplayOrder(Number(e.target.value))}
-                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-[#e51a34] text-sm text-black"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#e51a34]/20 focus:border-[#e51a34]"
                   />
-                </div>
-
-                <div className="pt-6">
-                  <label className="flex items-center space-x-3 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formIsActive}
-                      onChange={(e) => setFormIsActive(e.target.checked)}
-                      className="w-5 h-5 accent-[#e51a34] rounded"
-                    />
-                    <span className="text-xs font-bold uppercase tracking-wider text-slate-800">
-                      Active on Homepage
-                    </span>
-                  </label>
                 </div>
               </div>
 
+              {/* Active Toggle */}
+              <div className="flex items-center gap-2 pt-2">
+                <input
+                  type="checkbox"
+                  id="formIsActive"
+                  checked={formIsActive}
+                  onChange={(e) => setFormIsActive(e.target.checked)}
+                  className="rounded text-[#e51a34] focus:ring-[#e51a34] w-4 h-4 cursor-pointer"
+                />
+                <label htmlFor="formIsActive" className="text-xs font-semibold text-slate-700 cursor-pointer">
+                  Visible on Homepage (Active)
+                </label>
+              </div>
+
               {/* Submit Buttons */}
-              <div className="flex items-center justify-end space-x-3 pt-6 border-t border-gray-100">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
                 <button
                   type="button"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-5 py-3 rounded-xl text-xs font-bold uppercase tracking-widest text-gray-500 hover:bg-gray-100 transition-colors"
+                  className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-50 transition-colors cursor-pointer"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="px-6 py-3 rounded-xl text-xs font-bold uppercase tracking-widest bg-[#e51a34] hover:bg-[#c9142b] text-white transition-all shadow-md flex items-center space-x-2 disabled:opacity-50 cursor-pointer"
+                  className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#e51a34] hover:bg-[#c9142b] text-white rounded-xl text-xs font-bold uppercase tracking-wider shadow-md shadow-[#e51a34]/20 transition-all disabled:opacity-50 cursor-pointer"
                 >
-                  {isSubmitting ? (
-                    <Loader2 className="animate-spin h-4 w-4" />
-                  ) : (
-                    <span>{editingReel ? "Update Reel" : "Save Reel"}</span>
-                  )}
+                  {isSubmitting && <Loader2 size={14} className="animate-spin" />}
+                  <span>{editingReel ? "Update Reel" : "Save Reel"}</span>
                 </button>
               </div>
             </form>

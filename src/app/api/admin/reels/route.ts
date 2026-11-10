@@ -16,6 +16,7 @@ async function ensureReelsTable() {
         video_url TEXT NOT NULL,
         thumbnail_url TEXT,
         product_id INTEGER REFERENCES products(id) ON DELETE SET NULL,
+        creator_handle TEXT DEFAULT '@creator',
         badge_text TEXT DEFAULT 'NEW',
         views_count TEXT DEFAULT '2.5M',
         display_order INTEGER NOT NULL DEFAULT 0,
@@ -43,6 +44,7 @@ export async function GET() {
         r.title,
         r.video_url AS videoUrl,
         r.thumbnail_url AS thumbnailUrl,
+        r.creator_handle AS creatorHandle,
         r.product_id AS productId,
         r.badge_text AS badgeText,
         r.views_count AS viewsCount,
@@ -93,13 +95,14 @@ export async function POST(request: Request) {
   try {
     await ensureReelsTable();
     const body = await request.json();
-    const { title, videoUrl, thumbnailUrl, productId, badgeText, viewsCount, displayOrder, isActive } = body;
+    const { title, creatorHandle, videoUrl, thumbnailUrl, productId, badgeText, viewsCount, displayOrder, isActive } = body;
 
     if (!title || !videoUrl) {
       return NextResponse.json({ success: false, error: "Title and Video URL are required" }, { status: 400 });
     }
 
     const cleanTitle = title.trim();
+    const cleanCreatorHandle = creatorHandle ? creatorHandle.trim() : "@creator";
     const cleanVideoUrl = videoUrl.trim();
     const cleanThumbnailUrl = thumbnailUrl ? thumbnailUrl.trim() : null;
     const cleanProductId = productId ? Number(productId) : null;
@@ -110,9 +113,9 @@ export async function POST(request: Request) {
     const now = new Date().toISOString();
 
     await client.execute({
-      sql: `INSERT INTO reels (title, video_url, thumbnail_url, product_id, badge_text, views_count, display_order, is_active, created_at)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      args: [cleanTitle, cleanVideoUrl, cleanThumbnailUrl, cleanProductId, cleanBadgeText, cleanViewsCount, cleanDisplayOrder, cleanIsActive, now]
+      sql: `INSERT INTO reels (title, creator_handle, video_url, thumbnail_url, product_id, badge_text, views_count, display_order, is_active, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      args: [cleanTitle, cleanCreatorHandle, cleanVideoUrl, cleanThumbnailUrl, cleanProductId, cleanBadgeText, cleanViewsCount, cleanDisplayOrder, cleanIsActive, now]
     });
 
     return NextResponse.json({ success: true, message: "Reel added successfully" });
@@ -131,13 +134,14 @@ export async function PUT(request: Request) {
   try {
     await ensureReelsTable();
     const body = await request.json();
-    const { id, title, videoUrl, thumbnailUrl, productId, badgeText, viewsCount, displayOrder, isActive } = body;
+    const { id, title, creatorHandle, videoUrl, thumbnailUrl, productId, badgeText, viewsCount, displayOrder, isActive } = body;
 
     if (!id) {
       return NextResponse.json({ success: false, error: "Reel ID is required" }, { status: 400 });
     }
 
     const cleanTitle = title ? title.trim() : "";
+    const cleanCreatorHandle = creatorHandle ? creatorHandle.trim() : "@creator";
     const cleanVideoUrl = videoUrl ? videoUrl.trim() : "";
     const cleanThumbnailUrl = thumbnailUrl ? thumbnailUrl.trim() : null;
     const cleanProductId = productId ? Number(productId) : null;
@@ -148,9 +152,9 @@ export async function PUT(request: Request) {
 
     await client.execute({
       sql: `UPDATE reels
-            SET title = ?, video_url = ?, thumbnail_url = ?, product_id = ?, badge_text = ?, views_count = ?, display_order = ?, is_active = ?
+            SET title = ?, creator_handle = ?, video_url = ?, thumbnail_url = ?, product_id = ?, badge_text = ?, views_count = ?, display_order = ?, is_active = ?
             WHERE id = ?`,
-      args: [cleanTitle, cleanVideoUrl, cleanThumbnailUrl, cleanProductId, cleanBadgeText, cleanViewsCount, cleanDisplayOrder, cleanIsActive, Number(id)]
+      args: [cleanTitle, cleanCreatorHandle, cleanVideoUrl, cleanThumbnailUrl, cleanProductId, cleanBadgeText, cleanViewsCount, cleanDisplayOrder, cleanIsActive, Number(id)]
     });
 
     return NextResponse.json({ success: true, message: "Reel updated successfully" });

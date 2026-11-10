@@ -234,8 +234,22 @@ export const reels = sqliteTable("reels", {
   thumbnailUrl: text("thumbnail_url"),
   productId: integer("product_id").references(() => products.id, { onDelete: "set null" }),
   badgeText: text("badge_text").default("NEW"),
+  creatorHandle: text("creator_handle").default("@creator"),
   viewsCount: text("views_count").default("2.5M"),
   displayOrder: integer("display_order").notNull().default(0),
   isActive: integer("is_active", { mode: "boolean" }).notNull().default(true),
   createdAt: text("created_at").$defaultFn(() => new Date().toISOString()),
+});
+
+export const productReviews = sqliteTable("product_reviews", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  productId: integer("product_id").notNull().references(() => products.id, { onDelete: "cascade" }),
+  userId: integer("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
+  orderId: integer("order_id").notNull().references(() => orders.id, { onDelete: "cascade" }),
+  rating: integer("rating").notNull().default(5),
+  title: text("title").notNull(),
+  comment: text("comment").notNull(),
+  status: text("status").notNull().default("pending"), // pending, approved, rejected
+  createdAt: text("created_at").$defaultFn(() => new Date().toISOString()),
+  updatedAt: text("updated_at").$defaultFn(() => new Date().toISOString()),
 });

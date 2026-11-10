@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { products, productVariations, users, siteSettings, offerBanners } from "./schema";
+import { products, productVariations, users, siteSettings, offerBanners, reels } from "./schema";
 import { eq } from "drizzle-orm";
 
 async function seedXevora() {
@@ -126,7 +126,70 @@ async function seedXevora() {
     await db.insert(siteSettings).values([
       { key: "brand_name", value: "Xevora Lights" },
       { key: "site_tagline", value: "Precision Tactical & Creator Illumination" },
+      { 
+        key: "hero_media", 
+        value: JSON.stringify({
+          mediaUrl: "/images/landing/hero-gflash.jpg",
+          tag1: "TYPE-C FAST CHARGING",
+          tag2: "CNC AEROSPACE CHASSIS"
+        }) 
+      },
     ]).onConflictDoNothing();
+
+    // 6. Watch It In Action Reels
+    await db.delete(reels);
+    await db.insert(reels).values([
+      {
+        title: "Dramatic Rim Light",
+        creatorHandle: "@filmmaker_sam",
+        videoUrl: "/videos/reels/reel-1.mp4",
+        thumbnailUrl: "/images/landing/reel-1.jpg",
+        badgeText: "PRO IN ACTION",
+        viewsCount: "2.9M",
+        displayOrder: 1,
+        isActive: true,
+      },
+      {
+        title: "RGB Mood Shifter",
+        creatorHandle: "@studio_claire",
+        videoUrl: "/videos/reels/reel-2.mp4",
+        thumbnailUrl: "/images/landing/reel-2.jpg",
+        badgeText: "G-FLASH 10W",
+        viewsCount: "1.9M",
+        displayOrder: 2,
+        isActive: true,
+      },
+      {
+        title: "One Room, 5 Sets",
+        creatorHandle: "@cinema_dan",
+        videoUrl: "/videos/reels/reel-3.mp4",
+        thumbnailUrl: "/images/landing/reel-3.jpg",
+        badgeText: "GOBO EFFECTS",
+        viewsCount: "1.9M",
+        displayOrder: 3,
+        isActive: true,
+      },
+      {
+        title: "60-Sec Pod Desk",
+        creatorHandle: "@alex_tech",
+        videoUrl: "/videos/reels/reel-4.mp4",
+        thumbnailUrl: "/images/landing/reel-4.jpg",
+        badgeText: "SETUP GUIDE",
+        viewsCount: "2.7M",
+        displayOrder: 4,
+        isActive: true,
+      },
+      {
+        title: "Adjust Intensity",
+        creatorHandle: "@luxe_visuals",
+        videoUrl: "/videos/reels/reel-5.mp4",
+        thumbnailUrl: "/images/landing/reel-5.jpg",
+        badgeText: "BEAM DEMO",
+        viewsCount: "3.1M",
+        displayOrder: 5,
+        isActive: true,
+      },
+    ]);
 
     console.log("Xevora Lights seeding completed successfully!");
   } catch (error) {

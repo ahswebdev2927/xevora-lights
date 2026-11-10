@@ -50,6 +50,12 @@ export default function AdminBlogsPage() {
   };
 
   useEffect(() => {
+    // The Blogs feature is temporarily hidden.
+    // Redirect direct visits to /admin.
+    router.replace("/admin");
+  }, [router]);
+
+  useEffect(() => {
     fetchData();
   }, []);
 

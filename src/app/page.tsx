@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -16,6 +16,9 @@ import {
   Receipt,
   Layers,
   ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Play,
   Volume2,
   VolumeX,
   Clapperboard,
@@ -24,9 +27,11 @@ import {
   Timer,
   Zap,
   Sliders,
-  Maximize2
+  Maximize2,
+  X
 } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
+import { isVideoUrl } from "@/utils/product";
 
 
 const DEFAULT_SLOT1 = {
@@ -71,6 +76,49 @@ const DEFAULT_SLOT2 = {
   ]
 };
 
+const DEFAULT_REELS = [
+  {
+    id: 1,
+    title: "Dramatic Rim Light",
+    creatorHandle: "@filmmaker_sam",
+    videoUrl: "/videos/reels/reel-1.mp4",
+    thumbnailUrl: "/images/landing/reel-1.jpg",
+    badgeText: "PRO IN ACTION",
+  },
+  {
+    id: 2,
+    title: "RGB Mood Shifter",
+    creatorHandle: "@studio_claire",
+    videoUrl: "/videos/reels/reel-2.mp4",
+    thumbnailUrl: "/images/landing/reel-2.jpg",
+    badgeText: "G-FLASH 10W",
+  },
+  {
+    id: 3,
+    title: "One Room, 5 Sets",
+    creatorHandle: "@cinema_dan",
+    videoUrl: "/videos/reels/reel-3.mp4",
+    thumbnailUrl: "/images/landing/reel-3.jpg",
+    badgeText: "GOBO EFFECTS",
+  },
+  {
+    id: 4,
+    title: "60-Sec Pod Desk",
+    creatorHandle: "@alex_tech",
+    videoUrl: "/videos/reels/reel-4.mp4",
+    thumbnailUrl: "/images/landing/reel-4.jpg",
+    badgeText: "SETUP GUIDE",
+  },
+  {
+    id: 5,
+    title: "Adjust Intensity",
+    creatorHandle: "@luxe_visuals",
+    videoUrl: "/videos/reels/reel-5.mp4",
+    thumbnailUrl: "/images/landing/reel-5.jpg",
+    badgeText: "BEAM DEMO",
+  },
+];
+
 export default function Home() {
   const router = useRouter();
   const addItem = useCartStore((state) => state.addItem);
@@ -82,6 +130,25 @@ export default function Home() {
   const [slot2, setSlot2] = useState<typeof DEFAULT_SLOT2 | null>(DEFAULT_SLOT2);
   const [heroStartingPrice, setHeroStartingPrice] = useState(4999);
   const [heroStartingMrp, setHeroStartingMrp] = useState(7999);
+  const [heroMedia, setHeroMedia] = useState({
+    mediaUrl: "/images/landing/hero-gflash.jpg",
+    tag1: "TYPE-C FAST CHARGING",
+    tag2: "CNC AEROSPACE CHASSIS",
+  });
+
+  const [reelsList, setReelsList] = useState<any[]>(DEFAULT_REELS);
+  const [selectedReelModal, setSelectedReelModal] = useState<any | null>(null);
+  const reelsScrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollReels = (direction: "left" | "right") => {
+    if (reelsScrollRef.current) {
+      const scrollAmount = reelsScrollRef.current.clientWidth * 0.8;
+      reelsScrollRef.current.scrollBy({
+        left: direction === "left" ? -scrollAmount : scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
 
   useEffect(() => {
     fetch("/api/homepage-products")
@@ -110,6 +177,17 @@ export default function Home() {
           }
           if (res.data.heroStartingPrice) setHeroStartingPrice(res.data.heroStartingPrice);
           if (res.data.heroStartingMrp) setHeroStartingMrp(res.data.heroStartingMrp);
+          if (res.data.heroMedia) setHeroMedia(res.data.heroMedia);
+        }
+      })
+      .catch(() => {});
+
+    // Fetch dynamic reels
+    fetch("/api/reels")
+      .then(res => res.json())
+      .then(res => {
+        if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+          setReelsList(res.data);
         }
       })
       .catch(() => {});
@@ -288,20 +366,35 @@ export default function Home() {
             <div className="lg:col-span-5 relative">
               <div className="relative rounded-2xl bg-surface-container overflow-hidden shadow-[0_16px_40px_rgba(0,0,0,0.8)] border border-white/10 group">
                 <div className="relative h-96 w-full overflow-hidden bg-surface-container-lowest">
-                  <img
-                    src="/images/landing/hero-gflash.jpg"
-                    alt="Dark cyber cinematic studio shot of the Xevora handheld spotlight cylinder casting a crisp geometric warm projection"
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                  {isVideoUrl(heroMedia.mediaUrl) ? (
+                    <video
+                      src={heroMedia.mediaUrl}
+                      autoPlay
+                      loop
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  ) : (
+                    <img
+                      src={heroMedia.mediaUrl || "/images/landing/hero-gflash.jpg"}
+                      alt="Dark cyber cinematic studio shot of the Xevora handheld spotlight cylinder casting a crisp geometric warm projection"
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  )}
                   {/* Floating Callout Tags */}
-                  <div className="absolute top-4 left-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md flex items-center gap-2 border border-white/10">
-                    <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse" />
-                    <span className="font-mono text-xs font-semibold text-white">TYPE-C FAST CHARGING</span>
-                  </div>
-                  <div className="absolute bottom-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md flex items-center gap-1.5 border border-white/10">
-                    <Layers className="w-3.5 h-3.5 text-primary" />
-                    <span className="font-mono text-xs font-semibold text-white">CNC AEROSPACE CHASSIS</span>
-                  </div>
+                  {heroMedia.tag1 && (
+                    <div className="absolute top-4 left-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md flex items-center gap-2 border border-white/10">
+                      <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse" />
+                      <span className="font-mono text-xs font-semibold text-white">{heroMedia.tag1}</span>
+                    </div>
+                  )}
+                  {heroMedia.tag2 && (
+                    <div className="absolute bottom-4 right-4 px-3 py-1 rounded bg-surface-container-lowest/80 backdrop-blur-md flex items-center gap-1.5 border border-white/10">
+                      <Layers className="w-3.5 h-3.5 text-primary" />
+                      <span className="font-mono text-xs font-semibold text-white">{heroMedia.tag2}</span>
+                    </div>
+                  )}
                 </div>
 
                 {/* Card Bottom Specs Ribbon */}
@@ -761,7 +854,7 @@ export default function Home() {
 
       {/* ── 6. WATCH IT IN ACTION (CREATOR REELS) ────────────────────────── */}
       <section className="w-full bg-surface py-20 border-b border-white/5" id="reels">
-        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-12 flex flex-col gap-12">
+        <div className="max-w-[1360px] mx-auto px-4 sm:px-6 lg:px-12 flex flex-col gap-10">
           
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
             <div>
@@ -772,151 +865,190 @@ export default function Home() {
                 Watch It In Action
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-secondary max-w-sm">
-              Tap any preview to see raw unedited camera footage shot exclusively with Xevora spotlights.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
             
-            {/* Reel 1 */}
-            <div
-              onClick={() => toggleSound(1)}
-              className="relative rounded-2xl overflow-hidden aspect-[9/16] bg-surface-container group cursor-pointer border border-white/5 shadow-lg"
-            >
-              <img
-                src="/images/landing/reel-1.jpg"
-                alt="Filmmaker with Xevora G-Flash casting window slit shadows on brick"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-black/30" />
-              <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/80 text-white font-mono text-[10px] border border-white/10">
-                PRO IN ACTION
-              </div>
-              <button
-                type="button"
-                className="absolute top-3 right-3 text-white p-1 rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/70 transition-colors"
-                aria-label="Toggle Sound"
-              >
-                {activeMute[1] ? <Volume2 className="w-3.5 h-3.5 text-primary" /> : <VolumeX className="w-3.5 h-3.5" />}
-              </button>
-              <div className="absolute bottom-3 left-3 right-3">
-                <div className="font-semibold text-xs text-white">Dramatic Rim Light</div>
-                <div className="font-mono text-[10px] text-secondary">@filmmaker_sam</div>
-              </div>
-            </div>
-
-            {/* Reel 2 */}
-            <div
-              onClick={() => toggleSound(2)}
-              className="relative rounded-2xl overflow-hidden aspect-[9/16] bg-surface-container group cursor-pointer border border-white/5 shadow-lg"
-            >
-              <img
-                src="/images/landing/reel-2.jpg"
-                alt="Female creator bathed in smooth neon red backlight with GOBO patterns"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-black/30" />
-              <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/80 text-white font-mono text-[10px] border border-white/10">
-                G-FLASH 10W
-              </div>
-              <button
-                type="button"
-                className="absolute top-3 right-3 text-white p-1 rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/70 transition-colors"
-                aria-label="Toggle Sound"
-              >
-                {activeMute[2] ? <Volume2 className="w-3.5 h-3.5 text-primary" /> : <VolumeX className="w-3.5 h-3.5" />}
-              </button>
-              <div className="absolute bottom-3 left-3 right-3">
-                <div className="font-semibold text-xs text-white">RGB Mood Shifter</div>
-                <div className="font-mono text-[10px] text-secondary">@studio_claire</div>
+            <div className="flex items-center justify-between sm:justify-end gap-4">
+              <p className="text-xs sm:text-sm text-secondary max-w-sm hidden md:block">
+                Tap any preview to see raw unedited camera footage shot exclusively with Xevora spotlights.
+              </p>
+              
+              {/* Carousel Navigation Arrows */}
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => scrollReels("left")}
+                  className="w-9 h-9 rounded-full bg-surface-container hover:bg-surface-container-high border border-white/10 flex items-center justify-center text-white/80 hover:text-white transition-all cursor-pointer shadow-md hover:scale-105 active:scale-95"
+                  aria-label="Previous reels"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => scrollReels("right")}
+                  className="w-9 h-9 rounded-full bg-surface-container hover:bg-surface-container-high border border-white/10 flex items-center justify-center text-white/80 hover:text-white transition-all cursor-pointer shadow-md hover:scale-105 active:scale-95"
+                  aria-label="Next reels"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
               </div>
             </div>
-
-            {/* Reel 3 */}
-            <div
-              onClick={() => toggleSound(3)}
-              className="relative rounded-2xl overflow-hidden aspect-[9/16] bg-surface-container group cursor-pointer border border-white/5 shadow-lg"
-            >
-              <img
-                src="/images/landing/reel-3.jpg"
-                alt="Solo creator transforming empty room into cyberpunk set"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-black/30" />
-              <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/80 text-white font-mono text-[10px] border border-white/10">
-                GOBO EFFECTS
-              </div>
-              <button
-                type="button"
-                className="absolute top-3 right-3 text-white p-1 rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/70 transition-colors"
-                aria-label="Toggle Sound"
-              >
-                {activeMute[3] ? <Volume2 className="w-3.5 h-3.5 text-primary" /> : <VolumeX className="w-3.5 h-3.5" />}
-              </button>
-              <div className="absolute bottom-3 left-3 right-3">
-                <div className="font-semibold text-xs text-white">One Room, 5 Sets</div>
-                <div className="font-mono text-[10px] text-secondary">@cinema_dan</div>
-              </div>
-            </div>
-
-            {/* Reel 4 */}
-            <div
-              onClick={() => toggleSound(4)}
-              className="relative rounded-2xl overflow-hidden aspect-[9/16] bg-surface-container group cursor-pointer border border-white/5 shadow-lg"
-            >
-              <img
-                src="/images/landing/reel-4.jpg"
-                alt="Photographer mounting Xevora spotlight onto tabletop tripod"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-black/30" />
-              <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/80 text-white font-mono text-[10px] border border-white/10">
-                SETUP GUIDE
-              </div>
-              <button
-                type="button"
-                className="absolute top-3 right-3 text-white p-1 rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/70 transition-colors"
-                aria-label="Toggle Sound"
-              >
-                {activeMute[4] ? <Volume2 className="w-3.5 h-3.5 text-primary" /> : <VolumeX className="w-3.5 h-3.5" />}
-              </button>
-              <div className="absolute bottom-3 left-3 right-3">
-                <div className="font-semibold text-xs text-white">60-Sec Pod Desk</div>
-                <div className="font-mono text-[10px] text-secondary">@alex_tech</div>
-              </div>
-            </div>
-
-            {/* Reel 5 */}
-            <div
-              onClick={() => toggleSound(5)}
-              className="relative rounded-2xl overflow-hidden aspect-[9/16] bg-surface-container group cursor-pointer border border-white/5 shadow-lg col-span-2 md:col-span-1"
-            >
-              <img
-                src="/images/landing/reel-5.jpg"
-                alt="Dimmer wheel demonstrating smooth shift from candle glow to blazing spotlight"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-transparent to-black/30" />
-              <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-surface-container-lowest/80 text-white font-mono text-[10px] border border-white/10">
-                BEAM DEMO
-              </div>
-              <button
-                type="button"
-                className="absolute top-3 right-3 text-white p-1 rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/70 transition-colors"
-                aria-label="Toggle Sound"
-              >
-                {activeMute[5] ? <Volume2 className="w-3.5 h-3.5 text-primary" /> : <VolumeX className="w-3.5 h-3.5" />}
-              </button>
-              <div className="absolute bottom-3 left-3 right-3">
-                <div className="font-semibold text-xs text-white">Adjust Intensity</div>
-                <div className="font-mono text-[10px] text-secondary">@luxe_visuals</div>
-              </div>
-            </div>
-
           </div>
+
+          {/* Horizontal Snap-Scroll Carousel Track */}
+          <div
+            ref={reelsScrollRef}
+            className="flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0"
+            style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+          >
+            {reelsList.map((reel) => (
+              <div
+                key={reel.id}
+                onClick={() => setSelectedReelModal(reel)}
+                className="relative rounded-2xl overflow-hidden aspect-[9/16] bg-surface-container group cursor-pointer border border-white/10 shadow-lg snap-start shrink-0 w-[calc(50%-8px)] sm:w-[calc(33.333%-11px)] md:w-[calc(20%-13px)] min-w-[170px] sm:min-w-[200px]"
+              >
+                {/* Thumbnail ONLY (Fast page load, no streaming video until clicked) */}
+                <img
+                  src={reel.thumbnailUrl || "/images/landing/reel-1.jpg"}
+                  alt={reel.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).src = "/images/landing/reel-1.jpg";
+                  }}
+                />
+
+                {/* Gradient Vignette Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-surface-container-lowest via-black/20 to-black/40 pointer-events-none" />
+
+                {/* Badge Tag with Red Recording Dot */}
+                <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-black/60 backdrop-blur-md text-white font-mono text-[10px] border border-white/10 uppercase tracking-wide flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                  <span>{reel.badgeText}</span>
+                </div>
+
+                {/* Center Play Button Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center opacity-85 group-hover:opacity-100 group-hover:scale-110 transition-all duration-300">
+                  <div className="w-11 h-11 rounded-full bg-black/60 backdrop-blur-md text-white flex items-center justify-center shadow-xl border border-white/15 group-hover:bg-[#e51a34] group-hover:border-transparent transition-colors">
+                    <Play className="w-4 h-4 fill-white ml-0.5" />
+                  </div>
+                </div>
+
+                {/* Bottom Details (Title + Creator Handle) */}
+                <div className="absolute bottom-3 left-3 right-3 pointer-events-none">
+                  <div className="font-semibold text-xs text-white truncate drop-shadow">
+                    {reel.title}
+                  </div>
+                  <div className="font-mono text-[10px] text-secondary truncate mt-0.5">
+                    {reel.creatorHandle || "@creator"}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
         </div>
       </section>
+
+      {/* ── Expanded Reel Modal Viewer (Fullscreen HUD Player) ── */}
+      {selectedReelModal && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/90 backdrop-blur-xl animate-in fade-in"
+          onClick={() => setSelectedReelModal(null)}
+        >
+          <div 
+            className="relative w-full max-w-[380px] sm:max-w-[420px] aspect-[9/16] max-h-[92vh] bg-black rounded-3xl overflow-hidden border border-white/15 shadow-[0_0_60px_rgba(0,0,0,0.9)] flex flex-col justify-between"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Modal Video / Image Player */}
+            {isVideoUrl(selectedReelModal.videoUrl) ? (
+              <video
+                src={selectedReelModal.videoUrl}
+                poster={selectedReelModal.thumbnailUrl || undefined}
+                autoPlay
+                controls
+                loop
+                playsInline
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <img
+                src={selectedReelModal.thumbnailUrl || "/images/landing/reel-1.jpg"}
+                alt={selectedReelModal.title}
+                className="w-full h-full object-cover"
+              />
+            )}
+
+            {/* Camera HUD Header Overlay */}
+            <div className="absolute top-4 inset-x-4 flex items-center justify-between z-20 pointer-events-none">
+              <div className="flex flex-col gap-1.5">
+                <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-black/60 backdrop-blur-md border border-white/10 w-fit text-[10px] font-mono font-bold text-white">
+                  <span>00:18</span>
+                  <span className="text-white/40">|</span>
+                  <span className="text-red-500 flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                    REC
+                  </span>
+                </div>
+                <span className="px-2 py-0.5 rounded bg-black/70 backdrop-blur-md text-white font-mono text-[9px] border border-white/10 uppercase tracking-wide w-fit">
+                  {selectedReelModal.badgeText}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-3 pointer-events-auto">
+                <span className="font-mono text-xs font-bold tracking-widest text-white/70 uppercase">
+                  XEVORA
+                </span>
+                <button
+                  onClick={() => setSelectedReelModal(null)}
+                  className="p-1.5 rounded-full bg-black/70 backdrop-blur-md text-white hover:bg-black/90 transition-colors cursor-pointer border border-white/10"
+                  aria-label="Close modal"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Glass Bottom Details Capsule */}
+            <div className="absolute bottom-4 inset-x-4 z-20 pointer-events-auto">
+              <div className="bg-black/75 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-lg space-y-2">
+                <h3 className="font-bold text-sm text-white drop-shadow">
+                  {selectedReelModal.title}
+                </h3>
+                <p className="font-mono text-xs text-red-400 font-semibold">
+                  {selectedReelModal.creatorHandle || "@creator"}
+                </p>
+
+                {selectedReelModal.product && (
+                  <div className="mt-2.5 pt-2.5 border-t border-white/10 flex items-center justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      <p className="text-xs font-semibold text-white truncate">
+                        {selectedReelModal.product.name}
+                      </p>
+                      <p className="text-xs font-mono font-bold text-primary">
+                        ₹{(selectedReelModal.product.salePrice || selectedReelModal.product.basePrice).toLocaleString()}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        handleAddToCart({
+                          id: selectedReelModal.product.id,
+                          variationId: 1,
+                          name: selectedReelModal.product.name,
+                          price: selectedReelModal.product.salePrice || selectedReelModal.product.basePrice,
+                          image: selectedReelModal.product.images?.[0] || "/images/placeholder.png",
+                          size: "Standard Edition",
+                        });
+                        setSelectedReelModal(null);
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-primary-container hover:bg-red-600 text-white font-bold text-xs shadow-md transition-all cursor-pointer whitespace-nowrap"
+                    >
+                      Shop Spotlight
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── 7. FEATURE DEEP DIVES ────────────────────────────────────────── */}
       <section className="w-full bg-surface-container-lowest py-20 border-b border-white/5" id="gobo">

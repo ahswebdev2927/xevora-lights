@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Loader2, Calendar, User, FileText, X } from "lucide-react";
 
 interface Blog {
@@ -16,9 +17,16 @@ interface Blog {
 }
 
 export default function BlogsPage() {
+  const router = useRouter();
   const [blogsList, setBlogsList] = useState<Blog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [activeBlog, setActiveBlog] = useState<Blog | null>(null);
+
+  useEffect(() => {
+    // The Blogs feature is temporarily hidden on the storefront.
+    // Redirect direct visits to home.
+    router.replace("/");
+  }, [router]);
 
   useEffect(() => {
     async function fetchBlogs() {

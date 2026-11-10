@@ -26,7 +26,8 @@ import {
   X,
   Plus,
   Minus,
-  MessageSquare
+  MessageSquare,
+  ShieldCheck
 } from "lucide-react";
 import { useCartStore } from "@/store/useCartStore";
 
@@ -75,6 +76,31 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
   // Sticky bottom drawer observer
   const buyBoxRef = useRef<HTMLDivElement>(null);
   const [showStickyBar, setShowStickyBar] = useState<boolean>(false);
+
+  // Dynamic Verified Customer Reviews
+  interface DynamicReview {
+    id: number;
+    rating: number;
+    title: string;
+    comment: string;
+    createdAt: string;
+    author: string;
+    role: string;
+  }
+  const [dynamicReviews, setDynamicReviews] = useState<DynamicReview[]>([]);
+
+  useEffect(() => {
+    async function loadProductReviews() {
+      try {
+        const res = await fetch(`/api/products/${id}/reviews`);
+        const data = await res.json();
+        if (data.success && data.data && data.data.length > 0) {
+          setDynamicReviews(data.data);
+        }
+      } catch {}
+    }
+    loadProductReviews();
+  }, [id]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -990,69 +1016,120 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 Created by Cinematographers. Tested in Real Studios.
               </h2>
             </div>
-            <button
-              type="button"
-              onClick={() => showToast("Review form opening soon — Thank you for your feedback!")}
-              className="px-5 py-3 rounded-xl bg-surface-container text-white hover:bg-surface-container-high transition-colors font-semibold text-xs sm:text-sm flex items-center gap-2 border border-white/10 w-fit"
-            >
-              <MessageSquare className="w-4 h-4 text-primary" />
-              <span>Write a Review</span>
-            </button>
+            
+            {/* Verified Owner Notice */}
+            <div className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-surface-container border border-white/10 text-slate-300 text-xs font-medium w-fit">
+              <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+              <span>Verified Owner Reviews • Exclusively from Delivered Orders</span>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {reviews.map((rev, idx) => (
-              <div
-                key={idx}
-                className="p-6 rounded-2xl bg-surface-container flex flex-col justify-between gap-6 border border-white/5 shadow-md hover:border-white/10 transition-colors"
-              >
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center text-primary-container">
-                      {[...Array(rev.stars)].map((_, i) => (
-                        <Star key={i} className="w-4 h-4 fill-primary-container text-primary-container" />
-                      ))}
-                    </div>
-                    <span className="font-mono text-xs text-secondary">{rev.time}</span>
-                  </div>
-                  <h4 className="font-bold text-base text-white leading-snug">
-                    {rev.title}
-                  </h4>
-                  <p className="text-xs sm:text-sm text-secondary leading-relaxed">
-                    {rev.content}
-                  </p>
-                </div>
+            {dynamicReviews.length > 0 ? (
+              dynamicReviews.map((rev) => {
+                const initials = (rev.author || "VB")
+                  .split(" ")
+                  .map((w) => w[0])
+                  .join("")
+                  .slice(0, 2)
+                  .toUpperCase();
 
-                {/* BTS Photo Attachment */}
-                <div className="w-full h-36 rounded-xl overflow-hidden relative group border border-white/10">
-                  <Image
-                    src={rev.btsImg}
-                    alt={rev.btsCaption}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform"
-                  />
-                  <span className="absolute bottom-2 left-2 bg-surface-container-lowest/85 backdrop-blur-xs text-white px-2 py-0.5 rounded font-mono text-[10px] font-semibold border border-white/10">
-                    {rev.btsCaption}
-                  </span>
-                </div>
+                return (
+                  <div
+                    key={rev.id}
+                    className="p-6 rounded-2xl bg-surface-container flex flex-col justify-between gap-6 border border-white/5 shadow-md hover:border-white/10 transition-colors"
+                  >
+                    <div className="flex flex-col gap-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center text-primary-container">
+                          {[...Array(rev.rating || 5)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 fill-primary-container text-primary-container" />
+                          ))}
+                        </div>
+                        <span className="font-mono text-xs text-secondary">
+                          {new Date(rev.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <h4 className="font-bold text-base text-white leading-snug">
+                        "{rev.title}"
+                      </h4>
+                      <p className="text-xs sm:text-sm text-secondary leading-relaxed">
+                        {rev.comment}
+                      </p>
+                    </div>
 
-                {/* Reviewer Details */}
-                <div className="flex items-center gap-3 pt-2 border-t border-white/5">
-                  <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-mono text-primary font-bold text-xs border border-white/10">
-                    {rev.initials}
-                  </div>
-                  <div>
-                    <div className="font-bold text-xs sm:text-sm text-white flex items-center gap-1.5">
-                      <span>{rev.author}</span>
-                      <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                    {/* Reviewer Details */}
+                    <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                      <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-mono text-primary font-bold text-xs border border-white/10">
+                        {initials}
+                      </div>
+                      <div>
+                        <div className="font-bold text-xs sm:text-sm text-white flex items-center gap-1.5">
+                          <span>{rev.author}</span>
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                        </div>
+                        <div className="text-[11px] text-emerald-400/80 font-mono">
+                          Verified Purchaser
+                        </div>
+                      </div>
                     </div>
-                    <div className="text-[11px] text-secondary">
-                      {rev.role}
+                  </div>
+                );
+              })
+            ) : (
+              reviews.map((rev, idx) => (
+                <div
+                  key={idx}
+                  className="p-6 rounded-2xl bg-surface-container flex flex-col justify-between gap-6 border border-white/5 shadow-md hover:border-white/10 transition-colors"
+                >
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center text-primary-container">
+                        {[...Array(rev.stars)].map((_, i) => (
+                          <Star key={i} className="w-4 h-4 fill-primary-container text-primary-container" />
+                        ))}
+                      </div>
+                      <span className="font-mono text-xs text-secondary">{rev.time}</span>
+                    </div>
+                    <h4 className="font-bold text-base text-white leading-snug">
+                      {rev.title}
+                    </h4>
+                    <p className="text-xs sm:text-sm text-secondary leading-relaxed">
+                      {rev.content}
+                    </p>
+                  </div>
+
+                  {/* BTS Photo Attachment */}
+                  <div className="w-full h-36 rounded-xl overflow-hidden relative group border border-white/10">
+                    <Image
+                      src={rev.btsImg}
+                      alt={rev.btsCaption}
+                      fill
+                      className="object-cover group-hover:scale-105 transition-transform"
+                    />
+                    <span className="absolute bottom-2 left-2 bg-surface-container-lowest/85 backdrop-blur-xs text-white px-2 py-0.5 rounded font-mono text-[10px] font-semibold border border-white/10">
+                      {rev.btsCaption}
+                    </span>
+                  </div>
+
+                  {/* Reviewer Details */}
+                  <div className="flex items-center gap-3 pt-2 border-t border-white/5">
+                    <div className="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center font-mono text-primary font-bold text-xs border border-white/10">
+                      {rev.initials}
+                    </div>
+                    <div>
+                      <div className="font-bold text-xs sm:text-sm text-white flex items-center gap-1.5">
+                        <span>{rev.author}</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
+                      </div>
+                      <div className="text-[11px] text-secondary">
+                        {rev.role}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
         </div>

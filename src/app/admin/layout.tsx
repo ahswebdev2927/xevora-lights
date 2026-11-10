@@ -38,7 +38,6 @@ const sidebarLinks = [
   { name: "Reels Settings", href: "/admin/reels", icon: Video },
   { name: "FAQs Settings", href: "/admin/faqs", icon: HelpCircle },
   { name: "Coupons", href: "/admin/coupons", icon: Ticket },
-  { name: "Blogs", href: "/admin/blogs", icon: FileText },
   { name: "Site Settings", href: "/admin/settings", icon: Settings },
 ];
 

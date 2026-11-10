@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, Suspense } from "react";
-import { ShoppingBag, Loader2, Package, CheckCircle2, Clock, Ruler, XCircle, AlertTriangle, Image as ImageIcon, MapPin, Check, X } from "lucide-react";
+import { ShoppingBag, Loader2, Package, CheckCircle2, Clock, Ruler, XCircle, AlertTriangle, Image as ImageIcon, MapPin, Check, X, Star, MessageSquare } from "lucide-react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { useCartStore } from "@/store/useCartStore";
@@ -103,6 +103,17 @@ const parseAddress = (addrString: string | null) => {
   return null;
 };
 
+interface UserReview {
+  id: number;
+  productId: number;
+  orderId: number;
+  rating: number;
+  title: string;
+  comment: string;
+  status: "pending" | "approved" | "rejected";
+  createdAt: string;
+}
+
 const MILESTONES = [
   "Confirmed",
   "Processing",
@@ -119,8 +130,34 @@ function MyOrdersContent() {
   const [isCancelling, setIsCancelling] = useState(false);
   const searchParams = useSearchParams();
 
+  // Review states
+  const [userReviews, setUserReviews] = useState<UserReview[]>([]);
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [selectedReviewItem, setSelectedReviewItem] = useState<{
+    orderId: number;
+    item: OrderItem;
+  } | null>(null);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewTitle, setReviewTitle] = useState("");
+  const [reviewComment, setReviewComment] = useState("");
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [reviewError, setReviewError] = useState("");
+
+  const fetchUserReviews = async () => {
+    try {
+      const res = await fetch("/api/reviews/user");
+      const data = await res.json();
+      if (data.success) {
+        setUserReviews(data.data || []);
+      }
+    } catch (err) {
+      console.error("Failed to fetch user reviews", err);
+    }
+  };
+
   useEffect(() => {
     fetchOrders();
+    fetchUserReviews();
   }, []);
 
   useEffect(() => {
@@ -174,6 +211,68 @@ function MyOrdersContent() {
     } finally {
       setIsCancelling(false);
       setConfirmingCancelId(null);
+    }
+  };
+
+  const handleOpenReviewModal = (orderId: number, item: OrderItem) => {
+    setSelectedReviewItem({ orderId, item });
+    setReviewError("");
+
+    // Check if user already submitted review for this item in this order
+    const existing = userReviews.find((r) => r.orderId === orderId && r.productId === item.productId);
+    if (existing) {
+      setReviewRating(existing.rating || 5);
+      setReviewTitle(existing.title || "");
+      setReviewComment(existing.comment || "");
+    } else {
+      setReviewRating(5);
+      setReviewTitle("");
+      setReviewComment("");
+    }
+    setIsReviewModalOpen(true);
+  };
+
+  const handleSubmitReview = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedReviewItem) return;
+
+    if (!reviewTitle.trim() || reviewTitle.trim().length < 3) {
+      setReviewError("Please provide a headline of at least 3 characters.");
+      return;
+    }
+    if (!reviewComment.trim() || reviewComment.trim().length < 5) {
+      setReviewError("Please provide feedback of at least 5 characters.");
+      return;
+    }
+
+    setIsSubmittingReview(true);
+    setReviewError("");
+
+    try {
+      const res = await fetch("/api/reviews/submit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId: selectedReviewItem.orderId,
+          productId: selectedReviewItem.item.productId,
+          rating: reviewRating,
+          title: reviewTitle.trim(),
+          comment: reviewComment.trim(),
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        showToast("Review submitted! Pending approval by admin.");
+        setIsReviewModalOpen(false);
+        fetchUserReviews();
+      } else {
+        setReviewError(data.error || "Failed to submit review.");
+      }
+    } catch (err) {
+      setReviewError("An error occurred while submitting review.");
+    } finally {
+      setIsSubmittingReview(false);
     }
   };
 
@@ -407,6 +506,10 @@ function MyOrdersContent() {
                         {order.items.map((item) => {
                           const isBespoke = item.customizations && item.customizations.measurements && Object.keys(item.customizations.measurements).length > 0;
                           const isProductCoupon = isProductCouponMatch(item, order.couponCode, order.couponTargetType, order.couponTargetValue);
+                          const isDelivered = order.status?.toLowerCase() === "delivered";
+                          const itemReview = userReviews.find(
+                            (r) => r.orderId === order.id && r.productId === item.productId
+                          );
 
                           return (
                             <div key={item.id} className="flex flex-row gap-6 items-start pb-6 border-b border-white/10 last:border-0 last:pb-0">
@@ -461,6 +564,57 @@ function MyOrdersContent() {
                                 {isProductCoupon && (
                                   <div className="flex items-center space-x-1.5 bg-green-50 border border-green-200 text-green-700 px-3 py-1.5 rounded-xl w-fit mt-2">
                                     <span className="text-[10px] font-black uppercase tracking-widest">🏷️ Coupon Claimed: {order.couponCode}</span>
+                                  </div>
+                                )}
+
+                                {/* Verified Buyer Review Action / Status */}
+                                {isDelivered && (
+                                  <div className="mt-3 pt-3 border-t border-white/5 flex flex-wrap items-center gap-2">
+                                    {itemReview ? (
+                                      itemReview.status === "approved" ? (
+                                        <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-semibold">
+                                          <CheckCircle2 className="w-3.5 h-3.5" />
+                                          <span>Verified Review Published (★ {itemReview.rating})</span>
+                                        </div>
+                                      ) : itemReview.status === "rejected" ? (
+                                        <div className="inline-flex items-center gap-2">
+                                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs font-semibold">
+                                            <XCircle className="w-3.5 h-3.5" />
+                                            <span>Review Needs Changes</span>
+                                          </span>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleOpenReviewModal(order.id, item)}
+                                            className="text-[11px] font-bold text-white/60 hover:text-white underline cursor-pointer"
+                                          >
+                                            Update Review
+                                          </button>
+                                        </div>
+                                      ) : (
+                                        <div className="inline-flex items-center gap-2">
+                                          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-semibold">
+                                            <Clock className="w-3.5 h-3.5" />
+                                            <span>Pending Moderation (★ {itemReview.rating})</span>
+                                          </span>
+                                          <button
+                                            type="button"
+                                            onClick={() => handleOpenReviewModal(order.id, item)}
+                                            className="text-[11px] font-bold text-white/60 hover:text-white underline cursor-pointer"
+                                          >
+                                            Edit
+                                          </button>
+                                        </div>
+                                      )
+                                    ) : (
+                                      <button
+                                        type="button"
+                                        onClick={() => handleOpenReviewModal(order.id, item)}
+                                        className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#e51a34]/15 hover:bg-[#e51a34] text-[#ff4b60] hover:text-white border border-[#e51a34]/30 hover:border-transparent text-xs font-bold transition-all shadow-sm cursor-pointer"
+                                      >
+                                        <Star className="w-3.5 h-3.5 fill-current" />
+                                        <span>Write Review</span>
+                                      </button>
+                                    )}
                                   </div>
                                 )}
                               </div>
@@ -655,6 +809,161 @@ function MyOrdersContent() {
           })}
         </div>
       )}
+
+      {/* ── Verified Review Submission Modal ── */}
+      {isReviewModalOpen && selectedReviewItem && (
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-in fade-in"
+          onClick={() => setIsReviewModalOpen(false)}
+        >
+          <div 
+            className="relative w-full max-w-lg bg-[#0d0f17] border border-white/15 rounded-3xl p-6 sm:p-8 shadow-2xl text-white space-y-6 animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between border-b border-white/10 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-[#e51a34]/15 border border-[#e51a34]/30 text-[#ff4b60]">
+                  <Star className="w-5 h-5 fill-current" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-bold text-white tracking-tight">Verified Buyer Review</h3>
+                  <p className="text-xs text-white/50">Share your hands-on feedback on this studio instrument.</p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setIsReviewModalOpen(false)}
+                className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 text-white/60 hover:text-white transition-colors cursor-pointer"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Product Summary Capsule */}
+            <div className="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10">
+              <div className="w-12 h-12 rounded-xl bg-black overflow-hidden shrink-0 border border-white/10">
+                {selectedReviewItem.item.productImage ? (
+                  <img
+                    src={selectedReviewItem.item.productImage}
+                    alt={selectedReviewItem.item.productName}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center text-white/30">
+                    <ImageIcon size={18} />
+                  </div>
+                )}
+              </div>
+              <div className="min-w-0 flex-1">
+                <h4 className="text-xs font-bold text-white truncate">{selectedReviewItem.item.productName}</h4>
+                <p className="text-[10px] text-white/40 font-mono mt-0.5">
+                  Order #{selectedReviewItem.orderId} • {selectedReviewItem.item.size}
+                </p>
+              </div>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSubmitReview} className="space-y-5">
+              {/* Star Rating Selector */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-white/50 mb-2">
+                  Rating
+                </label>
+                <div className="flex items-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setReviewRating(star)}
+                      className="p-1 text-white hover:scale-110 transition-transform cursor-pointer"
+                    >
+                      <Star
+                        className={`w-7 h-7 transition-colors ${
+                          star <= reviewRating
+                            ? "fill-amber-400 text-amber-400"
+                            : "text-white/20 hover:text-white/40"
+                        }`}
+                      />
+                    </button>
+                  ))}
+                  <span className="font-mono text-xs font-semibold text-amber-400 ml-2">
+                    {reviewRating === 5 && "5 / 5 (Exceptional)"}
+                    {reviewRating === 4 && "4 / 5 (Very Good)"}
+                    {reviewRating === 3 && "3 / 5 (Good / Average)"}
+                    {reviewRating === 2 && "2 / 5 (Needs Improvement)"}
+                    {reviewRating === 1 && "1 / 5 (Poor)"}
+                  </span>
+                </div>
+              </div>
+
+              {/* Review Title */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-white/50 mb-1.5">
+                  Review Headline *
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={reviewTitle}
+                  onChange={(e) => setReviewTitle(e.target.value)}
+                  placeholder="e.g. Incredible optical sharpness for studio work"
+                  className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-2.5 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-[#e51a34] transition-colors"
+                />
+              </div>
+
+              {/* Review Body */}
+              <div>
+                <label className="block text-[10px] font-bold uppercase tracking-wider text-white/50 mb-1.5">
+                  Detailed Feedback *
+                </label>
+                <textarea
+                  required
+                  rows={4}
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder="Describe your hands-on experience with the light output, cooling fan noise, GOBO stencils, or overall studio performance..."
+                  className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-xs text-white placeholder:text-white/30 focus:outline-none focus:border-[#e51a34] transition-colors resize-none leading-relaxed"
+                />
+              </div>
+
+              {/* Error Alert */}
+              {reviewError && (
+                <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 shrink-0" />
+                  <span>{reviewError}</span>
+                </div>
+              )}
+
+              {/* Action Buttons */}
+              <div className="flex items-center justify-end gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => setIsReviewModalOpen(false)}
+                  className="px-4 py-2.5 rounded-xl bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs font-bold transition-all cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmittingReview}
+                  className="px-5 py-2.5 rounded-xl bg-[#e51a34] hover:bg-[#c9142b] text-white text-xs font-bold uppercase tracking-wider shadow-lg shadow-[#e51a34]/20 transition-all flex items-center gap-2 cursor-pointer disabled:opacity-50"
+                >
+                  {isSubmittingReview ? (
+                    <>
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      <span>Submitting...</span>
+                    </>
+                  ) : (
+                    <span>Submit Review</span>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
       {/* Floating Toast Notification */}
       {toastMsg && (
         <div className="fixed bottom-10 left-1/2 -translate-x-1/2 z-50 bg-[#12151f] text-white px-8 py-4 rounded-2xl shadow-2xl flex items-center space-x-3 font-bold text-xs animate-in fade-in slide-in-from-bottom-5 duration-300 border border-[#00e5ff]/20">
