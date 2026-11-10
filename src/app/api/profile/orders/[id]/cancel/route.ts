@@ -67,3 +67,5 @@ export async function PATCH(
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
+
+export const POST = PATCH;

@@ -23,6 +23,8 @@ export async function GET() {
       id: orders.id,
       totalAmount: orders.totalAmount,
       status: orders.status,
+      paymentStatus: orders.paymentStatus,
+      paymentGateway: orders.paymentGateway,
       shippingAddress: orders.shippingAddress,
       createdAt: orders.createdAt,
       couponCode: orders.couponCode,
@@ -94,7 +96,11 @@ export async function GET() {
       };
     }));
 
-    return NextResponse.json({ success: true, data: ordersWithItems });
+    return NextResponse.json({
+      success: true,
+      data: ordersWithItems,
+      orders: ordersWithItems,
+    });
   } catch (error: any) {
     console.error("User Orders API Error:", error);
     return NextResponse.json({ success: false, error: "Internal Server Error" }, { status: 500 });

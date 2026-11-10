@@ -969,7 +969,7 @@ function CartContent() {
 
                 <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
                   <Link
-                    href="/profile/orders"
+                    href="/account?tab=orders"
                     className="w-full py-3.5 rounded-xl bg-primary-container text-white font-bold text-xs uppercase tracking-wider shadow-[0_0_24px_rgba(229,26,52,0.45)] hover:bg-tertiary-container transition-all flex items-center justify-center gap-2"
                   >
                     <span>View in My Orders</span>

@@ -79,7 +79,25 @@ function AccountContent() {
     }, 3500);
   };
 
-  // Fetch Session and Addresses on mount
+  // Fetch Orders Helper
+  const loadOrders = async () => {
+    setIsLoadingOrders(true);
+    try {
+      const res = await fetch("/api/profile/orders");
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success) {
+          setOrdersList(data.orders || data.data || []);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load orders", err);
+    } finally {
+      setIsLoadingOrders(false);
+    }
+  };
+
+  // Fetch Session, Addresses, and Orders on mount
   useEffect(() => {
     async function loadAccountData() {
       try {
@@ -105,6 +123,15 @@ function AccountContent() {
             setAddresses(addrData.addresses || []);
           }
         }
+
+        // Fetch Initial Orders count
+        const ordersRes = await fetch("/api/profile/orders");
+        if (ordersRes.ok) {
+          const ordersData = await ordersRes.json();
+          if (ordersData.success) {
+            setOrdersList(ordersData.orders || ordersData.data || []);
+          }
+        }
       } catch (err) {
         console.error("Account load error", err);
       } finally {
@@ -114,25 +141,9 @@ function AccountContent() {
     loadAccountData();
   }, [router]);
 
-  // Fetch Orders when orders tab is active
+  // Refresh Orders when orders tab is active
   useEffect(() => {
     if (activeTab === "orders") {
-      async function loadOrders() {
-        setIsLoadingOrders(true);
-        try {
-          const res = await fetch("/api/profile/orders");
-          if (res.ok) {
-            const data = await res.json();
-            if (data.success) {
-              setOrdersList(data.orders || []);
-            }
-          }
-        } catch (err) {
-          console.error("Failed to load orders", err);
-        } finally {
-          setIsLoadingOrders(false);
-        }
-      }
       loadOrders();
     }
   }, [activeTab]);
@@ -405,7 +416,14 @@ function AccountContent() {
                   <Package className="w-4 h-4" />
                   <span>My Orders</span>
                 </div>
-                <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                <div className="flex items-center gap-2">
+                  {ordersList.length > 0 && (
+                    <span className="font-mono text-xs px-2 py-0.5 rounded bg-surface-container-high text-white">
+                      {ordersList.length}
+                    </span>
+                  )}
+                  <ChevronRight className="w-3.5 h-3.5 opacity-60" />
+                </div>
               </button>
             </div>
 
@@ -737,7 +755,12 @@ function AccountContent() {
                 ) : (
                   <div className="flex flex-col gap-4">
                     {ordersList.map((order) => {
-                      const isProcessing = order.status === "processing" || order.status === "pending";
+                      const statusLower = (order.status || "").toLowerCase();
+                      const isDelivered = statusLower === "delivered";
+                      const isCancelled = statusLower === "cancelled";
+                      const isConfirmed = statusLower === "confirmed";
+                      const isCancellable = statusLower === "processing" || statusLower === "pending" || statusLower === "confirmed";
+                      const isPaid = order.paymentStatus === "paid";
                       return (
                         <div
                           key={order.id}
@@ -751,15 +774,22 @@ function AccountContent() {
                               </span>
                               <span
                                 className={`px-2.5 py-0.5 rounded font-mono text-[10px] uppercase font-bold tracking-wider ${
-                                  order.status === "delivered"
+                                  isDelivered
                                     ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                                    : order.status === "cancelled"
+                                    : isCancelled
                                     ? "bg-rose-500/20 text-rose-400 border border-rose-500/30"
+                                    : isConfirmed
+                                    ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
                                     : "bg-primary-container/20 text-primary border border-primary/20"
                                 }`}
                               >
                                 {order.status}
                               </span>
+                              {isPaid && (
+                                <span className="px-2 py-0.5 rounded font-mono text-[9px] uppercase tracking-wider bg-white/5 border border-white/10 text-secondary">
+                                  PAID
+                                </span>
+                              )}
                             </div>
                             <div className="font-mono text-xs text-secondary flex items-center gap-1.5">
                               <Calendar className="w-3.5 h-3.5" />
@@ -784,11 +814,18 @@ function AccountContent() {
 
                           {/* Order Footer & Actions */}
                           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-3 border-t border-white/5">
-                            <div className="flex items-center gap-2">
-                              <span className="text-xs text-secondary font-mono">Total Value:</span>
-                              <span className="font-mono text-base font-bold text-white">
-                                ₹{order.totalAmount?.toLocaleString("en-IN")}
-                              </span>
+                            <div className="flex flex-col gap-0.5">
+                              <div className="flex items-center gap-2">
+                                <span className="text-xs text-secondary font-mono">Total Value:</span>
+                                <span className="font-mono text-base font-bold text-white">
+                                  ₹{order.totalAmount?.toLocaleString("en-IN")}
+                                </span>
+                              </div>
+                              {order.shippingAddress && (
+                                <span className="text-[11px] font-mono text-secondary/60 truncate max-w-sm">
+                                  Destination: {order.shippingAddress.split(",")[0]?.replace("Name: ", "") || "India Delivery"}
+                                </span>
+                              )}
                             </div>
 
                             <div className="flex items-center gap-3">
@@ -803,7 +840,7 @@ function AccountContent() {
                                   <ExternalLink className="w-3 h-3" />
                                 </a>
                               )}
-                              {isProcessing && (
+                              {isCancellable && (
                                 <button
                                   type="button"
                                   onClick={() => handleCancelOrder(order.id)}
