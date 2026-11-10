@@ -37,6 +37,13 @@ client.execute("ALTER TABLE navigation_menu ADD COLUMN is_active INTEGER NOT NUL
 client.execute("ALTER TABLE orders ADD COLUMN phonepe_order_id TEXT;").catch(() => {});
 client.execute("ALTER TABLE orders ADD COLUMN phonepe_payment_id TEXT;").catch(() => {});
 client.execute("ALTER TABLE orders ADD COLUMN payment_gateway TEXT DEFAULT 'phonepe';").catch(() => {});
+client.execute("ALTER TABLE orders ADD COLUMN courier_service_name TEXT;").catch(() => {});
+client.execute("ALTER TABLE orders ADD COLUMN courier_id TEXT;").catch(() => {});
+client.execute("ALTER TABLE orders ADD COLUMN tracking_number TEXT;").catch(() => {});
+client.execute("ALTER TABLE orders ADD COLUMN tracking_link TEXT;").catch(() => {});
+client.execute("ALTER TABLE orders ADD COLUMN estimated_delivery_date INTEGER;").catch(() => {});
+client.execute("ALTER TABLE orders ADD COLUMN shipping_notes TEXT;").catch(() => {});
+client.execute("ALTER TABLE orders ADD COLUMN cancellation_reason TEXT;").catch(() => {});
 client.execute("ALTER TABLE reels ADD COLUMN creator_handle TEXT DEFAULT '@creator';").catch(() => {});
 client.execute(`
   CREATE TABLE IF NOT EXISTS reels (

@@ -47,6 +47,9 @@ function CartContent() {
 
   // Checkout Modal States
   const [isCheckoutModalOpen, setIsCheckoutModalOpen] = useState(false);
+  const [checkoutStep, setCheckoutStep] = useState<"address" | "summary" | "confirmed">("address");
+  const [confirmedOrderId, setConfirmedOrderId] = useState<number | null>(null);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   const [savedAddresses, setSavedAddresses] = useState<string[]>([]);
   const [showNewAddressForm, setShowNewAddressForm] = useState(false);
@@ -165,6 +168,9 @@ function CartContent() {
 
   // Checkout modal initiation
   const handleOpenCheckout = async () => {
+    setCheckoutStep("address");
+    setConfirmedOrderId(null);
+    setCheckoutError(null);
     setIsCheckoutModalOpen(true);
     setFetchingAddress(true);
     try {
@@ -186,25 +192,60 @@ function CartContent() {
     }
   };
 
-  // Payment trigger
-  const handleProceedPayment = async () => {
-    setIsProcessingPayment(true);
-    try {
-      const shippingAddress = showNewAddressForm
-        ? `Name: ${newAddress.fullName}, Street: ${newAddress.street}, City: ${newAddress.city}, State: ${newAddress.state}, Pincode: ${newAddress.pincode}, Contact: ${newAddress.phone}`
-        : savedAddresses[selectedAddressIndex || 0];
+  const getResolvedShippingAddress = () => {
+    if (showNewAddressForm) {
+      return `Name: ${newAddress.fullName.trim()}, Street: ${newAddress.street.trim()}, City: ${newAddress.city.trim()}, State: ${newAddress.state.trim()}, Pincode: ${newAddress.pincode.trim()}, Contact: ${newAddress.phone.trim()}`;
+    }
+    return savedAddresses[selectedAddressIndex || 0] || "";
+  };
 
-      if (!shippingAddress) {
-        alert("Please provide a valid shipping address.");
-        setIsProcessingPayment(false);
+  const handleProceedToSummary = () => {
+    setCheckoutError(null);
+    if (showNewAddressForm) {
+      if (
+        !newAddress.fullName.trim() ||
+        !newAddress.street.trim() ||
+        !newAddress.city.trim() ||
+        !newAddress.state.trim() ||
+        !newAddress.pincode.trim() ||
+        !newAddress.phone.trim()
+      ) {
+        alert("Please complete all delivery address fields.");
         return;
       }
+      if (newAddress.phone.trim().length < 10) {
+        alert("Please enter a valid 10-digit contact number.");
+        return;
+      }
+    } else {
+      const addr = savedAddresses[selectedAddressIndex || 0];
+      if (!addr) {
+        alert("Please select a destination address or add a new one.");
+        return;
+      }
+    }
+    setCheckoutStep("summary");
+  };
 
-      const res = await fetch("/api/checkout/phonepe", {
+  // Payment trigger (Gateway Bypass for test mode flow validation)
+  const handleConfirmOrder = async () => {
+    setIsProcessingPayment(true);
+    setCheckoutError(null);
+
+    const shippingAddress = getResolvedShippingAddress();
+    if (!shippingAddress) {
+      setCheckoutError("Valid delivery address is required.");
+      setIsProcessingPayment(false);
+      return;
+    }
+
+    try {
+      const res = await fetch("/api/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           items,
+          totalAmount: orderTotal,
           shippingAddress,
           couponCode: appliedCoupon?.code || null,
         }),
@@ -212,17 +253,18 @@ function CartContent() {
 
       const data = await res.json();
       if (!data.success) {
-        alert("Payment initialization error: " + (data.error || "Failed to start payment"));
+        setCheckoutError(data.error || "Failed to confirm order.");
         setIsProcessingPayment(false);
         return;
       }
 
-      if (data.redirectUrl) {
-        window.location.href = data.redirectUrl;
-      }
-    } catch (err) {
-      console.error("Checkout payment error:", err);
-      alert("Payment initialization error. Please try again.");
+      setConfirmedOrderId(data.orderId);
+      clearCart();
+      setCheckoutStep("confirmed");
+    } catch (err: any) {
+      console.error("Order confirmation error:", err);
+      setCheckoutError("An unexpected error occurred while placing your order.");
+    } finally {
       setIsProcessingPayment(false);
     }
   };
@@ -360,6 +402,7 @@ function CartContent() {
                         src={item.image || "/images/product/hero-main.jpg"}
                         alt={item.name}
                         fill
+                        sizes="(max-width: 640px) 80px, 96px"
                         className="object-cover group-hover:scale-105 transition-transform duration-300"
                       />
                     </div>
@@ -597,160 +640,351 @@ function CartContent() {
             <button
               type="button"
               onClick={() => setIsCheckoutModalOpen(false)}
-              className="absolute top-4 right-4 p-2 text-secondary hover:text-white rounded-lg transition-colors"
+              className="absolute top-4 right-4 p-2 text-secondary hover:text-white rounded-lg transition-colors cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-2 mb-6">
-              <div className="p-2 rounded-xl bg-surface-container-high text-primary border border-white/5">
-                <MapPin className="w-5 h-5 text-primary-container" />
-              </div>
-              <div>
-                <h3 className="font-bold text-lg text-white">Delivery Coordinates</h3>
-                <p className="text-xs text-secondary font-mono">
-                  Select destination address for BlueDart dispatch
-                </p>
-              </div>
-            </div>
-
-            {fetchingAddress ? (
-              <div className="py-12 flex justify-center">
-                <Loader2 className="w-6 h-6 text-primary animate-spin" />
-              </div>
-            ) : (
-              <div className="flex flex-col gap-4">
-                {savedAddresses.length > 0 && !showNewAddressForm && (
-                  <div className="flex flex-col gap-3">
-                    <span className="font-mono text-xs text-white uppercase tracking-wider font-semibold">
-                      Saved Delivery Addresses
-                    </span>
-                    {savedAddresses.map((addr, idx) => (
-                      <label
-                        key={idx}
-                        onClick={() => setSelectedAddressIndex(idx)}
-                        className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-start gap-3 ${
-                          selectedAddressIndex === idx
-                            ? "bg-surface-container-high border-primary-container"
-                            : "bg-surface-container border-white/5 hover:border-white/20"
-                        }`}
-                      >
-                        <input
-                          type="radio"
-                          name="savedAddress"
-                          checked={selectedAddressIndex === idx}
-                          onChange={() => setSelectedAddressIndex(idx)}
-                          className="accent-primary-container mt-1"
-                        />
-                        <span className="text-xs text-secondary leading-relaxed">
-                          {addr}
-                        </span>
-                      </label>
-                    ))}
-                    <button
-                      type="button"
-                      onClick={() => setShowNewAddressForm(true)}
-                      className="text-primary hover:underline font-mono text-xs font-semibold text-left mt-1"
-                    >
-                      + Add New Delivery Address
-                    </button>
+            {/* ── STEP 1: DELIVERY COORDINATES ──────────────────────────────── */}
+            {checkoutStep === "address" && (
+              <>
+                <div className="flex items-center gap-2 mb-6">
+                  <div className="p-2 rounded-xl bg-surface-container-high text-primary border border-white/5">
+                    <MapPin className="w-5 h-5 text-primary-container" />
                   </div>
-                )}
+                  <div>
+                    <h3 className="font-bold text-lg text-white">Delivery Coordinates</h3>
+                    <p className="text-xs text-secondary font-mono">
+                      Select destination address for BlueDart dispatch
+                    </p>
+                  </div>
+                </div>
 
-                {showNewAddressForm && (
-                  <div className="flex flex-col gap-3">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs text-white uppercase tracking-wider font-semibold">
-                        Enter Delivery Address
-                      </span>
-                      {savedAddresses.length > 0 && (
+                {fetchingAddress ? (
+                  <div className="py-12 flex justify-center">
+                    <Loader2 className="w-6 h-6 text-primary animate-spin" />
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-4">
+                    {savedAddresses.length > 0 && !showNewAddressForm && (
+                      <div className="flex flex-col gap-3">
+                        <span className="font-mono text-xs text-white uppercase tracking-wider font-semibold">
+                          Saved Delivery Addresses
+                        </span>
+                        {savedAddresses.map((addr, idx) => (
+                          <label
+                            key={idx}
+                            onClick={() => setSelectedAddressIndex(idx)}
+                            className={`p-3.5 rounded-xl border cursor-pointer transition-all flex items-start gap-3 ${
+                              selectedAddressIndex === idx
+                                ? "bg-surface-container-high border-primary-container"
+                                : "bg-surface-container border-white/5 hover:border-white/20"
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="savedAddress"
+                              checked={selectedAddressIndex === idx}
+                              onChange={() => setSelectedAddressIndex(idx)}
+                              className="accent-primary-container mt-1"
+                            />
+                            <span className="text-xs text-secondary leading-relaxed">
+                              {addr}
+                            </span>
+                          </label>
+                        ))}
                         <button
                           type="button"
-                          onClick={() => setShowNewAddressForm(false)}
-                          className="text-xs text-primary font-mono hover:underline"
+                          onClick={() => setShowNewAddressForm(true)}
+                          className="text-primary hover:underline font-mono text-xs font-semibold text-left mt-1 cursor-pointer"
                         >
-                          Use Saved Address
+                          + Add New Delivery Address
                         </button>
-                      )}
-                    </div>
+                      </div>
+                    )}
 
-                    <input
-                      type="text"
-                      placeholder="Receiver Full Name"
-                      value={newAddress.fullName}
-                      onChange={(e) => setNewAddress({ ...newAddress, fullName: e.target.value })}
-                      className="w-full bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Street Address / Studio Studio Floor"
-                      value={newAddress.street}
-                      onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
-                      className="w-full bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
-                    />
-                    <div className="grid grid-cols-2 gap-2">
-                      <input
-                        type="text"
-                        placeholder="City"
-                        value={newAddress.city}
-                        onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
-                        className="bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
-                      />
-                      <input
-                        type="text"
-                        placeholder="State"
-                        value={newAddress.state}
-                        onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
-                        className="bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
-                      />
-                    </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <input
-                        type="text"
-                        placeholder="PIN Code"
-                        maxLength={6}
-                        value={newAddress.pincode}
-                        onChange={(e) => setNewAddress({ ...newAddress, pincode: e.target.value })}
-                        className="bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
-                      />
-                      <input
-                        type="tel"
-                        placeholder="Contact Phone"
-                        maxLength={10}
-                        value={newAddress.phone}
-                        onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
-                        className="bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
-                      />
+                    {showNewAddressForm && (
+                      <div className="flex flex-col gap-3">
+                        <div className="flex items-center justify-between">
+                          <span className="font-mono text-xs text-white uppercase tracking-wider font-semibold">
+                            Enter Delivery Address
+                          </span>
+                          {savedAddresses.length > 0 && (
+                            <button
+                              type="button"
+                              onClick={() => setShowNewAddressForm(false)}
+                              className="text-xs text-primary font-mono hover:underline cursor-pointer"
+                            >
+                              Use Saved Address
+                            </button>
+                          )}
+                        </div>
+
+                        <input
+                          type="text"
+                          placeholder="Receiver Full Name"
+                          value={newAddress.fullName}
+                          onChange={(e) => setNewAddress({ ...newAddress, fullName: e.target.value })}
+                          className="w-full bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Street Address / Studio Floor"
+                          value={newAddress.street}
+                          onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
+                          className="w-full bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
+                        />
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            placeholder="City"
+                            value={newAddress.city}
+                            onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
+                            className="bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
+                          />
+                          <input
+                            type="text"
+                            placeholder="State"
+                            value={newAddress.state}
+                            onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
+                            className="bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
+                          />
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                          <input
+                            type="text"
+                            placeholder="PIN Code"
+                            maxLength={6}
+                            value={newAddress.pincode}
+                            onChange={(e) => setNewAddress({ ...newAddress, pincode: e.target.value })}
+                            className="bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
+                          />
+                          <input
+                            type="tel"
+                            placeholder="Contact Phone"
+                            maxLength={10}
+                            value={newAddress.phone}
+                            onChange={(e) => setNewAddress({ ...newAddress, phone: e.target.value })}
+                            className="bg-surface-container-lowest text-white text-xs px-3.5 py-2.5 rounded-xl border border-white/10"
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Total and Summary Button */}
+                    <div className="mt-4 pt-4 border-t border-white/10 flex flex-col gap-3">
+                      <div className="flex justify-between items-center font-mono">
+                        <span className="text-xs text-secondary">Payable Value:</span>
+                        <span className="text-xl font-extrabold text-white">
+                          ₹{orderTotal.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={handleProceedToSummary}
+                        className="w-full py-3.5 rounded-xl bg-primary-container text-white font-bold text-sm uppercase tracking-wider shadow-[0_0_24px_rgba(229,26,52,0.45)] hover:bg-tertiary-container transition-all flex items-center justify-center gap-2 cursor-pointer"
+                      >
+                        <span>Review Order Summary</span>
+                        <ArrowRight className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 )}
+              </>
+            )}
 
-                {/* Total and Gateway Trigger */}
-                <div className="mt-4 pt-4 border-t border-white/10 flex flex-col gap-3">
-                  <div className="flex justify-between items-center font-mono">
-                    <span className="text-xs text-secondary">Payable Value:</span>
-                    <span className="text-xl font-extrabold text-white">
+            {/* ── STEP 2: ORDER SUMMARY & REVIEW ────────────────────────────── */}
+            {checkoutStep === "summary" && (
+              <div className="space-y-5 animate-fadeIn">
+                <div className="flex items-center gap-2 mb-2">
+                  <div className="p-2 rounded-xl bg-surface-container-high text-primary border border-white/5">
+                    <ShieldCheck className="w-5 h-5 text-primary-container" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-lg text-white">Order Summary</h3>
+                    <p className="text-xs text-secondary font-mono">
+                      Review equipment manifest and delivery coordinates
+                    </p>
+                  </div>
+                </div>
+
+                {/* Items Manifest */}
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center text-[11px] font-mono text-white/50 uppercase tracking-wider font-semibold">
+                    <span>Hardware Manifest ({items.reduce((s, i) => s + i.quantity, 0)} Units)</span>
+                  </div>
+                  <div className="max-h-40 overflow-y-auto space-y-2 pr-1">
+                    {items.map((item) => (
+                      <div
+                        key={item.id}
+                        className="flex items-center justify-between p-2.5 rounded-xl bg-surface-container border border-white/5 gap-3"
+                      >
+                        <div className="flex items-center gap-3 min-w-0">
+                          <div className="w-10 h-10 rounded-lg bg-surface-container-highest shrink-0 overflow-hidden relative border border-white/5">
+                            <Image
+                              src={item.image || "/images/product/hero-main.jpg"}
+                              alt={item.name}
+                              fill
+                              sizes="40px"
+                              className="object-cover"
+                            />
+                          </div>
+                          <div className="min-w-0">
+                            <h4 className="text-xs font-bold text-white truncate">{item.name}</h4>
+                            <p className="text-[10px] text-secondary font-mono mt-0.5">
+                              {item.size || "Standard Kit"} • Qty: {item.quantity}
+                            </p>
+                          </div>
+                        </div>
+                        <span className="font-mono text-xs font-bold text-white shrink-0">
+                          ₹{(item.price * item.quantity).toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Destination Address Preview */}
+                <div className="p-3.5 rounded-xl bg-surface-container border border-white/5 space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[11px] text-primary flex items-center gap-1 font-semibold uppercase tracking-wider">
+                      <MapPin className="w-3.5 h-3.5" /> Destination Coordinates
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setCheckoutStep("address")}
+                      className="text-[11px] font-mono text-primary-container hover:underline cursor-pointer"
+                    >
+                      Change Address
+                    </button>
+                  </div>
+                  <p className="text-xs text-secondary leading-relaxed font-sans">
+                    {getResolvedShippingAddress()}
+                  </p>
+                </div>
+
+                {/* Cost Breakdown */}
+                <div className="space-y-2 p-3.5 rounded-xl bg-surface-container border border-white/5 font-mono text-xs">
+                  <div className="flex justify-between text-secondary">
+                    <span>Hardware Subtotal</span>
+                    <span>₹{subtotal.toLocaleString("en-IN")}</span>
+                  </div>
+                  <div className="flex justify-between text-secondary">
+                    <span>Domestic Express Courier</span>
+                    <span className="text-white">₹{domesticShippingFee.toLocaleString("en-IN")}</span>
+                  </div>
+                  {discountAmount > 0 && (
+                    <div className="flex justify-between text-emerald-400 font-semibold">
+                      <span>Studio Voucher ({appliedCoupon?.code})</span>
+                      <span>-₹{discountAmount.toLocaleString("en-IN")}</span>
+                    </div>
+                  )}
+                  <div className="border-t border-white/10 pt-2 flex justify-between text-sm font-bold text-white">
+                    <span>Payable Total</span>
+                    <span className="text-primary text-base font-extrabold">
                       ₹{orderTotal.toLocaleString("en-IN")}
                     </span>
                   </div>
+                </div>
 
+                {/* Test Mode Banner */}
+                <div className="p-2.5 rounded-xl bg-primary-container/15 border border-primary-container/30 text-white text-[11px] font-mono flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 shrink-0 text-primary-container" />
+                  <span>Test Flow: Payment Gateway bypassed. Order will be confirmed directly.</span>
+                </div>
+
+                {/* Error Banner */}
+                {checkoutError && (
+                  <div className="p-3 rounded-xl bg-error-container/20 border border-error/30 text-error text-xs flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 shrink-0" />
+                    <span>{checkoutError}</span>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3 pt-2">
                   <button
                     type="button"
-                    onClick={handleProceedPayment}
+                    onClick={() => setCheckoutStep("address")}
+                    className="px-4 py-3 rounded-xl bg-surface-container hover:bg-surface-container-high text-secondary hover:text-white font-mono text-xs transition-colors cursor-pointer"
+                  >
+                    ← Back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleConfirmOrder}
                     disabled={isProcessingPayment}
-                    className="w-full py-3.5 rounded-xl bg-primary-container text-white font-bold text-sm uppercase tracking-wider shadow-[0_0_24px_rgba(229,26,52,0.45)] hover:bg-tertiary-container transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                    className="flex-1 py-3.5 rounded-xl bg-primary-container text-white font-bold text-xs uppercase tracking-wider shadow-[0_0_24px_rgba(229,26,52,0.45)] hover:bg-tertiary-container transition-all flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
                   >
                     {isProcessingPayment ? (
                       <>
                         <Loader2 className="w-4 h-4 animate-spin" />
-                        <span>Connecting PhonePe Gateway...</span>
+                        <span>Allocating Hardware Order...</span>
                       </>
                     ) : (
                       <>
-                        <span>Pay with UPI / Cards / NetBanking</span>
+                        <span>Confirm &amp; Place Order</span>
                         <ArrowRight className="w-4 h-4" />
                       </>
                     )}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ── STEP 3: ORDER CONFIRMED SCREEN ────────────────────────────── */}
+            {checkoutStep === "confirmed" && (
+              <div className="py-4 text-center space-y-5 animate-in zoom-in-95 duration-200">
+                <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                  <CheckCircle2 className="w-8 h-8" />
+                </div>
+
+                <div>
+                  <span className="px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-mono text-xs uppercase tracking-wider font-bold">
+                    Order #{confirmedOrderId} Confirmed
+                  </span>
+                  <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight mt-3">
+                    Hardware Allocation Reserved
+                  </h3>
+                  <p className="text-xs text-secondary max-w-sm mx-auto leading-relaxed mt-1.5">
+                    Your optical instruments have been logged into our fulfillment queue. Priority insured dispatch via BlueDart will be scheduled within 24 hours.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-surface-container border border-white/5 text-left space-y-2 font-mono text-xs">
+                  <div className="flex justify-between text-secondary">
+                    <span>Payment Status:</span>
+                    <span className="text-emerald-400 font-bold uppercase">PAID (TEST MODE)</span>
+                  </div>
+                  <div className="flex justify-between text-secondary">
+                    <span>Order Total:</span>
+                    <span className="text-white font-bold">₹{orderTotal.toLocaleString("en-IN")}</span>
+                  </div>
+                  <div className="flex justify-between text-secondary">
+                    <span>Delivery Partner:</span>
+                    <span className="text-white">BlueDart Priority Air</span>
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                  <Link
+                    href="/profile/orders"
+                    className="w-full py-3.5 rounded-xl bg-primary-container text-white font-bold text-xs uppercase tracking-wider shadow-[0_0_24px_rgba(229,26,52,0.45)] hover:bg-tertiary-container transition-all flex items-center justify-center gap-2"
+                  >
+                    <span>View in My Orders</span>
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setIsCheckoutModalOpen(false);
+                      setCheckoutStep("address");
+                      router.push("/#models");
+                    }}
+                    className="w-full py-3.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-secondary hover:text-white font-mono text-xs transition-colors cursor-pointer"
+                  >
+                    Continue Browsing
                   </button>
                 </div>
               </div>

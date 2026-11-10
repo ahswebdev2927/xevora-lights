@@ -301,6 +301,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 alt={galleryImages[currentImgIdx]?.alt || "Xevora G-Flash Spotlight"}
                 fill
                 priority
+                sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />
 
@@ -364,6 +365,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                         src={img.src}
                         alt={img.alt}
                         fill
+                        sizes="(max-width: 640px) 25vw, 120px"
                         className="object-cover"
                       />
                     </div>
@@ -987,6 +989,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                   src={item.img}
                   alt={item.title}
                   fill
+                  sizes="(max-width: 768px) 50vw, 200px"
                   className="object-contain p-2 group-hover:scale-105 transition-transform"
                 />
               </div>
@@ -1105,6 +1108,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                       src={rev.btsImg}
                       alt={rev.btsCaption}
                       fill
+                      sizes="(max-width: 768px) 100vw, 33vw"
                       className="object-cover group-hover:scale-105 transition-transform"
                     />
                     <span className="absolute bottom-2 left-2 bg-surface-container-lowest/85 backdrop-blur-xs text-white px-2 py-0.5 rounded font-mono text-[10px] font-semibold border border-white/10">
@@ -1143,6 +1147,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
               src={galleryImages[currentImgIdx]?.src || "/images/product/hero-main.jpg"}
               alt="Zoomed Product View"
               fill
+              sizes="100vw"
               className="object-contain"
             />
             <button
@@ -1172,6 +1177,7 @@ export default function ProductDetailPage({ params }: ProductPageProps) {
                 src="/images/product/thumb-mini.jpg"
                 alt="Product Preview"
                 fill
+                sizes="48px"
                 className="object-cover"
               />
             </div>

@@ -33,7 +33,7 @@ export async function POST(req: Request) {
     let existingOrdersCount: number | undefined = undefined;
     if (userId) {
       const existingOrders = await db
-        .select()
+        .select({ id: orders.id })
         .from(orders)
         .where(and(eq(orders.userId, userId), ne(orders.status, "cancelled")));
       existingOrdersCount = existingOrders.length;

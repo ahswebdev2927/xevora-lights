@@ -59,13 +59,15 @@ export const useCartStore = create<CartStore>()(
       updateQuantity: (id, delta) => {
         const currentItems = get().items;
         set({
-          items: currentItems.map((item) => {
-            if (item.id === id) {
-              const newQty = item.quantity + delta;
-              return newQty > 0 ? { ...item, quantity: newQty } : item;
-            }
-            return item;
-          }),
+          items: currentItems
+            .map((item) => {
+              if (item.id === id) {
+                const newQty = item.quantity + delta;
+                return { ...item, quantity: newQty };
+              }
+              return item;
+            })
+            .filter((item) => item.quantity > 0),
         });
       },
       

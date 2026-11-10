@@ -31,11 +31,12 @@ export async function POST(req: Request) {
       discountAmount = couponValidation.discountAmount;
     }
 
-    // Recalculate subtotal and verify expected total
+    // Recalculate subtotal and verify expected total (including ₹199 courier fee)
     const subtotal = items.reduce((sum: number, item: any) => sum + item.price * item.quantity, 0);
-    const expectedTotal = Math.max(0, subtotal - discountAmount);
+    const domesticShippingFee = items.length > 0 ? 199 : 0;
+    const expectedTotal = Math.max(0, subtotal + domesticShippingFee - discountAmount);
 
-    if (Math.abs(totalAmount - expectedTotal) > 0.01) {
+    if (totalAmount !== undefined && Math.abs(totalAmount - expectedTotal) > 1.0) {
       return NextResponse.json({
         success: false,
         error: `Total amount mismatch. Expected: ₹${expectedTotal}, Received: ₹${totalAmount}`
@@ -61,11 +62,13 @@ export async function POST(req: Request) {
       }
     }
 
-    // Create Order
+    // Create Order (Test Mode / Gateway Bypass -> status: Confirmed, paymentStatus: paid)
     const [newOrder] = await db.insert(orders).values({
       userId: user.id,
-      totalAmount: totalAmount,
-      status: "pending", // Initial status after payment
+      totalAmount: expectedTotal,
+      status: "Confirmed",
+      paymentStatus: "paid",
+      paymentGateway: "test_bypass",
       shippingAddress: shippingAddress,
       couponCode: couponCode || null,
       discountAmount: discountAmount || 0,
@@ -76,12 +79,12 @@ export async function POST(req: Request) {
     for (const item of items) {
       await db.insert(orderItems).values({
         orderId: newOrder.id,
-        productId: item.productId,
+        productId: Number(item.productId),
         quantity: item.quantity,
         price: item.price,
-        size: item.size,
-        color: item.color,
-        customizations: JSON.stringify(item.customizations),
+        size: item.size || "Standard Kit",
+        color: item.color || null,
+        customizations: item.customizations ? JSON.stringify(item.customizations) : null,
       });
     }
 
