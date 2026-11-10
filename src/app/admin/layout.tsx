@@ -10,7 +10,6 @@ import {
   Users,
   LogOut,
   ChevronRight,
-  Sparkles,
   Box,
   BarChart3,
   AlertTriangle,
@@ -40,7 +39,6 @@ const sidebarLinks = [
   { name: "FAQs Settings", href: "/admin/faqs", icon: HelpCircle },
   { name: "Coupons", href: "/admin/coupons", icon: Ticket },
   { name: "Blogs", href: "/admin/blogs", icon: FileText },
-  { name: "About Section", href: "/admin/about", icon: Sparkles },
   { name: "Site Settings", href: "/admin/settings", icon: Settings },
 ];
 

@@ -39,7 +39,9 @@ export default function AdminAboutPage() {
   };
 
   useEffect(() => {
-    fetchData();
+    // The About page is custom-coded by developers at src/app/about/page.tsx.
+    // Redirect direct visits to prevent editing disconnected settings.
+    router.replace("/admin");
   }, [router]);
 
   const handleSaveFounderPromo = async (e: React.FormEvent) => {
