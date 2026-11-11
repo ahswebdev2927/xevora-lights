@@ -32,7 +32,17 @@ export default function RootLayout({
       suppressHydrationWarning
       className="antialiased"
     >
-      <body className="min-h-screen bg-[#090a0f] text-slate-100 font-inter flex flex-col">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{function c(e){if(e&&e.removeAttribute){if(e.hasAttribute('bis_skin_checked'))e.removeAttribute('bis_skin_checked');if(e.hasAttribute('bis_register'))e.removeAttribute('bis_register');}}var o=new MutationObserver(function(m){for(var i=0;i<m.length;i++){var t=m[i];if(t.type==='attributes'){if(t.attributeName==='bis_skin_checked'||t.attributeName==='bis_register')t.target.removeAttribute(t.attributeName);}else if(t.addedNodes){for(var j=0;j<t.addedNodes.length;j++){var n=t.addedNodes[j];if(n.nodeType===1){c(n);var s=n.querySelectorAll?n.querySelectorAll('[bis_skin_checked],[bis_register]'):[];for(var k=0;k<s.length;k++)c(s[k]);}}}}});o.observe(document.documentElement,{attributes:true,attributeFilter:['bis_skin_checked','bis_register'],childList:true,subtree:true});}catch(e){}})();`,
+          }}
+        />
+      </head>
+      <body
+        suppressHydrationWarning
+        className="min-h-screen bg-[#090a0f] text-slate-100 font-inter flex flex-col"
+      >
         <Script
           id="xevora-landing-init"
           strategy="beforeInteractive"

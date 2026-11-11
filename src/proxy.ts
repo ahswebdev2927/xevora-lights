@@ -74,7 +74,7 @@ export function proxy(request: NextRequest) {
     if (pathname === "/admin/login" || pathname === "/admin/denied") {
       // If already logged in as admin, don't show login page
       if (pathname === "/admin/login" && adminSession?.phone && isAdminPhone(adminSession.phone)) {
-        return NextResponse.redirect(new URL("/admin/navigation", request.url));
+        return NextResponse.redirect(new URL("/admin", request.url));
       }
       return NextResponse.next();
     }

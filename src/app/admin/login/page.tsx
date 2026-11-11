@@ -167,7 +167,7 @@ export default function AdminLogin() {
       const data = await res.json();
 
       if (data.success) {
-        router.push("/admin/navigation");
+        router.push("/admin");
         router.refresh();
       } else {
         setError(data.error || "Invalid OTP");
