@@ -10,7 +10,7 @@ async function seedXevora() {
     await db.insert(users).values({
       phoneNumber: "9876543210",
       fullName: "Xevora Admin",
-      email: "support@xevoralights.com",
+      email: "Xevora.Lights@gmail.com",
       role: "admin",
     }).onConflictDoNothing();
 

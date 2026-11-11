@@ -83,8 +83,12 @@ export default function Footer() {
         
         {/* Col 1: Brand & Newsletter */}
         <div className="md:col-span-5 flex flex-col gap-4">
-          <div className="flex items-center gap-2">
-            <span className="font-bold text-xl tracking-tight text-white uppercase">XEVORA</span>
+          <div className="flex items-center gap-3">
+            <img
+              src="/logo-horizontal.png"
+              alt="Xevora Lights"
+              className="h-8 w-auto object-contain"
+            />
             <span className="px-2 py-0.5 rounded bg-surface-container-high text-primary text-[10px] font-mono uppercase tracking-wider border border-white/5">
               Optics Lab
             </span>
@@ -168,13 +172,19 @@ export default function Footer() {
             Studio Support
           </h3>
           <div className="text-xs text-slate-400">
-            HQ: Industrial Optical Park, Sector 4, New Delhi
+            HQ: Hyderabad, Telangana
           </div>
           <div className="text-xs text-slate-400 font-mono">
-            Direct Line: +91 (800) 843-9386
+            Direct Line:{" "}
+            <a href="tel:+919100140616" className="hover:text-white transition-colors">
+              +91 91001 40616
+            </a>
           </div>
           <div className="text-xs text-slate-400 font-mono">
-            Studio Desk: support@xevoralights.com
+            Studio Desk:{" "}
+            <a href="mailto:Xevora.Lights@gmail.com" className="hover:text-white transition-colors">
+              Xevora.Lights@gmail.com
+            </a>
           </div>
           
           <div className="flex items-center gap-2 mt-2">

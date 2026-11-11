@@ -155,7 +155,7 @@ export default function ContactPage() {
               </div>
 
               <a
-                href="https://wa.me/919876543210?text=Hello%20Xevora%20Support,%20I%20need%20assistance%20with%20my%20lighting%20gear."
+                href="https://wa.me/919100140616?text=Hello%20Xevora%20Support,%20I%20need%20assistance%20with%20my%20lighting%20gear."
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-full py-3.5 rounded-xl bg-primary-container text-white font-semibold text-sm hover:bg-tertiary-container transition-all shadow-[0_0_20px_rgba(229,26,52,0.35)] flex items-center justify-center gap-2"
@@ -177,14 +177,14 @@ export default function ContactPage() {
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-1">Email Engineering</h3>
-                <div className="font-mono text-xs text-white mb-3">support@xevoralights.com</div>
+                <div className="font-mono text-xs text-white mb-3">Xevora.Lights@gmail.com</div>
                 <p className="text-xs sm:text-sm text-secondary leading-relaxed mb-6">
                   Guaranteed technical response within 4 hours. Optimal for detailed schematic requests, custom optical stencils, and tax invoice changes.
                 </p>
               </div>
 
               <a
-                href="mailto:support@xevoralights.com"
+                href="mailto:Xevora.Lights@gmail.com"
                 className="w-full py-3.5 rounded-xl bg-surface-container-high hover:bg-surface-bright text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 border border-white/5"
               >
                 <Mail className="w-4 h-4" />
@@ -204,14 +204,14 @@ export default function ContactPage() {
                   </span>
                 </div>
                 <h3 className="text-lg font-bold text-white mb-1">Global Studio Hotline</h3>
-                <div className="font-mono text-xs text-white mb-3">+91 98765 43210</div>
+                <div className="font-mono text-xs text-white mb-3">+91 91001 40616</div>
                 <p className="text-xs sm:text-sm text-secondary leading-relaxed mb-6">
                   Active Mon–Sat 9:00 AM – 7:00 PM IST. Priority direct routing for verified studio rental houses and commercial production stages.
                 </p>
               </div>
 
               <a
-                href="tel:+919876543210"
+                href="tel:+919100140616"
                 className="w-full py-3.5 rounded-xl bg-surface-container-high hover:bg-surface-bright text-white font-semibold text-sm transition-all flex items-center justify-center gap-2 border border-white/5"
               >
                 <PhoneCall className="w-4 h-4" />

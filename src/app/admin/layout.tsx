@@ -76,14 +76,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             : "-translate-x-full"
       }`}>
         <div className="p-5 border-b border-white/5 flex items-center justify-between">
-          <Link href="/" className="flex items-center space-x-3 group" onClick={() => setIsMobileSidebarOpen(false)}>
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-[#e51a34] to-rose-400 flex items-center justify-center shadow-[0_0_15px_rgba(229,26,52,0.4)] group-hover:scale-105 transition-transform">
-              <Zap className="w-5 h-5 text-white fill-white" />
-            </div>
-            <div>
-              <h1 className="font-sans font-extrabold text-base tracking-wider text-white uppercase leading-none">XEVORA</h1>
-              <p className="text-[9px] uppercase tracking-[0.2em] text-[#e51a34] font-bold mt-1">Admin Console</p>
-            </div>
+          <Link href="/" className="flex items-center space-x-2.5 group" onClick={() => setIsMobileSidebarOpen(false)}>
+            <img
+              src="/logo-horizontal.png"
+              alt="Xevora Admin Console"
+              className="h-8 w-auto object-contain transition-transform group-hover:scale-105"
+            />
+            <span className="text-[8px] uppercase tracking-[0.15em] text-[#e51a34] font-mono font-bold bg-[#e51a34]/10 px-1.5 py-0.5 rounded border border-[#e51a34]/20">
+              Admin
+            </span>
           </Link>
           <button 
             onClick={() => {

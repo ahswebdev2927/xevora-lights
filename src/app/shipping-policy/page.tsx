@@ -1,8 +1,8 @@
 import React from "react";
 
 export const metadata = {
-  title: "Shipping Policy / Delivery Policy - Dry Fish Basket",
-  description: "Read the official Shipping and Delivery Policy of Dry Fish Basket.",
+  title: "Shipping Policy / Delivery Policy - Xevora Lights",
+  description: "Read the official Shipping and Delivery Policy of Xevora Lights.",
 };
 
 export default function ShippingPolicyPage() {
@@ -54,7 +54,7 @@ export default function ShippingPolicyPage() {
             <h2 className="text-xl font-serif font-bold text-[#8c6239]">
               International Shipping Policy
             </h2>
-            <p>At Dry Fish Basket we do not import or export any goods from India to any other countries. You may place the order online for international countries through our partners but Dry Fish Basket is not liable for shipment of your goods. You may contact the vendor directly on <a href="mailto:info@vkdryfishbasket.com" className="text-[#8c6239] hover:underline font-semibold">info@vkdryfishbasket.com</a> further to any queries all the import and export duties should be borne by you only.</p>
+            <p>At Xevora Lights we do not import or export any goods from India to any other countries. You may place the order online for international countries through our partners but Xevora Lights is not liable for shipment of your goods. You may contact the vendor directly on <a href="mailto:Xevora.Lights@gmail.com" className="text-[#8c6239] hover:underline font-semibold">Xevora.Lights@gmail.com</a> further to any queries all the import and export duties should be borne by you only.</p>
           </div>
 
           {/* Section 6: Incorrect Address or Contact Information */}
@@ -63,10 +63,10 @@ export default function ShippingPolicyPage() {
               Incorrect Address or Contact Information
             </h2>
             <p>The customer is solely responsible for providing a complete, accurate, and deliverable shipping address along with a valid contact number at the time of placing the order.</p>
-            <p>If the customer provides an incorrect, incomplete, invalid, or unreachable contact number, or an incorrect, incomplete, or undeliverable shipping address, and the shipment cannot be successfully delivered, no further delivery attempts shall be made by Dry Fish Basket or its logistics partners.</p>
-            <p>In such cases, the shipment will be returned to the designated warehouse or return facility. The customer may request re-dispatch of the same shipment to a corrected address only after payment of all applicable re-shipping, handling, storage, and administrative charges as determined by Dry Fish Basket.</p>
-            <p>No refund, replacement, exchange, cancellation, credit note, or compensation shall be provided for orders returned due to incorrect or incomplete customer-provided information. Any products that are perishable, food-related, or have limited shelf life may become ineligible for re-dispatch at the sole discretion of Dry Fish Basket.</p>
-            <p>Dry Fish Basket shall not be held liable for any loss, damage, delay, deterioration of product quality, or additional expenses arising from incorrect customer-provided contact details or shipping information.</p>
+            <p>If the customer provides an incorrect, incomplete, invalid, or unreachable contact number, or an incorrect, incomplete, or undeliverable shipping address, and the shipment cannot be successfully delivered, no further delivery attempts shall be made by Xevora Lights or its logistics partners.</p>
+            <p>In such cases, the shipment will be returned to the designated warehouse or return facility. The customer may request re-dispatch of the same shipment to a corrected address only after payment of all applicable re-shipping, handling, storage, and administrative charges as determined by Xevora Lights.</p>
+            <p>No refund, replacement, exchange, cancellation, credit note, or compensation shall be provided for orders returned due to incorrect or incomplete customer-provided information. Any products that are perishable, food-related, or have limited shelf life may become ineligible for re-dispatch at the sole discretion of Xevora Lights.</p>
+            <p>Xevora Lights shall not be held liable for any loss, damage, delay, deterioration of product quality, or additional expenses arising from incorrect customer-provided contact details or shipping information.</p>
           </div>
 
         </div>

@@ -58,18 +58,12 @@ export default function Navbar() {
             
             {/* ── 1. Left-Aligned: Logo ────────────────────────────────────── */}
             <div className="flex items-center">
-              <Link href="/" className="flex items-center gap-2.5 group">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-primary-container to-rose-400 flex items-center justify-center shadow-[0_0_15px_rgba(229,26,52,0.5)] group-hover:scale-105 transition-transform">
-                  <Zap className="w-5 h-5 text-white fill-white" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-extrabold text-base sm:text-lg tracking-wider text-white uppercase group-hover:text-primary transition-colors">
-                    XEVORA
-                  </span>
-                  <span className="text-[9px] font-mono tracking-widest text-primary-container -mt-1 uppercase font-semibold">
-                    OPTICS
-                  </span>
-                </div>
+              <Link href="/" className="flex items-center group py-1">
+                <img
+                  src="/logo-horizontal.png"
+                  alt="Xevora Lights"
+                  className="h-9 sm:h-10 w-auto object-contain transition-transform duration-300 group-hover:scale-105"
+                />
               </Link>
             </div>
 

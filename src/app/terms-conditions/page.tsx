@@ -2,8 +2,8 @@ import React from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export const metadata = {
-  title: "Terms and Conditions - Dry Fish Basket",
-  description: "Read the official Terms of Use and Agreement for Dry Fish Basket.",
+  title: "Terms and Conditions - Xevora Lights",
+  description: "Read the official Terms of Use and Agreement for Xevora Lights.",
 };
 
 export default function TermsConditions() {
@@ -24,7 +24,7 @@ export default function TermsConditions() {
               AGREEMENT TO TERMS
             </h2>
             <p>
-              These Terms of Use constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot;) and Dry Fish Basket (&quot;Company&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), concerning your access to and use of the <a href="https://www.vkdryfishbasket.com" target="_blank" rel="noopener noreferrer" className="text-[#8c6239] hover:underline font-semibold">https://www.vkdryfishbasket.com/</a> website as well as any other media form, media channel, mobile website or mobile application related, linked, or otherwise connected thereto (collectively, the &quot;Site&quot;). You agree that by accessing the Site, you have read, understood, and agreed to be bound by all of these Terms of Use. IF YOU DO NOT AGREE WITH ALL OF THESE TERMS OF USE, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SITE AND YOU MUST DISCONTINUE USE IMMEDIATELY.
+              These Terms of Use constitute a legally binding agreement made between you, whether personally or on behalf of an entity (&quot;you&quot;) and Xevora Lights (&quot;Company&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), concerning your access to and use of the <a href="https://xevoralights.com" target="_blank" rel="noopener noreferrer" className="text-[#8c6239] hover:underline font-semibold">https://xevoralights.com/</a> website as well as any other media form, media channel, mobile website or mobile application related, linked, or otherwise connected thereto (collectively, the &quot;Site&quot;). You agree that by accessing the Site, you have read, understood, and agreed to be bound by all of these Terms of Use. IF YOU DO NOT AGREE WITH ALL OF THESE TERMS OF USE, THEN YOU ARE EXPRESSLY PROHIBITED FROM USING THE SITE AND YOU MUST DISCONTINUE USE IMMEDIATELY.
             </p>
             <p>
               Supplemental terms and conditions or documents that may be posted on the Site from time to time are hereby expressly incorporated herein by reference. We reserve the right, in our sole discretion, to make changes or modifications to these Terms of Use at any time and for any reason. We will alert you about any changes by updating the &quot;Last updated&quot; date of these Terms of Use, and you waive any right to receive specific notice of each such change. It is your responsibility to periodically review these Terms of Use to stay informed of updates. You will be subject to, and will be deemed to have been made aware of and to have accepted, the changes in any revised Terms of Use by your continued use of the Site after the date such revised Terms of Use are posted.
@@ -257,7 +257,7 @@ export default function TermsConditions() {
               PRIVACY POLICY
             </h2>
             <p>
-              We care about data privacy and security. Please review our Privacy Policy: <a href="https://www.vkdryfishbasket.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#8c6239] hover:underline font-semibold">https://www.vkdryfishbasket.com/privacy-policy</a>. By using the Site or the Marketplace Offerings, you agree to be bound by our Privacy Policy, which is incorporated into these Terms of Use. Please be advised the Site and the Marketplace Offerings are hosted in India. If you access the Site or the Marketplace Offerings from any other region of the world with laws or other requirements governing personal data collection, use, or disclosure that differ from applicable laws in India, then through your continued use of the Site, you are transferring your data to India, and you expressly consent to have your data transferred to and processed in India.
+              We care about data privacy and security. Please review our Privacy Policy: <a href="https://xevoralights.com/privacy-policy" target="_blank" rel="noopener noreferrer" className="text-[#8c6239] hover:underline font-semibold">https://xevoralights.com/privacy-policy</a>. By using the Site or the Marketplace Offerings, you agree to be bound by our Privacy Policy, which is incorporated into these Terms of Use. Please be advised the Site and the Marketplace Offerings are hosted in India. If you access the Site or the Marketplace Offerings from any other region of the world with laws or other requirements governing personal data collection, use, or disclosure that differ from applicable laws in India, then through your continued use of the Site, you are transferring your data to India, and you expressly consent to have your data transferred to and processed in India.
             </p>
           </div>
 
@@ -293,7 +293,7 @@ export default function TermsConditions() {
               GOVERNING LAW
             </h2>
             <p>
-              These terms shall be governed by and defined following the laws of India. Dry Fish Basket and yourself irrevocably consent that the courts of India shall have exclusive jurisdiction to resolve any dispute which may arise in connection with these terms.
+              These terms shall be governed by and defined following the laws of India. Xevora Lights and yourself irrevocably consent that the courts of India shall have exclusive jurisdiction to resolve any dispute which may arise in connection with these terms.
             </p>
           </div>
 
@@ -401,18 +401,18 @@ export default function TermsConditions() {
             </h2>
             <p>In order to resolve a complaint regarding the Site or to receive further information regarding use of the Site, please contact us at:</p>
             <ul className="space-y-2.5 font-semibold text-[#3b2314]">
-              <li className="font-bold text-[#8c6239] text-base">Dry Fish Basket</li>
+              <li className="font-bold text-[#8c6239] text-base">Xevora Lights</li>
               <li className="flex items-center gap-2.5">
                 <Mail size={16} className="text-[#8c6239]" />
-                <span>Email: <a href="mailto:info@vkdryfishbasket.com" className="text-[#8c6239] hover:underline font-bold">info@vkdryfishbasket.com</a></span>
+                <span>Email: <a href="mailto:Xevora.Lights@gmail.com" className="text-[#8c6239] hover:underline font-bold">Xevora.Lights@gmail.com</a></span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone size={16} className="text-[#8c6239]" />
-                <span>Phone: <a href="tel:+919848357279" className="text-[#8c6239] hover:underline font-bold">+91 98483 57279</a></span>
+                <span>Phone: <a href="tel:+919100140616" className="text-[#8c6239] hover:underline font-bold">+91 91001 40616</a></span>
               </li>
               <li className="flex items-start gap-2.5">
                 <MapPin size={16} className="text-[#8c6239] shrink-0 mt-0.5" />
-                <span>Address: H.No 806, Sahabhavana Township, Bandlaguda Nagole, Hyderabad - 500068</span>
+                <span>Address: Hyderabad, Telangana</span>
               </li>
             </ul>
           </div>

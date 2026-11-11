@@ -40,13 +40,13 @@ export default function CancellationReturns() {
                 <strong>You</strong> means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.
               </li>
               <li>
-                <strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Dry Fish Basket, H.No 806, Sahabhavana Township, Bandlaguda Nagole, Hyderabad - 500068.
+                <strong>Company</strong> (referred to as either &quot;the Company&quot;, &quot;We&quot;, &quot;Us&quot; or &quot;Our&quot; in this Agreement) refers to Xevora Lights, Hyderabad, Telangana.
               </li>
               <li>
                 <strong>Service</strong> refers to the Website.
               </li>
               <li>
-                <strong>Website</strong> refers to Dry Fish Basket, accessible from <a href="https://www.vkdryfishbasket.com" target="_blank" rel="noopener noreferrer" className="text-[#8c6239] hover:underline font-semibold">https://www.vkdryfishbasket.com/</a>
+                <strong>Website</strong> refers to Xevora Lights, accessible from <a href="https://xevoralights.com" target="_blank" rel="noopener noreferrer" className="text-[#8c6239] hover:underline font-semibold">https://xevoralights.com/</a>
               </li>
               <li>
                 <strong>Goods</strong> refer to the items offered for sale on the Service.
@@ -68,10 +68,10 @@ export default function CancellationReturns() {
             <p>In order to exercise Your right of cancellation, You must inform Us of your decision by means of a clear statement. You can inform us of your decision by:</p>
             <ul className="list-disc pl-6 space-y-2">
               <li>
-                <strong>By email:</strong> <a href="mailto:info@vkdryfishbasket.com" className="text-[#8c6239] hover:underline font-semibold">info@vkdryfishbasket.com</a>
+                <strong>By email:</strong> <a href="mailto:Xevora.Lights@gmail.com" className="text-[#8c6239] hover:underline font-semibold">Xevora.Lights@gmail.com</a>
               </li>
               <li>
-                <strong>By phone number:</strong> <a href="tel:+919848357279" className="text-[#8c6239] hover:underline font-semibold">+91 98483 57279</a>
+                <strong>By phone number:</strong> <a href="tel:+919100140616" className="text-[#8c6239] hover:underline font-semibold">+91 91001 40616</a>
               </li>
             </ul>
             <p>We will reimburse You no later than 7 days from the day on which We receive the returned Goods. We will use the same means of payment as You used for the Order, and You will not incur any fees for such reimbursement.</p>
@@ -107,7 +107,7 @@ export default function CancellationReturns() {
             </h2>
             <p>You are responsible for the cost and risk of returning the Goods to Us. You should send the Goods at the following address:</p>
             <div className="bg-[#FAF6ED] p-4 rounded-xl border border-[#8c6239]/15 font-semibold text-[#3b2314]">
-              H.No 806, Sahabhavana Township, Bandlaguda Nagole, Hyderabad - 500068
+              Hyderabad, Telangana
             </div>
             <p>We cannot be held responsible for Goods damaged or lost in return shipment. Therefore, We recommend an insured and trackable mail service. We are unable to issue a refund without actual receipt of the Goods or proof of received return delivery.</p>
           </div>
@@ -130,15 +130,15 @@ export default function CancellationReturns() {
             <ul className="space-y-2.5 font-semibold text-[#3b2314]">
               <li className="flex items-center gap-2.5">
                 <Mail size={16} className="text-[#8c6239]" />
-                <span>By email: <a href="mailto:info@vkdryfishbasket.com" className="text-[#8c6239] hover:underline font-bold">info@vkdryfishbasket.com</a></span>
+                <span>By email: <a href="mailto:Xevora.Lights@gmail.com" className="text-[#8c6239] hover:underline font-bold">Xevora.Lights@gmail.com</a></span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Phone size={16} className="text-[#8c6239]" />
-                <span>By phone number: <a href="tel:+919848357279" className="text-[#8c6239] hover:underline font-bold">+91 98483 57279</a></span>
+                <span>By phone number: <a href="tel:+919100140616" className="text-[#8c6239] hover:underline font-bold">+91 91001 40616</a></span>
               </li>
               <li className="flex items-start gap-2.5">
                 <MapPin size={16} className="text-[#8c6239] shrink-0 mt-0.5" />
-                <span>Address: H.No 806, Sahabhavana Township, Bandlaguda Nagole, Hyderabad - 500068</span>
+                <span>Address: Hyderabad, Telangana</span>
               </li>
             </ul>
           </div>
