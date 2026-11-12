@@ -1,43 +1,33 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { db } from "@/db";
-import { users } from "@/db/schema";
-import { eq } from "drizzle-orm";
-import { getVerifiedPhoneFromCookie } from "@/db/auth-helper";
+import { getAuthenticatedUser } from "@/db/auth-helper";
 
 export async function GET() {
   try {
-    const phoneNumber = await getVerifiedPhoneFromCookie("auth_session");
+    let user = await getAuthenticatedUser("auth_session");
+    if (!user) {
+      user = await getAuthenticatedUser("admin_session");
+    }
 
-    if (!phoneNumber) {
+    if (!user) {
       return NextResponse.json({ authenticated: false });
     }
 
-    const userResult = await db.select()
-      .from(users)
-      .where(eq(users.phoneNumber, phoneNumber))
-      .limit(1);
+    const cleanPhone = (user.phoneNumber && /^\d{10}$/.test(user.phoneNumber))
+      ? user.phoneNumber
+      : "";
 
-    const user = userResult[0];
-
-    if (!user) {
-      const response = NextResponse.json({ authenticated: false });
-      const cookieStore = await cookies();
-      cookieStore.delete("auth_session");
-      return response;
-    }
-
-    return NextResponse.json({ 
-      authenticated: true, 
+    return NextResponse.json({
+      authenticated: true,
       user: {
         id: user.id,
-        phoneNumber: user.phoneNumber,
+        phoneNumber: cleanPhone,
         fullName: user.fullName || "",
         email: user.email || "",
-        whatsappNumber: user.whatsappNumber || user.phoneNumber,
+        whatsappNumber: (user.whatsappNumber && /^\d{10}$/.test(user.whatsappNumber)) ? user.whatsappNumber : cleanPhone,
         role: user.role || "user",
         address: user.address || "",
-      } 
+      },
     });
   } catch (error) {
     console.error("Session fetch error:", error);

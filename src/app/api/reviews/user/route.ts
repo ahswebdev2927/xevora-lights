@@ -1,23 +1,17 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { productReviews, users } from "@/db/schema";
+import { productReviews } from "@/db/schema";
 import { eq } from "drizzle-orm";
-import { getVerifiedPhoneFromCookie } from "@/db/auth-helper";
+import { getAuthenticatedUser } from "@/db/auth-helper";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   try {
-    const phoneNumber = await getVerifiedPhoneFromCookie("auth_session");
-    if (!phoneNumber) {
+    const user = await getAuthenticatedUser("auth_session");
+    if (!user) {
       return NextResponse.json({ success: true, data: [] });
     }
-
-    const userRows = await db.select().from(users).where(eq(users.phoneNumber, phoneNumber)).limit(1);
-    if (!userRows.length) {
-      return NextResponse.json({ success: true, data: [] });
-    }
-    const user = userRows[0];
 
     const reviews = await db
       .select({

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { coupons, users, orders, products, productVariations } from "@/db/schema";
 import { eq, and, ne, inArray, desc } from "drizzle-orm";
-import { getVerifiedPhoneFromCookie } from "@/db/auth-helper";
+import { getAuthenticatedUser } from "@/db/auth-helper";
 import { validateAndCalculateCoupon } from "@/utils/coupon";
 
 // POST: Fetch active coupons and return applicability status + error messages for current cart
@@ -13,12 +13,9 @@ export async function POST(req: Request) {
     // Resolve user ID if logged in
     let userId: number | null = null;
     try {
-      const phoneNumber = await getVerifiedPhoneFromCookie("auth_session");
-      if (phoneNumber) {
-        const userRows = await db.select().from(users).where(eq(users.phoneNumber, phoneNumber)).limit(1);
-        if (userRows.length) {
-          userId = userRows[0].id;
-        }
+      const user = await getAuthenticatedUser("auth_session");
+      if (user) {
+        userId = user.id;
       }
     } catch {}
 

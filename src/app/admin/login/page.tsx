@@ -1,291 +1,225 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { ArrowLeft, ShieldCheck, Lock, Phone, Loader2 } from "lucide-react";
+import { ArrowLeft, ShieldCheck, Lock, Mail, Loader2, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { auth } from "@/db/firebase";
-import { RecaptchaVerifier, signInWithPhoneNumber } from "firebase/auth";
+import { GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+
+function GoogleIcon({ className = "w-5 h-5" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24">
+      <path
+        fill="#4285F4"
+        d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+      />
+      <path
+        fill="#34A853"
+        d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+      />
+      <path
+        fill="#FBBC05"
+        d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"
+      />
+      <path
+        fill="#EA4335"
+        d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
+      />
+    </svg>
+  );
+}
 
 export default function AdminLogin() {
   const router = useRouter();
-  const [step, setStep] = useState<"phone" | "otp">("phone");
-  const [phone, setPhone] = useState("");
-  const [otp, setOtp] = useState("");
+  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [confirmationResult, setConfirmationResult] = useState<any>(null);
-  const recaptchaVerifierRef = useRef<RecaptchaVerifier | null>(null);
+  const [statusMessage, setStatusMessage] = useState("");
 
-  useEffect(() => {
-    return () => {
-      if (recaptchaVerifierRef.current) {
-        try {
-          recaptchaVerifierRef.current.clear();
-        } catch (e) {}
-        recaptchaVerifierRef.current = null;
-      }
-    };
-  }, []);
-
-  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "").slice(0, 10);
-    setPhone(value);
-    if (error) setError("");
-  };
-
-  const handleOtpChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "").slice(0, 6);
-    setOtp(value);
-    if (error) setError("");
-  };
-
-
-  const getFirebaseErrorMessage = (err: any) => {
-    const code = err?.code || "";
-    switch (code) {
-      case "auth/invalid-app-credential":
-        return "Invalid Firebase App Credentials or API Key. Please verify your NEXT_PUBLIC_FIREBASE_* keys in .env and restart your dev server.";
-      case "auth/invalid-phone-number":
-        return "The phone number entered is invalid. Please enter a valid 10-digit mobile number.";
-      case "auth/too-many-requests":
-        return "Too many requests. Please wait a few minutes before trying again.";
-      case "auth/invalid-verification-code":
-        return "Incorrect verification code. Please check and try again.";
-      case "auth/code-expired":
-        return "Verification code has expired. Please request a new code.";
-      case "auth/captcha-check-failed":
-        return "reCAPTCHA verification failed. Please check your Firebase authorized domains.";
-      default:
-        return err?.message || "An authentication error occurred. Please try again.";
-    }
-  };
-
-
-  const setupRecaptcha = () => {
-    if (!auth) {
-      throw new Error("Firebase Auth is not initialized. Please verify your client configuration.");
-    }
-
-    if (recaptchaVerifierRef.current) {
-      return recaptchaVerifierRef.current;
-    }
-
-    const container = document.getElementById("recaptcha-container");
-    if (container) {
-      container.innerHTML = "";
-    }
-
-    try {
-      const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-        size: "invisible",
-      });
-      recaptchaVerifierRef.current = verifier;
-      return verifier;
-    } catch (e: any) {
-      console.warn("Admin recaptcha setup warning, resetting container:", e?.message);
-      if (container) {
-        container.innerHTML = "";
-      }
-      try {
-        const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-          size: "invisible",
-        });
-        recaptchaVerifierRef.current = verifier;
-        return verifier;
-      } catch (retryErr: any) {
-        console.error("Admin recaptcha retry failed:", retryErr);
-        throw new Error(retryErr.message || "Failed to initialize reCAPTCHA verifier.");
-      }
-    }
-  };
-
-  const handleSendOTP = async (e: React.FormEvent) => {
+  const handleAdminAuth = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (phone.length !== 10) return;
+    const cleanEmail = email.trim().toLowerCase();
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      setError("Please enter a valid administrator email address.");
+      return;
+    }
+
+    if (!auth) {
+      setError("Firebase Authentication is not initialized. Please verify client keys.");
+      return;
+    }
 
     setLoading(true);
     setError("");
+    setStatusMessage("Verifying administrator authorization...");
 
     try {
-      // Query server-side check-admin endpoint to keep admin numbers hidden from client
-      const checkRes = await fetch("/api/auth/check-admin", {
+      // Step 1: Pre-check if the entered email is in ADMIN_EMAILS
+      const checkRes = await fetch("/api/auth/check-admin-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone }),
+        body: JSON.stringify({ email: cleanEmail }),
       });
       const checkData = await checkRes.json();
 
-      if (!checkData.success || !checkData.isAdmin) {
-        setError("Unauthorized phone number. This portal is for administrators only.");
+      if (!checkRes.ok || !checkData.success || !checkData.isAuthorized) {
+        setError(checkData.error || "Unauthorized email. This portal is strictly for authorized administrators.");
         setLoading(false);
+        setStatusMessage("");
         return;
       }
 
-      const appVerifier = setupRecaptcha();
-      const confirmation = await signInWithPhoneNumber(auth, `+91${phone}`, appVerifier);
-      setConfirmationResult(confirmation);
-      setStep("otp");
-    } catch (err: any) {
-      console.error("OTP Send Error:", err);
-      if (recaptchaVerifierRef.current) {
-        try { recaptchaVerifierRef.current.clear(); } catch (_) {}
-        recaptchaVerifierRef.current = null;
-      }
-      const container = document.getElementById("recaptcha-container");
-      if (container) {
-        container.innerHTML = "";
-      }
-      setError(getFirebaseErrorMessage(err));
-    } finally {
-      setLoading(false);
-    }
-  };
+      // Step 2: Email is authorized -> Launch Google Sign-In with login hint
+      setStatusMessage("Launching Google Sign-In verification...");
+      const provider = new GoogleAuthProvider();
+      provider.setCustomParameters({
+        login_hint: cleanEmail,
+        prompt: "select_account",
+      });
 
+      const userCredential = await signInWithPopup(auth, provider);
+      const signedInEmail = userCredential.user.email?.toLowerCase();
 
-  const handleVerifyOTP = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (otp.length !== 6) return;
-
-    setLoading(true);
-    setError("");
-
-    try {
-      if (!confirmationResult) {
-        throw new Error("No active verification session. Please request a new code.");
+      // Ensure the signed-in Google account matches the authorized email
+      if (signedInEmail !== cleanEmail) {
+        setError(`Email mismatch. You authorized '${cleanEmail}', but signed in with '${signedInEmail || "unknown"}'.`);
+        setLoading(false);
+        setStatusMessage("");
+        return;
       }
 
-      const result = await confirmationResult.confirm(otp);
-      const idToken = await result.user.getIdToken();
+      const idToken = await userCredential.user.getIdToken();
 
-      // Sync administrative session cookies with the backend
-      const res = await fetch("/api/auth/sync", {
+      // Step 3: Synchronize administrative session with backend
+      setStatusMessage("Establishing secure admin session...");
+      const syncRes = await fetch("/api/auth/google-sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone, idToken }),
+        body: JSON.stringify({
+          idToken,
+          targetRole: "admin",
+        }),
       });
-      const data = await res.json();
 
-      if (data.success) {
-        router.push("/admin");
-        router.refresh();
-      } else {
-        setError(data.error || "Invalid OTP");
+      const syncData = await syncRes.json();
+
+      if (!syncRes.ok || !syncData.success) {
+        setError(syncData.error || "Administrative session establishment failed.");
+        setLoading(false);
+        setStatusMessage("");
+        return;
       }
+
+      // Successful admin login -> Redirect to admin dashboard
+      router.push("/admin");
+      router.refresh();
     } catch (err: any) {
-      console.error("Verification failed:", err);
-      setError(getFirebaseErrorMessage(err));
+      console.error("Admin Authentication Error:", err);
+      if (err.code === "auth/popup-closed-by-user") {
+        setError("Sign-in cancelled. Please click Request Access again to complete verification.");
+      } else if (err.code === "auth/popup-blocked") {
+        setError("Sign-in popup was blocked by your browser. Please enable popups for this site.");
+      } else {
+        setError(err?.message || "An authentication error occurred. Please try again.");
+      }
     } finally {
       setLoading(false);
+      setStatusMessage("");
     }
   };
-
-
-
 
   return (
     <div className="min-h-screen bg-[#0f1117] flex flex-col justify-center items-center p-4 font-inter">
-      {/* Hidden container for Firebase Recaptcha */}
-      <div id="recaptcha-container"></div>
-
       <div className="w-full max-w-md bg-white rounded-3xl p-10 shadow-2xl border-t-[12px] border-t-[#e51a34] relative overflow-hidden">
         {/* Subtle background decoration */}
         <div className="absolute -top-10 -right-10 w-32 h-32 bg-[#e51a34]/5 rounded-full blur-3xl"></div>
 
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <div className="w-20 h-20 mx-auto mb-6 rounded-2xl bg-[#0f1117] flex items-center justify-center shadow-2xl relative">
             <Lock className="text-[#e51a34]" size={32} />
             <div className="absolute -bottom-2 -right-2 bg-[#e51a34] p-1.5 rounded-lg shadow-lg">
-              <ShieldCheck size={16} className="text-slate-900" />
+              <ShieldCheck size={16} className="text-white" />
             </div>
           </div>
-          <h2 className="text-3xl font-bold text-slate-900 mb-3">
+          <h2 className="text-3xl font-bold text-slate-900 mb-2">
             Admin Portal
           </h2>
-          <p className="text-slate-900/60 text-sm font-medium uppercase tracking-widest">
-            {step === "phone" ? "Authorization Required" : "Security Verification"}
+          <p className="text-slate-500 text-xs font-semibold uppercase tracking-widest">
+            Authorization &amp; Identity Verification
           </p>
         </div>
 
         {error && (
-          <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-[10px] font-black uppercase tracking-widest rounded-xl text-center">
+          <div className="mb-6 p-4 bg-red-50 border border-red-100 text-red-600 text-xs font-semibold rounded-xl text-center leading-relaxed">
             {error}
           </div>
         )}
 
-        {/* STEP 1: Phone Number */}
-        {step === "phone" && (
-          <form onSubmit={handleSendOTP} className="space-y-6">
-            <div>
-              <label className="block text-[10px] font-black text-slate-900/40 uppercase mb-2 tracking-[0.2em] ml-1">Admin Phone</label>
-              <div className="relative group">
-                <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center space-x-2 border-r border-slate-200/10 pr-3">
-                  <Phone size={14} className="text-[#e51a34]" />
-                  <span className="text-slate-900 font-bold text-sm">+91</span>
-                </div>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={handlePhoneChange}
-                  maxLength={10}
-                  pattern="[0-9]{10}"
-                  placeholder="9999999999"
-                  className="w-full bg-[#0f1117]/5 border-2 border-transparent focus:border-[#e51a34] focus:bg-white rounded-xl py-4 pl-20 pr-4 text-slate-900 font-bold tracking-widest transition-all outline-none"
-                  required
-                />
-
-              </div>
-            </div>
-            <button
-              type="submit"
-              disabled={loading || phone.length !== 10}
-              className="w-full bg-[#0f1117] text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-[#c9142b] disabled:opacity-50 transition-all active:scale-95 flex justify-center items-center space-x-2 group"
-            >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <>
-                  <span className="uppercase tracking-[0.2em] text-xs">Request Access</span>
-                </>
-              )}
-            </button>
-          </form>
+        {statusMessage && (
+          <div className="mb-6 p-3 bg-zinc-100 border border-zinc-200 text-zinc-700 text-xs font-medium rounded-xl text-center flex items-center justify-center gap-2">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-zinc-600" />
+            <span>{statusMessage}</span>
+          </div>
         )}
 
-        {/* STEP 2: OTP Verification */}
-        {step === "otp" && (
-          <form onSubmit={handleVerifyOTP} className="space-y-6">
-            <div>
-              <label className="block text-[10px] font-black text-slate-900/40 uppercase mb-2 tracking-[0.2em] ml-1">Security Code</label>
-              <div className="relative">
-                <ShieldCheck className="absolute left-4 top-1/2 -translate-y-1/2 text-[#e51a34]" size={18} />
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  value={otp}
-                  onChange={handleOtpChange}
-                  placeholder="123456"
-                  className="w-full bg-[#0f1117]/5 border-2 border-transparent focus:border-[#e51a34] focus:bg-white rounded-xl py-4 px-12 text-slate-900 font-mono font-bold text-center text-2xl tracking-[0.5em] transition-all outline-none"
-                  required
-                />
+        <form onSubmit={handleAdminAuth} className="space-y-6">
+          <div>
+            <label className="block text-[11px] font-bold text-slate-600 uppercase mb-2 tracking-[0.15em] ml-1">
+              Admin Google Email
+            </label>
+            <div className="relative group">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center space-x-2 border-r border-slate-200 pr-3 pointer-events-none">
+                <Mail size={16} className="text-[#e51a34]" />
               </div>
-              <div className="flex justify-center mt-4">
-                <button type="button" onClick={() => setStep("phone")} className="text-[10px] text-slate-900/40 hover:text-slate-900 font-black uppercase tracking-widest transition-colors">Use different account</button>
-              </div>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (error) setError("");
+                }}
+                placeholder="admin@xevora.com"
+                className="w-full bg-slate-50 border-2 border-slate-200 focus:border-[#e51a34] focus:bg-white rounded-xl py-4 pl-14 pr-4 text-slate-900 font-medium text-sm transition-all outline-none"
+                required
+                autoFocus
+                disabled={loading}
+              />
             </div>
-            <button
-              type="submit"
-              disabled={loading || otp.length !== 6}
-              className="w-full bg-[#e51a34] text-white font-bold py-5 rounded-2xl shadow-xl hover:bg-[#b39150] disabled:opacity-50 transition-all active:scale-95 flex justify-center items-center space-x-2"
-            >
-              {loading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : (
-                <span className="uppercase tracking-[0.2em] text-xs">Authorize Entry</span>
-              )}
-            </button>
-          </form>
-        )}
+            <p className="text-[11px] text-slate-400 mt-2 ml-1">
+              System verifies authorization against <code className="text-slate-600 font-mono">ADMIN_EMAILS</code> before authentication.
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading || !email.trim()}
+            className="w-full bg-[#0f1117] hover:bg-[#1a1e29] text-white font-bold py-4 px-6 rounded-2xl shadow-xl disabled:opacity-50 transition-all active:scale-[0.99] flex justify-center items-center space-x-3 cursor-pointer"
+          >
+            {loading ? (
+              <>
+                <Loader2 className="w-5 h-5 animate-spin text-white" />
+                <span className="uppercase tracking-[0.15em] text-xs">Authenticating...</span>
+              </>
+            ) : (
+              <>
+                <GoogleIcon className="w-5 h-5" />
+                <span className="uppercase tracking-[0.15em] text-xs">Verify &amp; Sign In with Google</span>
+                <ArrowRight className="w-4 h-4 text-slate-400" />
+              </>
+            )}
+          </button>
+        </form>
+
+        <div className="mt-8 pt-6 border-t border-slate-100 text-center">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-slate-700 transition-colors font-medium"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Return to Optical Showcase</span>
+          </Link>
+        </div>
       </div>
 
       <p className="mt-10 text-center text-[10px] text-white/30 max-w-xs leading-relaxed uppercase tracking-[0.3em] font-bold">

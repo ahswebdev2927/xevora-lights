@@ -1,25 +1,18 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { orders, orderItems, users, cartItems } from "@/db/schema";
-import { getVerifiedPhoneFromCookie } from "@/db/auth-helper";
+import { getAuthenticatedUser } from "@/db/auth-helper";
 import { eq } from "drizzle-orm";
 import { validateAndCalculateCoupon } from "@/utils/coupon";
 
 export async function POST(req: Request) {
   try {
     const { items, totalAmount, paymentMethod, shippingAddress, couponCode } = await req.json();
-    const phoneNumber = await getVerifiedPhoneFromCookie("auth_session");
+    const user = await getAuthenticatedUser("auth_session");
 
-    if (!phoneNumber) {
+    if (!user) {
       return NextResponse.json({ success: false, error: "Authentication required" }, { status: 401 });
     }
-
-    // Find user
-    const userRows = await db.select().from(users).where(eq(users.phoneNumber, phoneNumber)).limit(1);
-    if (!userRows.length) {
-      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
-    }
-    const user = userRows[0];
 
     // Validate Coupon securely if provided
     let discountAmount = 0;

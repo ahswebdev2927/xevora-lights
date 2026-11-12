@@ -1,23 +1,14 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { wishlists, products, users, productVariations } from "@/db/schema";
+import { wishlists, products, productVariations } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
-import { cookies } from "next/headers";
+import { getAuthenticatedUser } from "@/db/auth-helper";
 
 export async function GET() {
   try {
-    const cookieStore = await cookies();
-    const phone = cookieStore.get("auth_session")?.value;
-
-    if (!phone) {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
-
-    const userResult = await db.select().from(users).where(eq(users.phoneNumber, phone)).limit(1);
-    const user = userResult[0];
-
+    const user = await getAuthenticatedUser("auth_session");
     if (!user) {
-      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const dbWishlist = await db.select({
@@ -33,19 +24,29 @@ export async function GET() {
         colors: products.colors,
         category: products.category,
         isCustomizable: products.isCustomizable,
+        specifications: products.specifications,
+        createdAt: products.createdAt,
       }
     })
     .from(wishlists)
     .innerJoin(products, eq(wishlists.productId, products.id))
     .where(eq(wishlists.userId, user.id));
 
-    // Calculate total stock for each wishlisted product
+    // Fetch variations for each product to calculate real-time stock
     const itemsWithStock = await Promise.all(dbWishlist.map(async (item) => {
-      const vars = await db.select().from(productVariations).where(eq(productVariations.productId, item.productId));
-      const totalStock = vars.reduce((sum, v) => sum + v.stock, 0);
+      const variations = await db.select()
+        .from(productVariations)
+        .where(eq(productVariations.productId, item.productId));
+
+      const totalStock = variations.reduce((sum, v) => sum + (v.stock || 0), 0);
+
       return {
         ...item,
-        totalStock
+        product: {
+          ...item.product,
+          stock: totalStock,
+          variations,
+        }
       };
     }));
 
@@ -58,18 +59,9 @@ export async function GET() {
 
 export async function POST(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const phone = cookieStore.get("auth_session")?.value;
-
-    if (!phone) {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
-
-    const userResult = await db.select().from(users).where(eq(users.phoneNumber, phone)).limit(1);
-    const user = userResult[0];
-
+    const user = await getAuthenticatedUser("auth_session");
     if (!user) {
-      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const { productId } = await request.json();
@@ -107,18 +99,9 @@ export async function POST(request: Request) {
 
 export async function DELETE(request: Request) {
   try {
-    const cookieStore = await cookies();
-    const phone = cookieStore.get("auth_session")?.value;
-
-    if (!phone) {
-      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
-    }
-
-    const userResult = await db.select().from(users).where(eq(users.phoneNumber, phone)).limit(1);
-    const user = userResult[0];
-
+    const user = await getAuthenticatedUser("auth_session");
     if (!user) {
-      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
+      return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -128,13 +111,16 @@ export async function DELETE(request: Request) {
     }
 
     const productId = parseInt(productIdStr);
+    if (isNaN(productId)) {
+      return NextResponse.json({ success: false, error: "Invalid product ID" }, { status: 400 });
+    }
 
     await db.delete(wishlists)
       .where(and(eq(wishlists.userId, user.id), eq(wishlists.productId, productId)));
 
     return NextResponse.json({ success: true, message: "Product removed from wishlist" });
   } catch (error: any) {
-    console.error("Wishlist Remove Error:", error);
-    return NextResponse.json({ success: false, error: "Failed to remove from wishlist" }, { status: 500 });
+    console.error("Wishlist Delete Error:", error);
+    return NextResponse.json({ success: false, error: "Failed to delete from wishlist" }, { status: 500 });
   }
 }

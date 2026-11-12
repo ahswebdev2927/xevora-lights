@@ -1,21 +1,15 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { productReviews, orders, orderItems, users } from "@/db/schema";
+import { productReviews, orders, orderItems } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
-import { getVerifiedPhoneFromCookie } from "@/db/auth-helper";
+import { getAuthenticatedUser } from "@/db/auth-helper";
 
 export async function POST(request: Request) {
   try {
-    const phoneNumber = await getVerifiedPhoneFromCookie("auth_session");
-    if (!phoneNumber) {
+    const user = await getAuthenticatedUser("auth_session");
+    if (!user) {
       return NextResponse.json({ success: false, error: "Please sign in to write a review." }, { status: 401 });
     }
-
-    const userRows = await db.select().from(users).where(eq(users.phoneNumber, phoneNumber)).limit(1);
-    if (!userRows.length) {
-      return NextResponse.json({ success: false, error: "User account not found." }, { status: 404 });
-    }
-    const user = userRows[0];
 
     const body = await request.json();
     const { orderId, productId, rating, title, comment } = body;

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -23,7 +23,8 @@ import {
   HelpCircle,
   FileText,
   Video,
-  Zap
+  Zap,
+  Mail
 } from "lucide-react";
 
 const sidebarLinks = [
@@ -46,6 +47,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const [isDesktopSidebarOpen, setIsDesktopSidebarOpen] = useState(true);
+  const [adminEmail, setAdminEmail] = useState<string>("");
+
+  useEffect(() => {
+    fetch("/api/auth/session")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.authenticated && data.user?.email) {
+          setAdminEmail(data.user.email);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   // Don't show sidebar on login/denied pages
   if (pathname === "/admin/login" || pathname === "/admin/denied") {
@@ -123,12 +136,28 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
           })}
         </nav>
 
-        <div className="p-4 border-t border-white/5">
+        <div className="p-4 border-t border-white/5 space-y-2.5">
+          {adminEmail && (
+            <div className="px-3 py-2 rounded-xl bg-white/5 border border-white/5 flex items-center space-x-2.5 min-w-0">
+              <div className="w-7 h-7 rounded-lg bg-[#e51a34]/20 border border-[#e51a34]/30 flex items-center justify-center shrink-0">
+                <Mail size={13} className="text-[#e51a34]" />
+              </div>
+              <div className="min-w-0 flex-1">
+                <p className="text-[9px] font-mono uppercase tracking-wider text-slate-400 font-semibold leading-none mb-1">
+                  Logged in as
+                </p>
+                <p className="text-xs text-white font-medium truncate leading-none" title={adminEmail}>
+                  {adminEmail}
+                </p>
+              </div>
+            </div>
+          )}
+
           <button
             onClick={() => setShowLogoutConfirm(true)}
-            className="w-full flex items-center space-x-3 px-3 py-3 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all group"
+            className="w-full flex items-center space-x-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-red-400 hover:bg-red-500/10 transition-all group cursor-pointer"
           >
-            <LogOut size={18} />
+            <LogOut size={16} />
             <span className="text-sm font-medium tracking-tight">Logout</span>
           </button>
         </div>

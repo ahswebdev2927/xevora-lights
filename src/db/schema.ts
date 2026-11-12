@@ -2,9 +2,10 @@ import { sqliteTable, text, integer, blob, real } from "drizzle-orm/sqlite-core"
 
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey({ autoIncrement: true }),
-  phoneNumber: text("phone_number").notNull().unique(),
-  fullName: text("full_name"),
+  firebaseUid: text("firebase_uid"),
   email: text("email"),
+  phoneNumber: text("phone_number"),
+  fullName: text("full_name"),
   whatsappNumber: text("whatsapp_number"),
   role: text("role").default("user"), // user, admin
   address: text("address"), // Default shipping address

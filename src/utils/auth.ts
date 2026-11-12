@@ -1,12 +1,12 @@
 import { cookies } from "next/headers";
-import { isAdminPhone } from "@/utils/admin-helper";
+import { isAuthorizedAdmin } from "@/utils/admin-helper";
 import { verifySessionToken } from "@/utils/auth-token";
 
 export interface DecodedAdminToken {
   uid: string;
   phone_number?: string;
   email?: string;
-  [key: string]: any;
+  [key: string]: unknown;
 }
 
 /**
@@ -37,19 +37,20 @@ export async function verifyAdminRequest(request?: Request): Promise<DecodedAdmi
 
     // 3. Verify session or ID token using pure jose WebCrypto API
     const verified = await verifySessionToken(token);
-    if (!verified || !verified.phone) {
+    if (!verified || (!verified.phone && !verified.email)) {
       return null;
     }
 
-    const phone = verified.phone;
-    if (!isAdminPhone(phone)) {
-      console.warn(`[Security] Unauthorized admin access attempt from phone: ${phone}`);
+    const isAuthorized = isAuthorizedAdmin({ email: verified.email, phone: verified.phone });
+    if (!isAuthorized) {
+      console.warn(`[Security] Unauthorized admin access attempt from: ${verified.email || verified.phone}`);
       return null;
     }
 
     return {
-      uid: `admin-${phone}`,
-      phone_number: `+91${phone}`,
+      uid: verified.email ? `admin-${verified.email}` : `admin-${verified.phone}`,
+      email: verified.email,
+      phone_number: verified.phone ? `+91${verified.phone}` : undefined,
     };
   } catch (error) {
     console.error("[Auth Utility] verifyAdminRequest error:", error);

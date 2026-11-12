@@ -1,33 +1,21 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
-import { orders, users } from "@/db/schema";
+import { orders } from "@/db/schema";
 import { eq, and } from "drizzle-orm";
-import { getVerifiedPhoneFromCookie } from "@/db/auth-helper";
+import { getAuthenticatedUser } from "@/db/auth-helper";
 
 export async function PATCH(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  const phoneNumber = await getVerifiedPhoneFromCookie("auth_session");
+  const user = await getAuthenticatedUser("auth_session");
 
-  if (!phoneNumber) {
+  if (!user) {
     return NextResponse.json({ success: false, error: "Authentication required" }, { status: 401 });
   }
 
   try {
-    // Find user using plain select (no relational API needed)
-    const userRows = await db
-      .select()
-      .from(users)
-      .where(eq(users.phoneNumber, phoneNumber))
-      .limit(1);
-
-    if (!userRows.length) {
-      return NextResponse.json({ success: false, error: "User not found" }, { status: 404 });
-    }
-
-    const user = userRows[0];
     const orderId = parseInt(id);
 
     if (isNaN(orderId)) {

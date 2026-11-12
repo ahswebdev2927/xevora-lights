@@ -35,7 +35,15 @@ export default function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{function c(e){if(e&&e.removeAttribute){if(e.hasAttribute('bis_skin_checked'))e.removeAttribute('bis_skin_checked');if(e.hasAttribute('bis_register'))e.removeAttribute('bis_register');}}var o=new MutationObserver(function(m){for(var i=0;i<m.length;i++){var t=m[i];if(t.type==='attributes'){if(t.attributeName==='bis_skin_checked'||t.attributeName==='bis_register')t.target.removeAttribute(t.attributeName);}else if(t.addedNodes){for(var j=0;j<t.addedNodes.length;j++){var n=t.addedNodes[j];if(n.nodeType===1){c(n);var s=n.querySelectorAll?n.querySelectorAll('[bis_skin_checked],[bis_register]'):[];for(var k=0;k<s.length;k++)c(s[k]);}}}}});o.observe(document.documentElement,{attributes:true,attributeFilter:['bis_skin_checked','bis_register'],childList:true,subtree:true});}catch(e){}})();`,
+            __html: `(function(){try{
+// Suppress third-party browser extension errors and unhandled rejections from triggering Next.js dev overlay
+window.addEventListener('unhandledrejection',function(e){var r=e&&e.reason;var s=(r&&r.stack)||'';var m=(r&&r.message)||String(r||'');if(s.indexOf('chrome-extension://')!==-1||s.indexOf('moz-extension://')!==-1||m.indexOf('M_ID')!==-1){if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(e.preventDefault)e.preventDefault();}},true);
+window.addEventListener('error',function(e){var f=(e&&e.filename)||'';var m=(e&&e.message)||'';if(f.indexOf('chrome-extension://')!==-1||f.indexOf('moz-extension://')!==-1||m.indexOf('M_ID')!==-1){if(e.stopImmediatePropagation)e.stopImmediatePropagation();if(e.preventDefault)e.preventDefault();}},true);
+
+function c(e){if(e&&e.removeAttribute){if(e.hasAttribute('bis_skin_checked'))e.removeAttribute('bis_skin_checked');if(e.hasAttribute('bis_register'))e.removeAttribute('bis_register');}}
+var o=new MutationObserver(function(m){for(var i=0;i<m.length;i++){var t=m[i];if(t.type==='attributes'){if(t.attributeName==='bis_skin_checked'||t.attributeName==='bis_register')t.target.removeAttribute(t.attributeName);}else if(t.addedNodes){for(var j=0;j<t.addedNodes.length;j++){var n=t.addedNodes[j];if(n.nodeType===1){c(n);var s=n.querySelectorAll?n.querySelectorAll('[bis_skin_checked],[bis_register]'):[];for(var k=0;k<s.length;k++)c(s[k]);}}}}});
+o.observe(document.documentElement,{attributes:true,attributeFilter:['bis_skin_checked','bis_register'],childList:true,subtree:true});
+}catch(e){}})();`,
           }}
         />
       </head>

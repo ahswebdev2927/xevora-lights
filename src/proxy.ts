@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { isAdminPhone } from "./utils/admin-helper";
+import { isAdminPhone, isAdminEmail } from "./utils/admin-helper";
 
 /**
  * Decodes the payload of a standard JWT token.
@@ -19,16 +19,22 @@ function parseJwt(token: string) {
   }
 }
 
+interface VerifiedSession {
+  phone?: string;
+  email?: string;
+  role?: string;
+}
+
 /**
  * Validates the session cookie value in middleware Edge runtime.
  */
-function verifySession(token: string | undefined): { phone: string } | null {
+function verifySession(token: string | undefined): VerifiedSession | null {
   if (!token) return null;
 
   // Support local developer mock session (10-digit number) strictly in development
   const isRawPhone = /^\d{10}$/.test(token);
   if (isRawPhone && process.env.NODE_ENV === "development") {
-    return { phone: token };
+    return { phone: token, role: "user" };
   }
 
   // Parse JWT payload (backend session token or Firebase ID token)
@@ -39,14 +45,20 @@ function verifySession(token: string | undefined): { phone: string } | null {
     return null;
   }
 
-  const phone = payload.phone || payload.phone_number;
-  if (!phone || typeof phone !== "string") return null;
+  const email = typeof payload.email === "string" ? payload.email.toLowerCase() : undefined;
+  let phone: string | undefined = undefined;
 
-  // Strip country code (+91)
-  const cleanPhone = phone.replace(/^\+91/, "").replace(/\D/g, "").slice(-10);
-  if (cleanPhone.length !== 10) return null;
+  const rawPhone = payload.phone || payload.phone_number;
+  if (rawPhone && typeof rawPhone === "string") {
+    const cleanPhone = rawPhone.replace(/^\+91/, "").replace(/\D/g, "").slice(-10);
+    if (cleanPhone.length === 10) {
+      phone = cleanPhone;
+    }
+  }
 
-  return { phone: cleanPhone };
+  if (!email && !phone) return null;
+
+  return { email, phone, role: (payload.role as string) || "user" };
 }
 
 export function proxy(request: NextRequest) {
@@ -63,6 +75,13 @@ export function proxy(request: NextRequest) {
   const userSession = verifySession(sessionCookie);
   const adminSession = verifySession(adminSessionCookie);
 
+  const isCurrentAdmin = Boolean(
+    adminSession && (
+      (adminSession.email && isAdminEmail(adminSession.email)) ||
+      (adminSession.phone && isAdminPhone(adminSession.phone))
+    )
+  );
+
   // 1. If user is logged in, don't let them go to the login page
   if (userSession && pathname === "/login") {
     return NextResponse.redirect(new URL("/", request.url));
@@ -73,7 +92,7 @@ export function proxy(request: NextRequest) {
     // Exclude the login and denied pages from protection to avoid redirect loops
     if (pathname === "/admin/login" || pathname === "/admin/denied") {
       // If already logged in as admin, don't show login page
-      if (pathname === "/admin/login" && adminSession?.phone && isAdminPhone(adminSession.phone)) {
+      if (pathname === "/admin/login" && isCurrentAdmin) {
         return NextResponse.redirect(new URL("/admin", request.url));
       }
       return NextResponse.next();
@@ -83,9 +102,9 @@ export function proxy(request: NextRequest) {
       return NextResponse.redirect(new URL("/admin/login", request.url));
     }
 
-    // Strict Admin Identity Check
-    if (!adminSession || !isAdminPhone(adminSession.phone)) {
-      console.warn(`[Security] Unauthorized admin access attempt`);
+    // Strict Admin Identity Check (Email or Phone)
+    if (!isCurrentAdmin) {
+      console.warn(`[Security] Unauthorized admin access attempt from:`, adminSession?.email || adminSession?.phone || "unknown");
       return NextResponse.redirect(new URL("/admin/denied", request.url));
     }
   }

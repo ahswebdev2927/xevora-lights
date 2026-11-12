@@ -163,8 +163,9 @@ function AccountContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           fullName: fullName.trim(),
-          email: email.trim(),
-          whatsappNumber: whatsappNumber.trim() || phoneNumber,
+          phoneNumber: phoneNumber.trim(),
+          phone: phoneNumber.trim(),
+          whatsappNumber: whatsappNumber.trim() || phoneNumber.trim(),
         }),
       });
       const data = await res.json();
@@ -474,40 +475,54 @@ function AccountContent() {
                     </div>
                   </div>
 
-                  {/* Email */}
+                  {/* Email (Read Only - Managed by Google) */}
                   <div>
-                    <label className="block font-mono text-xs text-white uppercase tracking-wider mb-2 font-semibold">
-                      Email Address (Invoicing &amp; Firmware Alerts)
-                    </label>
+                    <div className="flex items-center justify-between mb-2">
+                      <label className="block font-mono text-xs text-white uppercase tracking-wider font-semibold">
+                        Email Address (Invoicing &amp; Firmware Alerts)
+                      </label>
+                      <span className="font-mono text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
+                        <Check className="w-3 h-3" /> GOOGLE VERIFIED
+                      </span>
+                    </div>
                     <div className="relative flex items-center">
-                      <Mail className="w-4 h-4 absolute left-3.5 text-primary pointer-events-none" />
+                      <Mail className="w-4 h-4 absolute left-3.5 text-secondary pointer-events-none" />
                       <input
                         type="email"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="director@production.com"
-                        className="w-full bg-surface-container-lowest text-white text-sm pl-11 pr-4 py-3 rounded-xl border border-white/10 focus:outline-none focus:border-primary-container"
+                        readOnly
+                        disabled
+                        className="w-full bg-surface-container-high/40 text-secondary font-mono text-sm pl-11 pr-4 py-3 rounded-xl border border-white/5 cursor-not-allowed opacity-80"
                       />
                     </div>
+                    <p className="font-mono text-[10px] text-secondary/60 mt-1">
+                      Managed by your authenticated Google account.
+                    </p>
                   </div>
 
-                  {/* Phone (Read Only) */}
+                  {/* Primary Mobile Number (Editable) */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <label className="block font-mono text-xs text-white uppercase tracking-wider font-semibold">
                         Primary Mobile Number
                       </label>
-                      <span className="font-mono text-[10px] text-emerald-400 font-semibold flex items-center gap-1">
-                        <Check className="w-3 h-3" /> VERIFIED SMS AUTH
+                      <span className="font-mono text-[10px] text-primary font-semibold flex items-center gap-1">
+                        Dispatch &amp; Delivery Contact
                       </span>
                     </div>
                     <div className="relative flex items-center">
-                      <Phone className="w-4 h-4 absolute left-3.5 text-secondary pointer-events-none" />
+                      <div className="absolute left-3.5 flex items-center gap-1 text-secondary font-mono text-sm pointer-events-none">
+                        <Phone className="w-4 h-4 text-primary" />
+                        <span className="font-bold text-white">+91</span>
+                      </div>
                       <input
-                        type="text"
-                        disabled
-                        value={`+91 ${phoneNumber}`}
-                        className="w-full bg-surface-container-high/40 text-secondary font-mono text-sm pl-11 pr-4 py-3 rounded-xl border border-white/5 cursor-not-allowed opacity-80"
+                        type="tel"
+                        inputMode="numeric"
+                        value={phoneNumber}
+                        onChange={(e) => setPhoneNumber(e.target.value.replace(/\D/g, "").slice(0, 10))}
+                        placeholder="98765 43210"
+                        maxLength={10}
+                        className="w-full bg-surface-container-lowest text-white font-mono text-sm pl-16 pr-4 py-3 rounded-xl border border-white/10 focus:outline-none focus:border-primary-container"
                       />
                     </div>
                   </div>
